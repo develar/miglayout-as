@@ -33,7 +33,7 @@ internal final class LC
   }
 
   public function set noCache(value:Boolean) {
-    value ? flags |= NO_CACHE : flags ^= NO_CACHE;
+    value ? flags |= NO_CACHE : flags &= ~NO_CACHE;
   }
 
   /**
@@ -93,7 +93,7 @@ internal final class LC
   }
 
   public function set fillX(value:Boolean) {
-    value ? flags |= FILL_X : flags ^= FILL_X;
+    value ? flags |= FILL_X : flags &= ~FILL_X;
   }
 
 	public function get fillY():Boolean
@@ -102,7 +102,7 @@ internal final class LC
 	}
 
 	public function set fillY(value:Boolean) {
-    value ? flags |= FILL_Y : flags ^= FILL_Y;
+    value ? flags |= FILL_Y : flags &= ~FILL_Y;
   }
 
   /** The default flow direction. Normally (which is <code>true</code>) this is horizontal and that means that the "next" component
@@ -120,7 +120,7 @@ internal final class LC
    * @see # setLeftToRight(Boolean)
    */
   public function set flowX(value:Boolean):void {
-    value ? flags |= FLOW_X : flags ^= FLOW_X;
+    value ? flags |= FLOW_X : flags &= ~FLOW_X;
   }
 
   /**
@@ -209,7 +209,7 @@ internal final class LC
   }
 
   public function set noGrid(value:Boolean):void {
-    value ? flags |= NO_GRID : flags ^= NO_GRID;
+    value ? flags |= NO_GRID : flags &= ~NO_GRID;
   }
 
   public function get topToBottom():Boolean {
@@ -217,7 +217,7 @@ internal final class LC
   }
 
   public function set topToBottom(value:Boolean):void {
-    value ? flags |= TOP_TO_BOTTOM : flags ^= TOP_TO_BOTTOM;
+    value ? flags |= TOP_TO_BOTTOM : flags &= ~TOP_TO_BOTTOM;
   }
 
   public function get visualPadding():Boolean {
@@ -225,7 +225,7 @@ internal final class LC
   }
 
   public function set visualPadding(value:Boolean):void {
-    value ? flags |= VISUAL_PADDING : flags ^= VISUAL_PADDING;
+    value ? flags |= VISUAL_PADDING : flags &= ~VISUAL_PADDING;
   }
 
   private var _wrapAfter:int = LayoutUtil.INF;
