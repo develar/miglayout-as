@@ -1,9 +1,9 @@
-package cocoa.layout {
+package net.miginfocom.layout {
 /**
  * A parsed constraint that specifies how an entity (normally column/row or component) can shrink or grow compared to other entities.
  */
-final class ResizeConstraint {
-  static const WEIGHT_100:Number = 100;
+internal final class ResizeConstraint {
+  internal static const WEIGHT_100:Number = 100;
 
   /**
    * How flexilble the entity should be, relative to other entities, when it comes to growing. <code>null</code> or
@@ -12,16 +12,16 @@ final class ResizeConstraint {
    * <p>
    * "grow" are only compared within the same "growPrio".
    */
-  var grow:Number;
+  internal var grow:Number;
 
   /**
    * The relative priority used for determining which entities gets the extra space first.
    */
-  var growPrio:int = 100;
+  internal var growPrio:int = 100;
 
-  var shrink:Number = WEIGHT_100;
+  internal var shrink:Number = WEIGHT_100;
 
-  var shrinkPrio:int = 100;
+  internal var shrinkPrio:int = 100;
 
   public function ResizeConstraint(shrinkPrio:int, shrinkWeight:Number, growPrio:int, growWeight:Number) {
     this.shrinkPrio = shrinkPrio;

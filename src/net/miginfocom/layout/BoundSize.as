@@ -1,20 +1,20 @@
-package cocoa.layout {
-/**
- * A size that contains minimum, preferred and maximum size of type {@link UnitValue}.
+package net.miginfocom.layout {
+/** A size that contains minimum, preferred and maximum size of type {@link UnitValue}.
  * <p>
  * This class is a simple value container and it is immutable.
  * <p>
  * If a size is missing (i.e., <code>null</code>) that boundary should be considered "not in use".
  * <p>
- * You can create a BoundSize from a String with the use of {@link ConstraintParser# parseBoundSize(String, boolean, boolean)}
+ * You can create a BoundSize from a String with the use of {@link ConstraintParser#parseBoundSize(String, boolean, boolean)}
  */
 public final class BoundSize {
   public static const NULL_SIZE:BoundSize = create2(null, null);
   public static const ZERO_PIXEL:BoundSize = create2(UnitValue.ZERO, "0px");
 
-  private var min:UnitValue;
-  private var pref:UnitValue;
-  private var max:UnitValue;
+  private var _min:UnitValue;
+  private var _pref:UnitValue;
+  private var _max:UnitValue;
+  private var _gapPush:Boolean;
 
   /** Constructor that use the same value for min/preferred/max size.
    * @param minMaxPref The value to use for min/preferred/max size.
@@ -43,9 +43,9 @@ public final class BoundSize {
   //noinspection JSUnusedLocalSymbols
   internal static function create(min:UnitValue, preferred:UnitValue, max:UnitValue, createString:String):BoundSize {
     var boundSize:BoundSize = new BoundSize();
-    boundSize.min = min;
-    boundSize.pref = preferred;
-    boundSize.max = max;
+    boundSize._min = min;
+    boundSize._pref = preferred;
+    boundSize._max = max;
 //    LayoutUtil.putCCString(boundSize, createString);
     return boundSize;
   }
@@ -79,30 +79,29 @@ public final class BoundSize {
    * Returns the minimum size as sent into the constructor.
    * @return The minimum size as sent into the constructor. May be <code>null</code>.
    */
-  public function getMin():UnitValue {
-    return min;
+  public function get min():UnitValue {
+    return _min;
   }
 
   /**
    * Returns the preferred size as sent into the constructor.
    * @return The preferred size as sent into the constructor. May be <code>null</code>.
    */
-  public function getPreferred():UnitValue {
-    return pref;
+  public function get preferred():UnitValue {
+    return _pref;
   }
 
   /**
    * Returns the maximum size as sent into the constructor.
    * @return The maximum size as sent into the constructor. May be <code>null</code>.
    */
-  public function getMax():UnitValue {
-    return max;
+  public function get max():UnitValue {
+    return _max;
   }
 
   /** If the size should be hinted as "pushing" and thus want to occupy free space if noone else is claiming it.
    * @return The value.
    */
-  private var _gapPush:Boolean;
   public function get gapPush():Boolean {
     return _gapPush;
   }
@@ -110,9 +109,9 @@ public final class BoundSize {
   /** Returns if this bound size has no min, preferred and maximum size set (they are all <code>null</code>)
    * @return If unset.
    */
-  public function isUnset():Boolean {
+  public function get isUnset():Boolean {
     // Most common case by far is this == ZERO_PIXEL...
-    return this == ZERO_PIXEL || (pref == null && min == null && max == null && !gapPush);
+    return this == ZERO_PIXEL || (_pref == null && _min == null && _max == null && !_gapPush);
   }
 
   /**
@@ -134,15 +133,20 @@ public final class BoundSize {
 
   /**
    * Returns the minimum, preferred or maximum size for this bounded size.
+   *
    * @param sizeType The type. <code>LayoutUtil.MIN</code>, <code>LayoutUtil.PREF</code> or <code>LayoutUtil.MAX</code>.
    * @return
    */
   internal function getSize(sizeType:int):UnitValue {
     switch (sizeType) {
-      case LayoutUtil.MIN: return min;
-      case LayoutUtil.PREF: return pref;
-      case LayoutUtil.MAX: return max;
-      default: throw new ArgumentError("Unknown size: " + sizeType);
+      case LayoutUtil.MIN:
+        return _min;
+      case LayoutUtil.PREF:
+        return _pref;
+      case LayoutUtil.MAX:
+        return _max;
+      default:
+        throw new ArgumentError("Unknown size: " + sizeType);
     }
   }
 
@@ -156,14 +160,14 @@ public final class BoundSize {
    */
   internal function getPixelSizes(refSize:Number, parent:ContainerWrapper, comp:ComponentWrapper):Vector.<int> {
     return new <int>[
-      min != null ? min.getPixels(refSize, parent, comp) : 0,
-      pref != null ? pref.getPixels(refSize, parent, comp) : 0,
-      max != null ? max.getPixels(refSize, parent, comp) : LayoutUtil.INF
+      _min != null ? _min.getPixels(refSize, parent, comp) : 0,
+      _pref != null ? _pref.getPixels(refSize, parent, comp) : 0,
+      _max != null ? _max.getPixels(refSize, parent, comp) : LayoutUtil.INF
     ];
   }
 
   internal function checkNotLinked():void {
-    if (min != null && min.isLinkedDeep() || pref != null && pref.isLinkedDeep() || max != null && max.isLinkedDeep()) {
+    if (_min != null && _min.isLinkedDeep() || _pref != null && _pref.isLinkedDeep() || _max != null && _max.isLinkedDeep()) {
       throw new ArgumentError("Size may not contain links");
     }
   }

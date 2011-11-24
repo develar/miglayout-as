@@ -1,4 +1,4 @@
-package cocoa.layout {
+package net.miginfocom.layout {
 /**
  * An interfance to implement if you want to decide the gaps between two types of components within the same cell.
  * <p>
@@ -16,7 +16,7 @@ package cocoa.layout {
  * return (adjacentSide == SwingConstants.LEFT || adjacentSide == SwingConstants.RIGHT) ? RELATED_X : RELATED_Y;
  * </pre
  */
-interface InCellGapProvider {
+public interface InCellGapProvider {
   /** Returns the default gap between two components that <b>are in the same cell</b>.
    * @param comp The component that the gap is for. Never <code>null</code>.
    * @param adjacentComp The adjacent component if any. May be <code>null</code>.

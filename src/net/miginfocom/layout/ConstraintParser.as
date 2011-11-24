@@ -1,283 +1,277 @@
-package cocoa.layout
-{
-import apparat.math.FastMath;
-
-import cocoa.util.StringUtil;
-
+package net.miginfocom.layout {
 /**
  * Parses string constraints.
  */
-internal final class ConstraintParser
-{
-	/**
-   * Parses the layout constraints and stores the parsed values in the transient (cache) member varables.
-	 * @param s The String to parse. Should not be <code>null</code> and <b>must be lower case and trimmed</b>.
-	 * @return The parsed constraint. Never <code>null</code>.
-	 */
-	public static function parseLayoutConstraint(s:String):LC
-	{
-		var lc:LC = new LC();
+public final class ConstraintParser {
+  /** Parses the layout constraints and stores the parsed values in the transient (cache) member varables.
+   * @param s The String to parse. Should not be <code>null</code> and <b>must be lower case and trimmed</b>.
+   * @throws RuntimeException if the constaint was not valid.
+   * @return The parsed constraint. Never <code>null</code>.
+   */
+  public static function parseLayoutConstraint(s:String):LC {
+		var lcBuilder:LCBuilder = new LCBuilder();
+		var lc:LC = lcBuilder.lc;
 		if (s.length == 0) {
 			return lc;
     }
 
-		var parts:Vector.<String> = toTrimmedTokens(s, ',');
-
+		var parts:Vector.<String> = toTrimmedTokens(s, 44 /*','*/);
+    var i:int;
+    var part:String;
 		// First check for "ltr" or "rtl" since that will affect the interpretation of the other constraints.
-		for (int i = 0; i < parts.length; i++) {
-			String part = parts[i];
-			if (part == null)
-				continue;
+    for (i = 0; i < parts.length; i++) {
+      part = parts[i];
+      if (part == null) {
+        continue;
+      }
 
-			int len = part.length();
+			var len:int = part.length;
 			if (len == 3 || len == 11) {   // Optimization
-				if (part.equals("ltr") || part.equals("rtl") || part.equals("lefttoright") || part.equals("righttoleft")) {
-					lc.setLeftToRight(part.charAt(0) == 'l' ? Boolean.TRUE : Boolean.FALSE);
+				if (part == "ltr" || part == "rtl" || part ==  "lefttoright" || part == "righttoleft") {
+					lc.leftToRight = part.charCodeAt(0) == 108  /* l */;
 					parts[i] = null;    // So we will not try to interpret it again
 				}
-
-				if (part.equals("ttb") || part.equals("btt") || part.equals("toptobottom") || part.equals("bottomtotop")) {
-					lc.setTopToBottom(part.charAt(0) == 't');
+        else if (part == "ttb" || part == "btt" || part == "toptobottom" || part == "bottomtotop") {
+					lc.topToBottom = part.charCodeAt(0) == 116 /* t */;
 					parts[i] = null;    // So we will not try to interpret it again
 				}
 			}
 		}
 
-		for (int i = 0; i < parts.length; i++) {
-			String part = parts[i];
-			if (part == null || part.length() == 0)
-				continue;
+    var sz:String;
+    for each (part in parts) {
+      if (part == null || part.length == 0) {
+        continue;
+      }
 
 			try {
-				int ix = -1;
-				char c = part.charAt(0);
+				var ix:int = -1;
+				var c:int = part.charCodeAt(0);
 
-				if (c == 'w' || c == 'h') {
+				if (c == 119 || c == 104) {
 
-					ix = startsWithLenient(part, "wrap", -1, true);
+					ix = startsWithLenient2(part, "wrap", -1, true);
 					if (ix > -1) {
-						String num = part.substring(ix).trim();
-						lc.setWrapAfter(num.length() != 0 ? Integer.parseInt(num) : 0);
+						var num:String = Strings.trim2(part, ix, part.length);
+						lc.wrapAfter = num.length != 0 ? parseInt(num) : 0;
 						continue;
 					}
 
-					boolean isHor = c == 'w';
-					if (isHor && (part.startsWith("w ") || part.startsWith("width "))) {
-						String sz = part.substring(part.charAt(1) == ' ' ? 2 : 6).trim();
-						lc.setWidth(parseBoundSize(sz, false, true));
+					var isHor:Boolean = c == 119;
+					if (isHor && (part.charCodeAt(0) == 119 || Strings.startsWith(, "width "))) {
+						sz = Strings.trim2(part, part.charCodeAt(1) == 32 ? 2 : 6, part.length);
+						lc.width = parseBoundSize(sz, false, true);
 						continue;
 					}
 
-					if (!isHor && (part.startsWith("h ") || part.startsWith("height "))) {
-						String uvStr = part.substring(part.charAt(1) == ' ' ? 2 : 7).trim();
-						lc.setHeight(parseBoundSize(uvStr, false, false));
+					if (!isHor && (Strings.startsWith(part, "h ") || Strings.startsWith(part, "height "))) {
+						var uvStr:String = Strings.trim2(part, part.charCodeAt(1) == 32 ? 2 : 7, s.length);
+						lc.height = (parseBoundSize(uvStr, false, false));
 						continue;
 					}
 
-					if (part.length() > 5) {
-						String sz = part.substring(5).trim();
-						if (part.startsWith("wmin ")) {
-							lc.minWidth(sz);
-							continue;
-						} else if (part.startsWith("wmax ")) {
-							lc.maxWidth(sz);
-							continue;
-						} else if (part.startsWith("hmin ")) {
-							lc.minHeight(sz);
-							continue;
-						} else if (part.startsWith("hmax ")) {
-							lc.maxHeight(sz);
-							continue;
-						}
+					if (part.length > 5) {
+						sz = Strings.trim2(part, 5, part.length);
+            if (Strings.startsWith(part, "wmin ")) {
+              lcBuilder.minWidth(sz);
+              continue;
+            }
+            else if (Strings.startsWith(part, "wmax ")) {
+              lcBuilder.maxWidth(sz);
+              continue;
+            }
+            else if (Strings.startsWith(part, "hmin ")) {
+              lcBuilder.minHeight(sz);
+              continue;
+            }
+            else if (Strings.startsWith(part, "hmax ")) {
+              lcBuilder.maxHeight(sz);
+              continue;
+            }
 					}
 
-					if (part.startsWith("hidemode ")) {
-						lc.setHideMode(Integer.parseInt(part.substring(9)));
-						continue;
-					}
-				}
-
-				if (c == 'g') {
-					if (part.startsWith("gapx ")) {
-						lc.setGridGapX(parseBoundSize(part.substring(5).trim(), true, true));
-						continue;
-					}
-
-					if (part.startsWith("gapy ")) {
-						lc.setGridGapY(parseBoundSize(part.substring(5).trim(), true, false));
-						continue;
-					}
-
-					if (part.startsWith("gap ")) {
-						String[] gaps = toTrimmedTokens(part.substring(4).trim(), ' ');
-						lc.setGridGapX(parseBoundSize(gaps[0], true, true));
-						lc.setGridGapY(gaps.length > 1 ? parseBoundSize(gaps[1], true, false) : lc.getGridGapX());
+					if (Strings.startsWith(part, "hidemode ")) {
+						lc.hideMode = parseInt(part.substring(9));
 						continue;
 					}
 				}
 
-				if (c == 'd') {
-					ix = startsWithLenient(part, "debug", 5, true);
+				if (c == 103) {
+					if (Strings.startsWith(part, "gapx ")) {
+						lc.gridGapX = parseBoundSize(Strings.trim2(part, 5, part.length), true, true);
+						continue;
+					}
+
+					if (Strings.startsWith(part, "gapy ")) {
+						lc.gridGapY = parseBoundSize(Strings.trim2(part, 5, part.length), true, false);
+						continue;
+					}
+
+					if (Strings.startsWith(part, "gap ")) {
+						var gaps:Vector.<String> = toTrimmedTokens(Strings.trim2(part, 4, part.length), 32);
+						lc.gridGapX = (parseBoundSize(gaps[0], true, true));
+						lc.gridGapY = gaps.length > 1 ? parseBoundSize(gaps[1], true, false) : lc.gridGapX;
+						continue;
+					}
+				}
+
+				if (c == 100) {
+					ix = startsWithLenient2(part, "debug", 5, true);
 					if (ix > -1) {
-						String millis = part.substring(ix).trim();
-						lc.setDebugMillis(millis.length() > 0 ? Integer.parseInt(millis) : 1000);
+						var millis:String = Strings.trim2(part, ix, part.length);
+						lc.debugMillis = millis.length > 0 ? parseInt(millis) : 1000;
 						continue;
 					}
 				}
 
-				if (c == 'n') {
-					if (part.equals("nogrid")) {
-						lc.setNoGrid(true);
+				if (c == 110) {
+					if (part == "nogrid") {
+						lc.noGrid = true;
+						continue;
+					}
+          else if (part == "nocache") {
+						lc.noCache = true;
+						continue;
+					}
+          else if (part == "novisualpadding") {
+						lc.visualPadding = false;
+						continue;
+					}
+				}
+        else if (c == 102) {
+					if (part == "fill" || part == "fillx" || part == "filly") {
+						lc.fillX = part.length == 4 || part.charCodeAt(4) == 120;
+						lc.fillY = part.length == 4 || part.charCodeAt(4) == 121;
 						continue;
 					}
 
-					if (part.equals("nocache")) {
-						lc.setNoCache(true);
+					if (part == "flowy") {
+						lc.flowX = false;
 						continue;
 					}
-
-					if (part.equals("novisualpadding")) {
-						lc.setVisualPadding(false);
+          else if (part == "flowx") {
+						lc.flowX = true; // This is the default but added for consistency
 						continue;
 					}
 				}
 
-				if (c == 'f') {
-					if (part.equals("fill") || part.equals("fillx") || part.equals("filly")) {
-						lc.setFillX(part.length() == 4 || part.charAt(4) == 'x');
-						lc.setFillY(part.length() == 4 || part.charAt(4) == 'y');
-						continue;
-					}
+        if (c == 105) {
+          ix = startsWithLenient2(part, "insets", 3, true);
+          if (ix > -1) {
+            var insStr:String = Strings.trim2(part, ix, part.length);
+            var ins:Vector.<UnitValue> = parseInsets(insStr, true);
+            LayoutUtil.putCCString(ins, insStr);
+            lc.insets = ins;
+            continue;
+          }
+        }
 
-					if (part.equals("flowy")) {
-						lc.setFlowX(false);
-						continue;
-					}
+				if (c == 97) {
+          ix = startsWithLenient(part, new <String>["aligny", "ay"], new <int>[6, 2], true);
+          if (ix > -1) {
+            var align:UnitValue = parseUnitValueOrAlign(Strings.trim2(part, ix, part.length), false, null);
+            if (align == UnitValue.BASELINE_IDENTITY) {
+              throw new ArgumentError("'baseline' can not be used to align the whole component group.");
+            }
+            lc.alignY = align;
+            continue;
+          }
 
-					if (part.equals("flowx")) {
-						lc.setFlowX(true); // This is the default but added for consistency
-						continue;
-					}
-				}
-
-				if (c == 'i') {
-					ix = startsWithLenient(part, "insets", 3, true);
+          ix = startsWithLenient(part, new <String>["alignx", "ax"], new <int>[6, 2], true);
 					if (ix > -1) {
-						String insStr = part.substring(ix).trim();
-						UnitValue[] ins = parseInsets(insStr, true);
-						LayoutUtil.putCCString(ins, insStr);
-						lc.setInsets(ins);
+						lc.alignX = parseUnitValueOrAlign(Strings.trim2(part, ix, part.length), true, null);
 						continue;
 					}
-				}
 
-				if (c == 'a') {
-					ix = startsWithLenient(part, new String[] {"aligny", "ay"}, new int[] {6, 2}, true);
+					ix = startsWithLenient2(part, "align", 2, true);
 					if (ix > -1) {
-						UnitValue align = parseUnitValueOrAlign(part.substring(ix).trim(), false, null);
-						if (align == UnitValue.BASELINE_IDENTITY)
-							throw new IllegalArgumentException("'baseline' can not be used to align the whole component group.");
-						lc.setAlignY(align);
+						var gaps :Vector.<String>= toTrimmedTokens(Strings.trim2(part, ix, part.length), 32);
+						lc.alignX = parseUnitValueOrAlign(gaps[0], true, null);
+						lc.alignY = gaps.length > 1 ? parseUnitValueOrAlign(gaps[1], false, null) : lc.alignX;
 						continue;
 					}
+        }
 
-					ix = startsWithLenient(part, new String[] {"alignx", "ax"}, new int[] {6, 2}, true);
-					if (ix > -1) {
-						lc.setAlignX(parseUnitValueOrAlign(part.substring(ix).trim(), true, null));
-						continue;
-					}
+        var packs:Vector.<String>;
+        if (c == 112) {
+          if (Strings.startsWith(part, "packalign ")) {
+            packs = toTrimmedTokens(Strings.trim2(part, 10, part.length), 32);
+            lc.packWidthAlign = packs[0].length > 0 ? parseFloat(packs[0]) : 0.5;
+            if (packs.length > 1) {
+              lc.packHeightAlign = parseFloat(packs[1]);
+            }
+            continue;
+          }
+          else if (Strings.startsWith(part, "pack ") || part == "pack") {
+            var ps:String = Strings.trim2(part, 4, part.length);
+            packs = toTrimmedTokens(ps.length > 0 ? ps : "pref pref", 32);
+            lc.packWidth = parseBoundSize(packs[0], false, true);
+            if (packs.length > 1) {
+              lc.packHeight = parseBoundSize(packs[1], false, false);
+            }
 
-					ix = startsWithLenient(part, "align", 2, true);
-					if (ix > -1) {
-						String[] gaps = toTrimmedTokens(part.substring(ix).trim(), ' ');
-						lc.setAlignX(parseUnitValueOrAlign(gaps[0], true, null));
-						lc.setAlignY(gaps.length > 1 ? parseUnitValueOrAlign(gaps[1], false, null) : lc.getAlignX());
-						continue;
-					}
+            continue;
+          }
 				}
 
-				if (c == 'p') {
-					if (part.startsWith("packalign ")) {
-						String[] packs = toTrimmedTokens(part.substring(10).trim(), ' ');
-						lc.setPackWidthAlign(packs[0].length() > 0 ? Float.parseFloat(packs[0]) : 0.5f);
-						if (packs.length > 1)
-							lc.setPackHeightAlign(Float.parseFloat(packs[1]));
-						continue;
-					}
-
-					if (part.startsWith("pack ") || part.equals("pack")) {
-						String ps = part.substring(4).trim();
-						String[] packs = toTrimmedTokens(ps.length() > 0 ? ps : "pref pref", ' ');
-						lc.setPackWidth(parseBoundSize(packs[0], false, true));
-						if (packs.length > 1)
-							lc.setPackHeight(parseBoundSize(packs[1], false, false));
-
-						continue;
-					}
+        if (lc.alignX == null) {
+          var alignX:UnitValue = parseAlignKeywords(part, true);
+          if (alignX != null) {
+            lc.alignX = alignX;
+            continue;
+          }
 				}
 
-				if (lc.getAlignX() == null) {
-					UnitValue alignX = parseAlignKeywords(part, true);
-					if (alignX != null) {
-						lc.setAlignX(alignX);
-						continue;
-					}
-				}
-
-				UnitValue alignY = parseAlignKeywords(part, false);
+				var alignY:UnitValue = parseAlignKeywords(part, false);
 				if (alignY != null) {
-					lc.setAlignY(alignY);
+					lc.alignY = alignY;
 					continue;
 				}
 
-				throw new IllegalArgumentException("Unknown Constraint: '" + part + "'\n");
+				throw new ArgumentError("Unknown Constraint: '" + part + "'\n");
 
-			} catch (Exception ex) {
-				throw new IllegalArgumentException("Illegal Constraint: '" + part + "'\n" + ex.getMessage());
-			}
+      }
+      catch (e:Error) {
+        throw new ArgumentError("Illegal Constraint: '" + part + "'\n" + e.message);
+      }
 		}
-
-//		lc = (LC) serializeTest(lc);
 
 		return lc;
 	}
 
-	/** Parses the column or rows constraints. They normally looks something like <code>"[min:pref]rel[10px][]"</code>.
-	 * @param s The string to parse. Not <code>null</code>.
-	 * @return An array of {@link DimConstraint}s that is as manu are there exist "[...]" sections in the string that is parsed.
-	 * @throws RuntimeException if the constaint was not valid.
-	 */
-	public static AC parseRowConstraints(String s)
-	{
-		return parseAxisConstraint(s, false);
-	}
+  /** Parses the column or rows constraints. They normally looks something like <code>"[min:pref]rel[10px][]"</code>.
+   * @param s The string to parse. Not <code>null</code>.
+   * @return An array of {@link DimConstraint}s that is as manu are there exist "[...]" sections in the string that is parsed.
+   * @throws RuntimeException if the constaint was not valid.
+   */
+  public static function parseRowConstraints(s:String):AC {
+    return parseAxisConstraint(s, false);
+  }
 
-	/** Parses the column or rows constraints. They normally looks something like <code>"[min:pref]rel[10px][]"</code>.
-	 * @param s The string to parse. Not <code>null</code>.
-	 * @return An array of {@link DimConstraint}s that is as manu are there exist "[...]" sections in the string that is parsed.
-	 * @throws RuntimeException if the constaint was not valid.
-	 */
-	public static AC parseColumnConstraints(String s)
-	{
-		return parseAxisConstraint(s, true);
-	}
+  /** Parses the column or rows constraints. They normally looks something like <code>"[min:pref]rel[10px][]"</code>.
+   * @param s The string to parse. Not <code>null</code>.
+   * @return An array of {@link DimConstraint}s that is as manu are there exist "[...]" sections in the string that is parsed.
+   * @throws RuntimeException if the constaint was not valid.
+   */
+  public static function parseColumnConstraints(s:String):AC {
+    return parseAxisConstraint(s, true);
+  }
 
-	/** Parses the column or rows constraints. They normally looks something like <code>"[min:pref]rel[10px][]"</code>.
-	 * @param s The string to parse. Not <code>null</code>.
-	 * @param isCols If this for columns rather than rows.
-	 * @return An array of {@link DimConstraint}s that is as manu are there exist "[...]" sections in the string that is parsed.
-	 * @throws RuntimeException if the constaint was not valid.
-	 */
-	private static AC parseAxisConstraint(String s, boolean isCols)
-	{
-		s = s.trim();
+  /** Parses the column or rows constraints. They normally looks something like <code>"[min:pref]rel[10px][]"</code>.
+   * @param s The string to parse. Not <code>null</code>.
+   * @param isCols If this for columns rather than rows.
+   * @return An array of {@link DimConstraint}s that is as manu are there exist "[...]" sections in the string that is parsed.
+   * @throws RuntimeException if the constaint was not valid.
+   */
+  private static function parseAxisConstraint(s:String, isCols:Boolean):AC {
+    s = Strings.trim(s);
+    if (s.length == 0) {
+      return new AC();
+    }    // Short circuit for performance.
 
-		if (s.length() == 0)
-			return new AC();    // Short circuit for performance.
+    s = s.toLowerCase();
 
-		s = s.toLowerCase();
-
-		ArrayList<String> parts = getRowColAndGapsTrimmed(s);
+		var parts:Vector.<String> = getRowColAndGapsTrimmed(s);
 
 		BoundSize[] gaps = new BoundSize[(parts.size() >> 1) + 1];
 		for (int i = 0, iSz = parts.size(), gIx = 0; i < iSz; i += 2, gIx++)
@@ -848,124 +842,128 @@ internal final class ConstraintParser
 		return cc;
 	}
 
-	/** Parses insets which consists of 1-4 <code>UnitValue</code>s.
-	 * @param s The string to parse. E.g. "10 10 10 10" or "20". If less than 4 groups the last will be used for the missing.
-	 * @param acceptPanel If "panel" and "dialog" should be accepted. They are used to access platform defaults.
-	 * @return An array of length 4 with the parsed insets.
-	 * @throws IllegalArgumentException if the parsing could not be done.
-	 */
-	public static UnitValue[] parseInsets(String s, boolean acceptPanel)
-	{
-		if (s.length() == 0 || s.equals("dialog") || s.equals("panel")) {
-			if (acceptPanel == false)
-				throw new IllegalAccessError("Insets now allowed: " + s + "\n");
+  /** Parses insets which consists of 1-4 <code>UnitValue</code>s.
+   * @param s The string to parse. E.g. "10 10 10 10" or "20". If less than 4 groups the last will be used for the missing.
+   * @param acceptPanel If "panel" and "dialog" should be accepted. They are used to access platform defaults.
+   * @return An array of length 4 with the parsed insets.
+   * @throws ArgumentError if the parsing could not be done.
+   */
+  public static function parseInsets(s:String, acceptPanel:Boolean):Vector.<UnitValue> {
+    var ins:Vector.<UnitValue>;
+    var j:int;
+    if (s.length == 0 || s == "dialog" || s == "panel") {
+      if (!acceptPanel) {
+        throw new ArgumentError("Insets now allowed: " + s + "\n");
+      }
 
-			boolean isPanel = s.startsWith("p");
-			UnitValue[] ins = new UnitValue[4];
-			for (int j = 0; j < 4; j++)
-				ins[j] = isPanel ? PlatformDefaults.getPanelInsets(j) : PlatformDefaults.getDialogInsets(j);
+      var isPanel:Boolean = s.charCodeAt(0) == 112; // p
+      ins = new Vector.<UnitValue>(4, true);
+      for (j = 0; j < 4; j++) {
+        ins[j] = isPanel ? PlatformDefaults.getPanelInsets(j) : PlatformDefaults.getDialogInsets(j);
+      }
 
-			return ins;
-		} else {
-			String[] insS = toTrimmedTokens(s, ' ');
-			UnitValue[] ins = new UnitValue[4];
-			for (int j = 0; j < 4; j++) {
-				UnitValue insSz = parseUnitValue(insS[j < insS.length ? j : insS.length - 1], UnitValue.ZERO, j % 2 == 1);
-				ins[j] = insSz != null ? insSz : PlatformDefaults.getPanelInsets(j);
-			}
-			return ins;
-		}
-	}
+      return ins;
+    }
+    else {
+      var insS:Vector.<String> = toTrimmedTokens(s, 32);
+      ins = new Vector.<UnitValue>(4, true);
+      for (j = 0; j < 4; j++) {
+        var insSz:UnitValue = parseUnitValue(insS[j < insS.length ? j : insS.length - 1], UnitValue.ZERO, j % 2 == 1);
+        ins[j] = insSz != null ? insSz : PlatformDefaults.getPanelInsets(j);
+      }
+      return ins;
+    }
+  }
 
 	/** Parses gaps.
 	 * @param s The string that contains gap information. Should start with "gap".
 	 * @return The gaps as specified in <code>s</code>. Indexed: <code>[top,left,bottom,right][min,pref,max]</code> or
 	 * [before,after][min,pref,max] if <code>oneDim</code> is true.
 	 */
-	private static BoundSize[] parseGaps(String s)
-	{
-		BoundSize[] ret = new BoundSize[4];
+  private static function parseGaps(s:String):Vector.<BoundSize> {
+    var ret:Vector.<BoundSize> = new Vector.<BoundSize>(4, true);
 
-		int ix = startsWithLenient(s, "gaptop", -1, true);
-		if (ix > -1) {
-			s = s.substring(ix).trim();
-			ret[0] = parseBoundSize(s, true, false);
-			return ret;
-		}
+    var ix:int = startsWithLenient2(s, "gaptop", -1, true);
+    if (ix > -1) {
+      s = Strings.trim2(s, ix, s.length);
+      ret[0] = parseBoundSize(s, true, false);
+      return ret;
+    }
 
-		ix = startsWithLenient(s, "gapleft", -1, true);
+		ix = startsWithLenient2(s, "gapleft", -1, true);
 		if (ix > -1) {
-			s = s.substring(ix).trim();
+			s = Strings.trim2(s, ix, s.length);
 			ret[1] = parseBoundSize(s, true, true);
 			return ret;
 		}
 
-		ix = startsWithLenient(s, "gapbottom", -1, true);
+		ix = startsWithLenient2(s, "gapbottom", -1, true);
 		if (ix > -1) {
-			s = s.substring(ix).trim();
+			s = Strings.trim2(s, ix, s.length);
 			ret[2] = parseBoundSize(s, true, false);
 			return ret;
 		}
 
-		ix = startsWithLenient(s, "gapright", -1, true);
+		ix = startsWithLenient2(s, "gapright", -1, true);
 		if (ix > -1) {
-			s = s.substring(ix).trim();
+			s = Strings.trim2(s, ix, s.length);
 			ret[3] = parseBoundSize(s, true, true);
 			return ret;
 		}
 
-		ix = startsWithLenient(s, "gapbefore", -1, true);
+		ix = startsWithLenient2(s, "gapbefore", -1, true);
 		if (ix > -1) {
-			s = s.substring(ix).trim();
+			s = Strings.trim2(s, ix, s.length);
 			ret[1] = parseBoundSize(s, true, true);
 			return ret;
 		}
 
-		ix = startsWithLenient(s, "gapafter", -1, true);
+		ix = startsWithLenient2(s, "gapafter", -1, true);
 		if (ix > -1) {
-			s = s.substring(ix).trim();
+			s = Strings.trim2(s, ix, s.length);
 			ret[3] = parseBoundSize(s, true, true);
 			return ret;
 		}
 
-		ix = startsWithLenient(s, new String[] {"gapx", "gapy"}, null, true);
+    var gaps:Vector.<String>;
+		ix = startsWithLenient(s, new <String>["gapx", "gapy"], null, true);
 		if (ix > -1) {
-			boolean x = s.charAt(3) == 'x';
-			String[] gaps = toTrimmedTokens(s.substring(ix).trim(), ' ');
+			var x:Boolean = s.charCodeAt(3) == 120; // x
+			gaps = toTrimmedTokens(Strings.trim2(s, ix, s.length), 32);
 			ret[x ? 1 : 0] = parseBoundSize(gaps[0], true, x);
-			if (gaps.length > 1)
-				ret[x ? 3 : 2] = parseBoundSize(gaps[1], true, !x);
-			return ret;
+      if (gaps.length > 1) {
+        ret[x ? 3 : 2] = parseBoundSize(gaps[1], true, !x);
+      }
+      return ret;
 		}
 
-		ix = startsWithLenient(s, "gap ", 1, true);
-		if (ix > -1) {
-			String[] gaps = toTrimmedTokens(s.substring(ix).trim(), ' ');
+    ix = startsWithLenient2(s, "gap ", 1, true);
+    if (ix > -1) {
+      gaps = toTrimmedTokens(Strings.trim2(s, ix, s.length), 32);
 
-			ret[1] = parseBoundSize(gaps[0], true, true);   // left
-			if (gaps.length > 1) {
-				ret[3] = parseBoundSize(gaps[1], true, false);   // right
-				if (gaps.length > 2) {
-					ret[0] = parseBoundSize(gaps[2], true, true);   // top
-					if (gaps.length > 3)
-						ret[2] = parseBoundSize(gaps[3], true, false);   // bottom
-				}
-			}
-			return ret;
+      ret[1] = parseBoundSize(gaps[0], true, true);   // left
+      if (gaps.length > 1) {
+        ret[3] = parseBoundSize(gaps[1], true, false);   // right
+        if (gaps.length > 2) {
+          ret[0] = parseBoundSize(gaps[2], true, true);   // top
+          if (gaps.length > 3) {
+            ret[2] = parseBoundSize(gaps[3], true, false);
+          }   // bottom
+        }
+      }
+      return ret;
 		}
 
-		throw new IllegalArgumentException("Unknown Gap part: '" + s + "'");
+		throw new ArgumentError("Unknown Gap part: '" + s + "'");
 	}
 
-	private static int parseSpan(String s)
-	{
-		return s.length() > 0 ? Integer.parseInt(s) : LayoutUtil.INF;
-	}
+  private static function parseSpan(s:String):int {
+    return s.length > 0 ? parseInt(s) : LayoutUtil.INF;
+  }
 
-	private static Float parseFloat(String s, Float nullVal)
-	{
-		return s.length() > 0 ? new Float(Float.parseFloat(s)) : nullVal;
-	}
+  private static function parseFloat2(s:String, nullVal:Number):Number {
+    return s.length > 0 ? parseFloat(s) : nullVal;
+  }
 
 	/** Parses a singele "min:pref:max" value. May look something like <code>"10px:20lp:30%"</code> or <code>"pref!"</code>.
 	 * @param s The string to parse. Not <code>null</code>.
@@ -973,39 +971,44 @@ internal final class ConstraintParser
 	 * @param isHor If the size is for the horizontal dimension.
 	 * @return A bound size that may be <code>null</code> if the string was "null", "n" or <code>null</code>.
 	 */
-	public static BoundSize parseBoundSize(String s, boolean isGap, boolean isHor)
-	{
-		if (s.length() == 0 || s.equals("null") || s.equals("n"))
-			return null;
+  public static function parseBoundSize(s:String, isGap:Boolean, isHor:Boolean):BoundSize {
+    if (s.length == 0 || s == "null" || s == "n") {
+      return null;
+    }
 
-		String cs = s;
-		boolean push = false;
-		if (s.endsWith("push")) {
+    var cs:String = s;
+    var push:Boolean = false;
+    if (Strings.endsWith(s, "push")) {
 			push = true;
-			int l = s.length();
-			s = s.substring(0, l - (s.endsWith(":push") ? 5 : 4));
-			if (s.length() == 0)
-				return new BoundSize(null, null, null, true, cs);
-		}
+			var l:int = s.length;
+      s = s.substring(0, l - (Strings.endsWith(s, ":push") ? 5 : 4));
+      if (s.length == 0) {
+        return BoundSize.create3(null, null, null, true, cs);
+      }
+    }
 
-		String[] sizes = toTrimmedTokens(s, ':');
-		String s0 = sizes[0];
+    var sizes:Vector.<String> = toTrimmedTokens(s, 58 /*':'*/);
+    var s0:String = sizes[0];
+    if (sizes.length == 1) {
+      var hasEM:Boolean = s0.charCodeAt(s0.length - 1) == 33; // !
+      if (hasEM) {
+        s0 = s0.substring(0, s0.length - 1);
+      }
+      var uv:UnitValue = parseUnitValue(s0, null, isHor);
+      return BoundSize.create3(isGap || hasEM ? uv : null, uv, (hasEM ? uv : null), push, cs);
 
-		if (sizes.length == 1) {
-			boolean hasEM = s0.endsWith("!");
-			if (hasEM)
-				s0 = s0.substring(0, s0.length() - 1);
-			UnitValue uv = parseUnitValue(s0, null, isHor);
-			return new BoundSize(((isGap || hasEM) ? uv : null), uv, (hasEM ? uv : null), push, cs);
-
-		} else if (sizes.length == 2) {
-			return new BoundSize(parseUnitValue(s0, null, isHor), parseUnitValue(sizes[1], null, isHor), null, push, cs);
-		} else if (sizes.length == 3) {
-			return new BoundSize(parseUnitValue(s0, null, isHor), parseUnitValue(sizes[1], null, isHor), parseUnitValue(sizes[2], null, isHor), push, cs);
-		} else {
-			throw new IllegalArgumentException("Min:Preferred:Max size section must contain 0, 1 or 2 colons. '" + cs + "'");
-		}
-	}
+    } 
+    else if (sizes.length == 2) {
+      return BoundSize.create3(parseUnitValue(s0, null, isHor), parseUnitValue(sizes[1], null, isHor), null, push, cs);
+    } 
+    else if (sizes.length == 3) {
+      return BoundSize.create3(parseUnitValue(s0, null, isHor), parseUnitValue(sizes[1], null, isHor),
+                               parseUnitValue(sizes[2], null, isHor), push, cs);
+    }
+    else {
+      throw new ArgumentError("Min:Preferred:Max size section must contain 0, 1 or 2 colons. '" + cs + "'");
+    }
+  }
 
 	/** Parses a single unit value that may also be an alignment as parsed by {@link #parseAlignKeywords(String, boolean)}.
 	 * @param s The string to parse. Not <code>null</code>. May look something like <code>"10px"</code> or <code>"5dlu"</code>.
@@ -1013,27 +1016,27 @@ internal final class ConstraintParser
 	 * @param emptyReplacement A replacement if <code>s</code> is empty. May be <code>null</code>.
 	 * @return The parsed unit value. May be <code>null</code>.
 	 */
-	public static UnitValue parseUnitValueOrAlign(String s, boolean isHor, UnitValue emptyReplacement)
-	{
-		if (s.length() == 0)
-			return emptyReplacement;
+  public static function parseUnitValueOrAlign(s:String, isHor:Boolean, emptyReplacement:UnitValue):UnitValue {
+    if (s.length == 0) {
+      return emptyReplacement;
+    }
 
-		UnitValue align = parseAlignKeywords(s, isHor);
-		if (align != null)
-			return align;
+    var align:UnitValue = parseAlignKeywords(s, isHor);
+    if (align != null) {
+      return align;
+    }
 
-		return parseUnitValue(s, emptyReplacement, isHor);
-	}
+    return parseUnitValue(s, emptyReplacement, isHor);
+  }
 
 	/** Parses a single unit value. E.g. "10px" or "5in"
 	 * @param s The string to parse. Not <code>null</code>. May look something like <code>"10px"</code> or <code>"5dlu"</code>.
 	 * @param isHor If the value is for the horizontal dimension.
 	 * @return The parsed unit value. <code>null</code> is empty string,
 	 */
-	public static UnitValue parseUnitValue(String s, boolean isHor)
-	{
-		return parseUnitValue(s, null, isHor);
-	}
+  public static function parseUnitValue2(s:String, isHor:Boolean):UnitValue {
+    return parseUnitValue(s, null, isHor);
+  }
 
 	/** Parses a single unit value.
 	 * @param s The string to parse. May be <code>null</code>. May look something like <code>"10px"</code> or <code>"5dlu"</code>.
@@ -1041,76 +1044,89 @@ internal final class ConstraintParser
 	 * @param isHor If the value is for the horizontal dimension.
 	 * @return The parsed unit value. May be <code>null</code>.
 	 */
-	private static function parseUnitValue(s:String, emptyReplacement:UnitValue, isHor:Boolean):UnitValue
-	{
-		if (s == null || s.length == 0) {
+  internal static function parseUnitValue(s:String, emptyReplacement:UnitValue, isHor:Boolean):UnitValue {
+    if (s == null || s.length == 0) {
       return emptyReplacement;
     }
 
-		var cs:String = s; // Save creation string.
-		var c0:int = s.charCodeAt(0);
+    var cs:String = s; // Save creation string.
+    var c0:int = s.charCodeAt(0);
 
-		// Remove start and end parentheses, if there.
-		if (c0 == '(' && s.charAt(s.length() - 1) == ')')
-			s = s.substring(1, s.length() - 1);
+    // Remove start and end parentheses, if there.
+    if (c0 == 40 && s.charCodeAt(s.length - 1) == 41) {
+      s = s.substring(1, s.length - 1);
+    }
 
-		if (c0 == 'n' && (s.equals("null") || s.equals("n")))
-			return null;
+    if (c0 == 110 && (s == "null" || s == "n")) {
+      return null;
+    }
 
-		if (c0 == 'i' && s.equals("inf"))
-			return UnitValue.INF;
+    if (c0 == 105 && s == "inf") {
+      return UnitValue.INF;
+    }
 
-		int oper = getOper(s);
-		boolean inline = oper == UnitValue.ADD || oper == UnitValue.SUB || oper == UnitValue.MUL || oper == UnitValue.DIV;
+    var oper:int = getOper(s);
+    var inline:Boolean = oper == UnitValue.ADD || oper == UnitValue.SUB || oper == UnitValue.MUL || oper == UnitValue.DIV;
 
-		if (oper != UnitValue.STATIC) {  // It is a multi-value
+    if (oper != UnitValue.STATIC) {  // It is a multi-value
 
-			String[] uvs;
-			if (inline == false) {   // If the format is of type "opr(xxx,yyy)" (compared to in-line "10%+15px")
-				String sub = s.substring(4, s.length() - 1).trim();
-				uvs = toTrimmedTokens(sub, ',');
-				if (uvs.length == 1)
-					return parseUnitValue(sub, null, isHor);
-			} else {
-				char delim;
-				if (oper == UnitValue.ADD) {
-					delim = '+';
-				} else if (oper == UnitValue.SUB) {
-					delim = '-';
-				} else if (oper == UnitValue.MUL) {
-					delim = '*';
-				} else {    // div left
-					delim = '/';
-				}
+      var uvs:Vector.<String>;
+      if (!inline) {   // If the format is of type "opr(xxx,yyy)" (compared to in-line "10%+15px")
+        var sub:String = Strings.trim2(s, 4, s.length - 1);
+        uvs = toTrimmedTokens(sub, 44 /*','*/);
+        if (uvs.length == 1) {
+          return parseUnitValue(sub, null, isHor);
+        }
+      }
+      else {
+        var delim:int;
+        if (oper == UnitValue.ADD) {
+          delim = 43; // +
+        }
+        else if (oper == UnitValue.SUB) {
+          delim = 45; // -
+        }
+        else if (oper == UnitValue.MUL) {
+          delim = 42; // *
+        }
+        else {
+          // div left
+          delim = 47; // /
+        }
 				uvs = toTrimmedTokens(s, delim);
-				if (uvs.length > 2) {   // More than one +-*/.
-					String last = uvs[uvs.length - 1];
-					String first = s.substring(0, s.length() - last.length() - 1);
-					uvs = new String[] {first, last};
-				}
+        if (uvs.length > 2) {   // More than one +-*/.
+          var last:String = uvs[uvs.length - 1];
+          var first:String = s.substring(0, s.length - last.length - 1);
+          uvs = new <String>[first, last];
+        }
 			}
 
-			if (uvs.length != 2)
-				throw new IllegalArgumentException("Malformed UnitValue: '" + s + "'");
+      if (uvs.length != 2) {
+        throw new ArgumentError("Malformed UnitValue: '" + s + "'");
+      }
 
-			UnitValue sub1 = parseUnitValue(uvs[0], null, isHor);
-			UnitValue sub2 = parseUnitValue(uvs[1], null, isHor);
+			var sub1:UnitValue = parseUnitValue(uvs[0], null, isHor);
+			var sub2:UnitValue = parseUnitValue(uvs[1], null, isHor);
 
-			if (sub1 == null || sub2 == null)
-				throw new IllegalArgumentException("Malformed UnitValue. Must be two sub-values: '" + s + "'");
+      if (sub1 == null || sub2 == null) {
+        throw new ArgumentError("Malformed UnitValue. Must be two sub-values: '" + s + "'");
+      }
 
-			return new UnitValue(isHor, oper, sub1, sub2, cs);
-		} else {
-			try {
-				String[] numParts = getNumTextParts(s);
-				float value = numParts[0].length() > 0 ? Float.parseFloat(numParts[0]) : 1;     // e.g. "related" has no number part..
+      return UnitValue.create3(isHor, oper, sub1, sub2, cs);
+    }
+    else {
+      try {
+        var numParts:Vector.<String> = getNumTextParts(s);
+        var value:Number = numParts[0].length > 0 ? parseFloat(numParts[0]) : 1;     // e.g. "related" has no number part..
 
-				return new UnitValue(value, numParts[1], isHor, oper, cs);
-
-			} catch(Exception e) {
-				throw new IllegalArgumentException("Malformed UnitValue: '" + s + "'");
-			}
+        return UnitValue.create4(value, numParts[1], isHor, oper, cs);
+      }
+      catch (e:Error) {
+        throw new ArgumentError("Malformed UnitValue: '" + s + "'");
+      }
 		}
+
+    throw new ArgumentError("Burn in Hell, Adobe");
 	}
 
 	/** Parses alignment keywords and returns the approprieate <code>UnitValue</code>.
@@ -1118,36 +1134,44 @@ internal final class ConstraintParser
 	 * @param isHor If alignments for horizontal is checked. <code>false</code> means vertical.
 	 * @return The unit value or <code>null</code> if not recognized (no exception).
 	 */
-	static function parseAlignKeywords(s:String, isHor:Boolean):UnitValue {
+  internal static function parseAlignKeywords(s:String, isHor:Boolean):UnitValue {
     if (startsWithLenient2(s, "center", 1, false) != -1) {
       return UnitValue.CENTER;
     }
 
     if (isHor) {
-      if (startsWithLenient2(s, "left", 1, false) != -1)
+      if (startsWithLenient2(s, "left", 1, false) != -1) {
         return UnitValue.LEFT;
+      }
 
-      if (startsWithLenient2(s, "right", 1, false) != -1)
+      if (startsWithLenient2(s, "right", 1, false) != -1) {
         return UnitValue.RIGHT;
+      }
 
-      if (startsWithLenient2(s, "leading", 4, false) != -1)
+      if (startsWithLenient2(s, "leading", 4, false) != -1) {
         return UnitValue.LEADING;
+      }
 
-      if (startsWithLenient2(s, "trailing", 5, false) != -1)
+      if (startsWithLenient2(s, "trailing", 5, false) != -1) {
         return UnitValue.TRAILING;
+      }
 
-      if (startsWithLenient2(s, "label", 5, false) != -1)
+      if (startsWithLenient2(s, "label", 5, false) != -1) {
         return UnitValue.LABEL;
+      }
     }
     else {
-      if (startsWithLenient2(s, "baseline", 4, false) != -1)
+      if (startsWithLenient2(s, "baseline", 4, false) != -1) {
         return UnitValue.BASELINE_IDENTITY;
+      }
 
-      if (startsWithLenient2(s, "top", 1, false) != -1)
+      if (startsWithLenient2(s, "top", 1, false) != -1) {
         return UnitValue.TOP;
+      }
 
-      if (startsWithLenient2(s, "bottom", 1, false) != -1)
+      if (startsWithLenient2(s, "bottom", 1, false) != -1) {
         return UnitValue.BOTTOM;
+      }
     }
 
     return null;
@@ -1155,51 +1179,49 @@ internal final class ConstraintParser
 
   /**
    * Splits a text-number combination such as "hello 10.0" into <code>{"hello", "10.0"}</code>.
-	 * @param s The string to split. Not <code>null</code>. Needs be be resonably formatted since the method
-	 * only finds the first 0-9 or . and cuts the string in half there.
-	 * @return Always length 2 and no <code>null</code> elements. Elements are "" if no part found.
-	 */
-	private static function getNumTextParts(s:String):Vector.<String>
-	{
-		for (var i:int = 0, iSz:int = s.length; i < iSz; i++) {
-			var c:int = s.charCodeAt(i);
-			if (c == 32) {
+   * @param s The string to split. Not <code>null</code>. Needs be be resonably formatted since the method
+   * only finds the first 0-9 or . and cuts the string in half there.
+   * @return Always length 2 and no <code>null</code> elements. Elements are "" if no part found.
+   */
+  private static function getNumTextParts(s:String):Vector.<String> {
+    for (var i:int = 0, iSz:int = s.length; i < iSz; i++) {
+      var c:int = s.charCodeAt(i);
+      if (c == 32) {
         throw new ArgumentError("Space in UnitValue: '" + s + "'");
       }
 
-			if ((c < 48/*'0'*/ || c > 57 /*'9'*/) && c != 46/*'.'*/ && c != 45/*'-'*/) {
-				return new <String>[StringUtil.trim(s.substring(0, i)), StringUtil.trim(s.substring(i))];
+      if ((c < 48/*'0'*/ || c > 57 /*'9'*/) && c != 46/*'.'*/ && c != 45/*'-'*/) {
+        return new <String>[Strings.trim2(s, 0, i), Strings.trim2(s, i, s.length)];
       }
-		}
+    }
 
-		return new <String>[s, ""];
-	}
+    return new <String>[s, ""];
+  }
 
 	/**
    * Returns the operation depending on the start character.
 	 * @param s The string to check. Not <code>null</code>.
 	 * @return E.g. UnitValue.ADD, UnitValue.SUB or UnitValue.STATIC. Returns negative value for in-line operations.
 	 */
-	private static function getOper(s:String):int
-	{
-		const len:int = s.length;
-		if (len < 3) {
+  private static function getOper(s:String):int {
+    const len:int = s.length;
+    if (len < 3) {
       return UnitValue.STATIC;
     }
 
-		if (len > 5 && s.charCodeAt(3) == 40 && s.charCodeAt(len - 1) == 41) {
-			if (s.indexOf("min(") == 0) {
+    if (len > 5 && s.charCodeAt(3) == 40 && s.charCodeAt(len - 1) == 41) {
+      if (Strings.startsWith(s, "min(")) {
         return UnitValue.MIN;
       }
 
-			if (s.indexOf("max(") == 0) {
-				return UnitValue.MAX;
+      if (Strings.startsWith(s, "max(")) {
+        return UnitValue.MAX;
       }
 
-			if (s.indexOf("mid(") == 0) {
-				return UnitValue.MID;
+      if (Strings.startsWith(s, "mid(")) {
+        return UnitValue.MID;
       }
-		}
+    }
 
     // Try in-line add/sub. E.g. "pref+10px".
     for (var j:int = 0; j < 2; j++) {   // First +-   then */   (precedence)
@@ -1228,8 +1250,8 @@ internal final class ConstraintParser
       }
     }
 
-		return UnitValue.STATIC;
-	}
+    return UnitValue.STATIC;
+  }
 
 	/** Returns if a string shares at least a specified numbers starting characters with a number of matches.
 	 * <p>
@@ -1249,8 +1271,9 @@ internal final class ConstraintParser
     for (var i:int = 0, n:int = matches.length; i < n; i++) {
       var minChar:int = minChars != null ? minChars[i] : -1;
       var ix:int = startsWithLenient2(s, matches[i], minChar, acceptTrailing);
-      if (ix > -1)
+      if (ix > -1) {
         return ix;
+      }
     }
     return -1;
   }
@@ -1309,69 +1332,67 @@ internal final class ConstraintParser
 	 * @return Those parts of the string that are separated with <code>sep</code>. Never null and at least of size 1
 	 * @since 6.7.2 Changed so more than one space in a row works as one space.
 	 */
-	private static function toTrimmedTokens(s:String, sep:String):Vector.<String>
-	{
+  private static function toTrimmedTokens(s:String, sep:int):Vector.<String> {
     var toks:int = 0;
     const sSize:int = s.length;
-		const disregardDoubles:Boolean = sep == ' ';
+    const disregardDoubles:Boolean = sep == 32;
 
     var i:int; // fucked actionscript
     var c:int;
 
-		// Count the sep:s
-		var p:int = 0;
-    const sepCharCode:int = sep.charCodeAt(0);
-		for (i = 0; i < sSize; i++) {
-			c = s.charCodeAt(i);
-			if (c == 40/*'('*/) {
-				p++;
-			}
+    // Count the sep:s
+    var p:int = 0;
+    for (i = 0; i < sSize; i++) {
+      c = s.charCodeAt(i);
+      if (c == 40/*'('*/) {
+        p++;
+      }
       else if (c == 41/*')'*/) {
-				p--;
-			}
-      else if (p == 0 && c == sepCharCode) {
-				toks++;
-				while (disregardDoubles && i < sSize - 1 && s.charCodeAt(i + 1) == 32/*' '*/) {
+        p--;
+      }
+      else if (p == 0 && c == sep) {
+        toks++;
+        while (disregardDoubles && i < sSize - 1 && s.charCodeAt(i + 1) == 32/*' '*/) {
           i++;
         }
-			}
-			if (p < 0) {
+      }
+      if (p < 0) {
         throw new ArgumentError("Unbalanced parentheses: '" + s + "'");
       }
-		}
+    }
 
-		if (p != 0) {
+    if (p != 0) {
       throw new ArgumentError("Unbalanced parentheses: '" + s + "'");
     }
 
-		if (toks == 0) {
-      return new <String>[StringUtil.trim(s)];
+    if (toks == 0) {
+      return new <String>[Strings.trim(s)];
     }
 
-		var retArr:Vector.<String> = new Vector.<String>(toks + 1, true);
-		var st:int = 0;
+    var retArr:Vector.<String> = new Vector.<String>(toks + 1, true);
+    var st:int = 0;
     var pNr:int = 0;
-		p = 0;
-		for (i = 0; i < sSize; i++) {
+    p = 0;
+    for (i = 0; i < sSize; i++) {
       c = s.charCodeAt(i);
-			if (c == 40/*'('*/) {
-				p++;
-			}
+      if (c == 40/*'('*/) {
+        p++;
+      }
       else if (c == 41/*')'(*/) {
-				p--;
-			}
-      else if (p == 0 && c == sepCharCode) {
-				retArr[pNr++] = StringUtil.trim(s.substring(st, i));
-				st = i + 1;
-				while (disregardDoubles && i < sSize - 1 && s.charCodeAt(i + 1) == 32) {
+        p--;
+      }
+      else if (p == 0 && c == sep) {
+        retArr[pNr++] = Strings.trim2(s, st, i);
+        st = i + 1;
+        while (disregardDoubles && i < sSize - 1 && s.charCodeAt(i + 1) == 32) {
           i++;
         }
-			}
-		}
+      }
+    }
 
-		retArr[pNr++] = StringUtil.trim(s.substring(st, sSize));
-		return retArr;
-	}
+    retArr[pNr] = Strings.trim2(s, st, sSize);
+    return retArr;
+  }
 
   /**
    * Parses "AAA[BBB]CCC[DDD]EEE" into {"AAA", "BBB", "CCC", "DDD", "EEE", "FFF"}. Handles empty parts. Will always start and end outside
@@ -1387,7 +1408,7 @@ internal final class ConstraintParser
       s = s.replace(/|/g, "][");
     }
 
-    var retList:Vector.<String> = new Vector.<String>(FastMath.max(s.length >> 2 + 1, 3), false); // Aprox return length.
+    var retList:Vector.<String> = new Vector.<String>(Math.max(s.length >> 2 + 1, 3), false); // Aprox return length.
     var retListIndex:int = 0;
     var s0:int = 0, s1:int = 0; // '[' and ']' count.
     var st:int = 0; // Start of "next token to add".
@@ -1407,7 +1428,7 @@ internal final class ConstraintParser
         break;  // Wrong [ or ] found. Break for throw.
       }
 
-      retList[retListIndex++] = StringUtil.trim(s.substring(st, i));
+      retList[retListIndex++] = Strings.trim2(s, st, i);
       st = i + 1;
     }
     if (s0 != s1) {
@@ -1433,7 +1454,7 @@ internal final class ConstraintParser
    * @return Not null.
    */
   public static function prepare(s:String):String {
-    return s != null ? StringUtil.trim(s).toLowerCase() : "";
+    return s != null ? Strings.trim(s).toLowerCase() : "";
   }
 }
 }

@@ -1,11 +1,11 @@
-package cocoa.layout {
+package net.miginfocom.layout {
 import avmplus.getQualifiedClassName;
 
 public final class UnitValue {
   private static const UNIT_MAP:Object/*<String, int>*/ = {
     "px": PIXEL,
-//		"lpx": LPX,
-//		"lpy": LPY,
+		"lpx": LPX,
+		"lpy": LPY,
     "%": PERCENT,
 //		"cm": CM,
 //		"in": INCH,
@@ -66,11 +66,11 @@ public final class UnitValue {
 
   /** A unit indicating logical horizontal pixels.
    */
-//	public static const LPX:int = 1;
+	public static const LPX:int = 1;
 
   /** A unit indicating logical vertical pixels.
    */
-//	public static const LPY:int = 2;
+	public static const LPY:int = 2;
 
   /** A unit indicating millimeters.
    */
@@ -162,19 +162,19 @@ public final class UnitValue {
 
   private static const IDENTITY:int = -1;
 
-  static const ZERO:UnitValue = create2(0, PIXEL, true, "0px");
-  static const TOP:UnitValue = create2(0, PERCENT, false, "top");
-  static const LEADING:UnitValue = create2(0, PERCENT, true, "leading");
-  static const LEFT:UnitValue = create2(0, PERCENT, true, "left");
-  static const CENTER:UnitValue = create2(50, PERCENT, true, "center");
-  static const TRAILING:UnitValue = create2(100, PERCENT, true, "trailing");
-  static const RIGHT:UnitValue = create2(100, PERCENT, true, "right");
-  static const BOTTOM:UnitValue = create2(100, PERCENT, false, "bottom");
-  static const LABEL:UnitValue = create2(0, LABEL_ALIGN, false, "label");
+  internal static const ZERO:UnitValue = create2(0, PIXEL, true, "0px");
+  internal static const TOP:UnitValue = create2(0, PERCENT, false, "top");
+  internal static const LEADING:UnitValue = create2(0, PERCENT, true, "leading");
+  internal static const LEFT:UnitValue = create2(0, PERCENT, true, "left");
+  internal static const CENTER:UnitValue = create2(50, PERCENT, true, "center");
+  internal static const TRAILING:UnitValue = create2(100, PERCENT, true, "trailing");
+  internal static const RIGHT:UnitValue = create2(100, PERCENT, true, "right");
+  internal static const BOTTOM:UnitValue = create2(100, PERCENT, false, "bottom");
+  internal static const LABEL:UnitValue = create2(0, LABEL_ALIGN, false, "label");
 
-  static const INF:UnitValue = create2(LayoutUtil.INF, PIXEL, true, "inf");
+  internal static const INF:UnitValue = create2(LayoutUtil.INF, PIXEL, true, "inf");
 
-  static const BASELINE_IDENTITY:UnitValue = create2(0, IDENTITY, false, "baseline");
+  internal static const BASELINE_IDENTITY:UnitValue = create2(0, IDENTITY, false, "baseline");
 
   private var value:Number;
   private var unit:int;
@@ -206,6 +206,45 @@ public final class UnitValue {
 //		if (sub1 == null || sub2 == null)
 //			throw new IllegalArgumentException("Sub units is null!");
 //	}
+
+  internal static function create3(isHor:Boolean, oper:int, sub1:UnitValue, sub2:UnitValue, createString:String):UnitValue {
+    if (sub1 == null || sub2 == null) {
+      throw new ArgumentError("Sub units is null!");
+    }
+
+    if (oper < STATIC || oper > MID) {
+      throw new ArgumentError("Unknown Operation: " + oper);
+    }
+
+    var unitValue:UnitValue = new UnitValue();
+    unitValue.value = 0;
+    unitValue.isHor = isHor;
+    unitValue.oper = oper;
+    unitValue.unitStr = "";
+    unitValue.subUnits = new <UnitValue>[sub1, sub2];
+
+    //    LayoutUtil.putCCString(unitValue, value + "px");
+    return unitValue;
+  }
+
+  internal static function create4(value:Number, unitStr:String, isHor:Boolean, oper:int, createString:String):UnitValue {
+    if (oper < STATIC || oper > MID) {
+      throw new ArgumentError("Unknown Operation: " + oper);
+    }
+
+    if (oper >= ADD && oper <= MID) {
+      throw new ArgumentError(oper + " Operation may not have null sub-UnitValues.");
+    }
+
+    var unitValue:UnitValue = new UnitValue();
+    unitValue.value = value;
+    unitValue.isHor = isHor;
+    unitValue.oper = oper;
+    unitValue.unitStr = unitStr;
+
+    //    LayoutUtil.putCCString(unitValue, value + "px");
+    return unitValue;
+  }
 
   internal static function create(value:Number, unit:int):UnitValue { // If hor/ver does not matter.
     var unitValue:UnitValue = new UnitValue();
@@ -279,9 +318,9 @@ public final class UnitValue {
         case PIXEL:
           return value;
 
-//				case LPX:
-//				case LPY:
-//					return parent.getPixelUnitFactor(unit == LPX) * value;
+				case LPX:
+				case LPY:
+					return parent.getPixelUnitFactor(unit == LPX) * value;
 
 //				case MM:
 //				case CM:
@@ -297,54 +336,57 @@ public final class UnitValue {
           return value * refValue * 0.01;
 
         case SPX:
-          return parent.getScreenWidth() * value * 0.01;
+          return parent.screenWidth * value * 0.01;
         case SPY:
-          return parent.getScreenHeight() * value * 0.01;
+          return parent.screenHeight * value * 0.01;
 
-        // todo suport align
-//				case ALIGN:
-//					var st:int = LinkHandler.getValue(parent.getLayout(), "visual", isHor ? LinkHandler.X : LinkHandler.Y);
-//					var sz:int = LinkHandler.getValue(parent.getLayout(), "visual", isHor ? LinkHandler.WIDTH : LinkHandler.HEIGHT);
-//					if (st == null || sz == null)
-//						return 0;
-//					return value * (Math.max(0, sz.intValue()) - refValue) + st.intValue();
+        case ALIGN:
+          var st:Number = LinkHandler.getValue(parent.layout, "visual", isHor ? LinkHandler.X : LinkHandler.Y);
+          var sz:Number = LinkHandler.getValue(parent.layout, "visual", isHor ? LinkHandler.WIDTH : LinkHandler.HEIGHT);
+          return st != st || sz != sz ? 0 : value * (Math.max(0, sz) - refValue) + st;
 
         case MIN_SIZE:
-          if (comp == null)
+          if (comp == null) {
             return 0;
-          return isHor ? comp.getMinimumWidth(comp.getHeight()) : comp.getMinimumHeight(comp.getWidth());
+          }
+          return isHor ? comp.getMinimumWidth(comp.height) : comp.getMinimumHeight(comp.width);
 
         case PREF_SIZE:
-          if (comp == null)
+          if (comp == null) {
             return 0;
-          return isHor ? comp.getPreferredWidth(comp.getHeight()) : comp.getPreferredHeight(comp.getWidth());
+          }
+          return isHor ? comp.getPreferredWidth(comp.height) : comp.getPreferredHeight(comp.width);
 
         case MAX_SIZE:
-          if (comp == null)
+          if (comp == null) {
             return 0;
-          return isHor ? comp.getMaximumWidth(comp.getHeight()) : comp.getMaximumHeight(comp.getWidth());
+          }
+          return isHor ? comp.getMaximumWidth(comp.height) : comp.getMaximumHeight(comp.width);
 
         case BUTTON:
-          return PlatformDefaults.getMinimumButtonWidth().getPixels(refValue, parent, comp);
+          return PlatformDefaults.minimumButtonWidth.getPixels(refValue, parent, comp);
 
-//				case LINK_X:
-//				case LINK_Y:
-//				case LINK_W:
-//				case LINK_H:
-//				case LINK_X2:
-//				case LINK_Y2:
-//				case LINK_XPOS:
-//				case LINK_YPOS:
-//					Integer v = LinkHandler.getValue(parent.getLayout(), getLinkTargetId(), unit - (unit >= LINK_XPOS ? LINK_XPOS : LINK_X));
-//					if (v == null)
-//						return 0;
-//
-//					if (unit == LINK_XPOS)
-//						return parent.getScreenLocationX() + v.intValue();
-//					if (unit == LINK_YPOS)
-//						return parent.getScreenLocationY() + v.intValue();
-//
-//					return v.intValue();
+				case LINK_X:
+				case LINK_Y:
+				case LINK_W:
+				case LINK_H:
+				case LINK_X2:
+				case LINK_Y2:
+				case LINK_XPOS:
+				case LINK_YPOS:
+					var v:Number = LinkHandler.getValue(parent.layout, getLinkTargetId(), unit - (unit >= LINK_XPOS ? LINK_XPOS : LINK_X));
+          if (v != v) {
+            return 0;
+          }
+
+          if (unit == LINK_XPOS) {
+            return parent.screenLocationX + v;
+          }
+          if (unit == LINK_YPOS) {
+            return parent.screenLocationY + v;
+          }
+
+          return v;
 
         case LOOKUP:
           return lookup(refValue, parent, comp);
@@ -385,8 +427,9 @@ public final class UnitValue {
     var res:Number = UnitConverter.UNABLE;
     for (var i:int = CONVERTERS.length - 1; i >= 0; i--) {
       res = CONVERTERS[i].convertToPixels(value, unitStr, isHor, refValue, parent, comp);
-      if (res != UnitConverter.UNABLE)
+      if (res != UnitConverter.UNABLE) {
         return res;
+      }
     }
     return PlatformDefaults.convertToPixels(value, unitStr, isHor, refValue, parent, comp);
   }
@@ -398,12 +441,13 @@ public final class UnitValue {
     }
 
     var uu:Object = UNIT_MAP[unitStr];
-    if (uu != null) {
+    if (uu != undefined) {
       return int(uu);
     }
 
-//		if (unitStr.equals("lp"))
-//			return isHor ? LPX : LPY;
+    if (unitStr = "lp") {
+      return isHor ? LPX : LPY;
+    }
 
     if (unitStr == "sp") {
       return isHor ? SPX : SPY;
@@ -440,11 +484,11 @@ public final class UnitValue {
     throw new ArgumentError("Unknown keyword: " + unitStr);
   }
 
-  final function isLinked():Boolean {
+  internal final function isLinked():Boolean {
     return linkId != null;
   }
 
-  final function isLinkedDeep():Boolean {
+  internal final function isLinkedDeep():Boolean {
     if (subUnits == null) {
       return linkId != null;
     }
@@ -458,15 +502,15 @@ public final class UnitValue {
     return false;
   }
 
-  final function getLinkTargetId():String {
+  internal final function getLinkTargetId():String {
     return linkId;
   }
 
-  final function getSubUnitValue(i:int):UnitValue {
+  internal final function getSubUnitValue(i:int):UnitValue {
     return subUnits[i];
   }
 
-  final function getSubUnitCount():int {
+  internal final function getSubUnitCount():int {
     return subUnits != null ? subUnits.length : 0;
   }
 
@@ -503,8 +547,99 @@ public final class UnitValue {
    * set to <code>true</code> for the creation strings to be stored.
    * @return The constraint string or <code>null</code> if none is registered.
    */
-  public function getConstraintString():String {
+  public final function getConstraintString():String {
     return LayoutUtil.getCCString(this);
   }
+
+  public static function addGlobalUnitConverter(conv:UnitConverter):void {
+    if (conv == null) {
+      throw new ArgumentError("conv must be not null");
+    }
+    CONVERTERS[CONVERTERS.length] = conv;
+  }
+
+  /** Removed the converter.
+   * @param conv The converter.
+   * @return If there was a converter found and thus removed.
+   */
+  public static function removeGlobalUnitConverter(conv:UnitConverter):Boolean {
+    var index:int = CONVERTERS.indexOf(conv);
+    if (index > -1) {
+      CONVERTERS.splice(index, 1);
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
+  /** Returns the global converters currently registered. The platform converter will not be in this list.
+   * @return The converters. Never <code>null</code>.
+   */
+  public static function get globalUnitConverters():Vector.<UnitConverter> {
+    return CONVERTERS.slice();
+  }
+
+  ///** Returns the current default unit. The default unit is the unit used if no unit is set. E.g. "width 10".
+  // * @return The current default unit.
+  // * @see #PIXEL
+  // * @see #LPX
+  // * @deprecated Use {@link PlatformDefaults#getDefaultHorizontalUnit()} and {@link PlatformDefaults#getDefaultVerticalUnit()} instead.
+  // */
+  //public static function get defaultUnit() {
+  //  return PlatformDefaults.getDefaultHorizontalUnit();
+  //}
+
+  ///** Sets the default unit. The default unit is the unit used if no unit is set. E.g. "width 10".
+  //	 * @param unit The new default unit.
+  //	 * @see #PIXEL
+  //	 * @see #LPX
+  //	 * @deprecated Use {@link PlatformDefaults#setDefaultHorizontalUnit(int)} and {@link PlatformDefaults#setDefaultVerticalUnit(int)} instead.
+  //	 */
+  //	public static void setDefaultUnit(int unit)
+  //	{
+  //		PlatformDefaults.setDefaultHorizontalUnit(unit);
+  //		PlatformDefaults.setDefaultVerticalUnit(unit);
+  //	}
+
+  //static {
+  //        if(LayoutUtil.HAS_BEANS){
+  //            LayoutUtil.setDelegate(UnitValue.class, new PersistenceDelegate() {
+  //                protected Expression instantiate(Object oldInstance, Encoder out)
+  //                {
+  //                    UnitValue uv = (UnitValue) oldInstance;
+  //                    String cs = uv.getConstraintString();
+  //                    if (cs == null)
+  //                        throw new IllegalStateException("Design time must be on to use XML persistence. See LayoutUtil.");
+  //
+  //                    return new Expression(oldInstance, ConstraintParser.class, "parseUnitValueOrAlign", new Object[] {
+  //                            uv.getConstraintString(), (uv.isHorizontal() ? Boolean.TRUE : Boolean.FALSE), null
+  //                    });
+  //                }
+  //            });
+  //        }
+  //	}
+
+  // ************************************************
+  	// Persistence Delegate and Serializable combined.
+  	// ************************************************
+
+  	//private static final long serialVersionUID = 1L;
+    //
+  	//private Object readResolve() throws ObjectStreamException
+  	//{
+  	//	return LayoutUtil.getSerializedObject(this);
+  	//}
+    //
+  	//private void writeObject(ObjectOutputStream out) throws IOException
+  	//{
+  	//	if (getClass() == UnitValue.class)
+  	//		LayoutUtil.writeAsXML(out, this);
+  	//}
+    //
+  	//private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException
+  	//{
+  	//	LayoutUtil.setSerializedObject(this, LayoutUtil.readAsXML(in));
+  	//}
 }
 }

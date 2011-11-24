@@ -1,4 +1,5 @@
-package cocoa.layout {
+package net.miginfocom.layout {
+[Abstract]
 public class UnitConverter {
   public static const UNABLE:int = -87654312;
 
