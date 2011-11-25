@@ -177,12 +177,20 @@ public final class UnitValue {
   internal static const BASELINE_IDENTITY:UnitValue = create2(0, IDENTITY, false, "baseline");
 
   private var value:Number;
-  private var unit:int;
+  private var _unit:int;
   private var oper:int = STATIC;
   private var unitStr:String;
   private var linkId:String;
   private var isHor:Boolean = true;
-  private var subUnits:Vector.<UnitValue>;
+  private var _subUnits:Vector.<UnitValue>;
+
+  // Pixel
+  internal static function create5(value:Number):UnitValue {
+    var unitValue:UnitValue = new UnitValue();
+    unitValue.value = value;
+    unitValue._unit = PIXEL;
+    return unitValue;
+  }
 
   // Pixel
 //	public function UnitValue(value:Number) // If hor/ver does not matter.
@@ -221,7 +229,7 @@ public final class UnitValue {
     unitValue.isHor = isHor;
     unitValue.oper = oper;
     unitValue.unitStr = "";
-    unitValue.subUnits = new <UnitValue>[sub1, sub2];
+    unitValue._subUnits = new <UnitValue>[sub1, sub2];
 
     //    LayoutUtil.putCCString(unitValue, value + "px");
     return unitValue;
@@ -249,7 +257,7 @@ public final class UnitValue {
   internal static function create(value:Number, unit:int):UnitValue { // If hor/ver does not matter.
     var unitValue:UnitValue = new UnitValue();
     unitValue.value = value;
-    unitValue.unit = unit;
+    unitValue._unit = unit;
 //    LayoutUtil.putCCString(unitValue, value + "px");
     return unitValue;
   }
@@ -258,7 +266,7 @@ public final class UnitValue {
   private static function create2(value:Number, unit:int, isHor:Boolean, createString:String):UnitValue { // If hor/ver does not matter.
     var unitValue:UnitValue = new UnitValue();
     unitValue.value = value;
-    unitValue.unit = unit;
+    unitValue._unit = unit;
     unitValue.isHor = isHor;
 //    LayoutUtil.putCCString(unitValue, value + "px");
     return unitValue;
@@ -314,13 +322,13 @@ public final class UnitValue {
     }
 
     if (oper == STATIC) {
-      switch (unit) {
+      switch (_unit) {
         case PIXEL:
           return value;
 
 				case LPX:
 				case LPY:
-					return parent.getPixelUnitFactor(unit == LPX) * value;
+					return parent.getPixelUnitFactor(_unit == LPX) * value;
 
 //				case MM:
 //				case CM:
@@ -374,15 +382,15 @@ public final class UnitValue {
 				case LINK_Y2:
 				case LINK_XPOS:
 				case LINK_YPOS:
-					var v:Number = LinkHandler.getValue(parent.layout, getLinkTargetId(), unit - (unit >= LINK_XPOS ? LINK_XPOS : LINK_X));
+					var v:Number = LinkHandler.getValue(parent.layout, getLinkTargetId(), _unit - (_unit >= LINK_XPOS ? LINK_XPOS : LINK_X));
           if (v != v) {
             return 0;
           }
 
-          if (unit == LINK_XPOS) {
+          if (_unit == LINK_XPOS) {
             return parent.screenLocationX + v;
           }
-          if (unit == LINK_YPOS) {
+          if (_unit == LINK_YPOS) {
             return parent.screenLocationY + v;
           }
 
@@ -396,12 +404,12 @@ public final class UnitValue {
 
         case IDENTITY:
       }
-      throw new ArgumentError("Unknown/illegal unit: " + unit + ", unitStr: " + unitStr);
+      throw new ArgumentError("Unknown/illegal unit: " + _unit + ", unitStr: " + unitStr);
     }
 
-    if (subUnits != null && subUnits.length == 2) {
-      var r1:Number = subUnits[0].getPixelsExact(refValue, parent, comp);
-      var r2:Number = subUnits[1].getPixelsExact(refValue, parent, comp);
+    if (_subUnits != null && _subUnits.length == 2) {
+      var r1:Number = _subUnits[0].getPixelsExact(refValue, parent, comp);
+      var r2:Number = _subUnits[1].getPixelsExact(refValue, parent, comp);
       switch (oper) {
         case ADD:
           return r1 + r2;
@@ -484,17 +492,17 @@ public final class UnitValue {
     throw new ArgumentError("Unknown keyword: " + unitStr);
   }
 
-  internal final function isLinked():Boolean {
+  internal final function get isLinked():Boolean {
     return linkId != null;
   }
 
-  internal final function isLinkedDeep():Boolean {
-    if (subUnits == null) {
+  internal final function get isLinkedDeep():Boolean {
+    if (_subUnits == null) {
       return linkId != null;
     }
 
-    for (var i:int = 0; i < subUnits.length; i++) {
-      if (subUnits[i].isLinkedDeep()) {
+    for (var i:int = 0; i < _subUnits.length; i++) {
+      if (_subUnits[i].isLinkedDeep) {
         return true;
       }
     }
@@ -502,27 +510,27 @@ public final class UnitValue {
     return false;
   }
 
-  internal final function getLinkTargetId():String {
+  internal final function get linkTargetId():String {
     return linkId;
   }
 
   internal final function getSubUnitValue(i:int):UnitValue {
-    return subUnits[i];
+    return _subUnits[i];
   }
 
-  internal final function getSubUnitCount():int {
-    return subUnits != null ? subUnits.length : 0;
+  internal final function get subUnitCount():int {
+    return _subUnits != null ? _subUnits.length : 0;
   }
 
-  public final function getSubUnits():Vector.<UnitValue> {
-    return subUnits;
+  public final function get subUnits():Vector.<UnitValue> {
+    return _subUnits;
   }
 
-  public final function getUnit():int {
-    return unit;
+  public final function get unit():int {
+    return _unit;
   }
 
-  public final function getUnitString():String {
+  public final function get unitString():String {
     return unitStr;
   }
 
@@ -539,7 +547,7 @@ public final class UnitValue {
   }
 
   public final function toString():String {
-    return getQualifiedClassName(this) + ". Value=" + value + ", unit=" + unit + ", unitString: " + unitStr + ", oper=" + oper + ", isHor: " + isHor;
+    return getQualifiedClassName(this) + ". Value=" + value + ", unit=" + _unit + ", unitString: " + unitStr + ", oper=" + oper + ", isHor: " + isHor;
   }
 
   /**

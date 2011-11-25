@@ -29,6 +29,7 @@ public final class BoundSize {
     return create(minMaxPref, minMaxPref, minMaxPref, createString);
   }
 
+  //noinspection JSUnusedLocalSymbols
   /** Constructor. <b>This method is here for serilization only and should normally not be used. Use
    * {@link ConstraintParser# parseBoundSize(String, boolean, boolean)} instead.
    * @param min The minimum size. May be <code>null</code>.
@@ -56,15 +57,15 @@ public final class BoundSize {
     return boundSize;
   }
 
-  /**
-   * <b>This method is here for serilization only and should normally not be used. Use
-   * {@link ConstraintParser# parseBoundSize(String, boolean, boolean)} instead.
-   * @param min The minimum size. May be <code>null</code>.
-   * @param preferred  The preferred size. May be <code>null</code>.
-   * @param max  The maximum size. May be <code>null</code>.
-   * @param gapPush If the size should be hinted as "pushing" and thus want to occupy free space if no one else is claiming it.
-   * @param createString The string used to create the BoundsSize.
-   */
+  ///**
+  // * <b>This method is here for serilization only and should normally not be used. Use
+  // * {@link ConstraintParser# parseBoundSize(String, boolean, boolean)} instead.
+  // * @param min The minimum size. May be <code>null</code>.
+  // * @param preferred  The preferred size. May be <code>null</code>.
+  // * @param max  The maximum size. May be <code>null</code>.
+  // * @param gapPush If the size should be hinted as "pushing" and thus want to occupy free space if no one else is claiming it.
+  // * @param createString The string used to create the BoundsSize.
+  // */
 //	public BoundSize(UnitValue min, UnitValue preferred, UnitValue max, boolean gapPush, String createString)
 //	{
 //		this.min = min;
@@ -167,7 +168,7 @@ public final class BoundSize {
   }
 
   internal function checkNotLinked():void {
-    if (_min != null && _min.isLinkedDeep() || _pref != null && _pref.isLinkedDeep() || _max != null && _max.isLinkedDeep()) {
+    if (_min != null && _min.isLinkedDeep || _pref != null && _pref.isLinkedDeep || _max != null && _max.isLinkedDeep) {
       throw new ArgumentError("Size may not contain links");
     }
   }

@@ -1,6 +1,6 @@
 package net.miginfocom.layout {
-/**
- * A parsed constraint that specifies how an entity (normally column/row or component) can shrink or grow compared to other entities.
+/** A parsed constraint that specifies how an entity (normally column/row or component) can shrink or
+ * grow compared to other entities.
  */
 internal final class ResizeConstraint {
   internal static const WEIGHT_100:Number = 100;
@@ -17,13 +17,13 @@ internal final class ResizeConstraint {
   /**
    * The relative priority used for determining which entities gets the extra space first.
    */
-  internal var growPrio:int = 100;
+  internal var growPrio:int;
 
-  internal var shrink:Number = WEIGHT_100;
+  internal var shrink:Number;
 
-  internal var shrinkPrio:int = 100;
+  internal var shrinkPrio:int;
 
-  public function ResizeConstraint(shrinkPrio:int, shrinkWeight:Number, growPrio:int, growWeight:Number) {
+  public function ResizeConstraint(shrinkPrio:int = 100, shrinkWeight:Number = WEIGHT_100, growPrio:int = 100, growWeight:Number = NaN) {
     this.shrinkPrio = shrinkPrio;
     this.shrink = shrinkWeight;
     this.growPrio = growPrio;
