@@ -2,9 +2,9 @@ package net.miginfocom.layout {
 public class CCBuilder {
   internal const cc:CC = new CC();
 
-  // **********************************************************
-  // Chaining constraint setters
-  // **********************************************************
+  public function to():CC {
+    return cc;
+  }
 
   /** Specifies that the component should be put in the end group <code>s</code> and will thus share the same ending
    * coordinate as them within the group.
@@ -819,7 +819,7 @@ public class CCBuilder {
   }
 
   private function corrPos(uv:String, ix:int):CCBuilder {
-    var b:Vector.<UnitValue> = cc.getPos();
+    var b:Vector.<UnitValue> = cc.pos;
     if (b == null) {
       b = new Vector.<UnitValue>(4, true);
     }
@@ -827,7 +827,7 @@ public class CCBuilder {
     b[ix] = ConstraintParser.parseUnitValue(uv, null, (ix % 2 == 0));
     cc.pos = b;
 
-    cc.setBoundsInGrid(true);
+    cc.boundsInGrid = true;
     return this;
   }
 
@@ -842,7 +842,7 @@ public class CCBuilder {
    * @see #setPos(UnitValue[])
    */
   public function pos(x:String, y:String, x2:String = null, y2:String = null):CCBuilder {
-    var b:Vector.<UnitValue> = cc.getPos();
+    var b:Vector.<UnitValue> = cc.pos;
     if (b == null) {
       b = new Vector.<UnitValue>(4, true);
     }
@@ -856,7 +856,7 @@ public class CCBuilder {
     }
     
     cc.pos = b;
-    cc.setBoundsInGrid(false);
+    cc.boundsInGrid = false;
     return this;
   }
 
