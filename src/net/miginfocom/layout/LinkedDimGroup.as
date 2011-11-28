@@ -9,7 +9,7 @@ internal final class LinkedDimGroup {
   internal var linkCtx:String;
   internal var span:int;
   private var linkType:int;
-  internal var isHor:Boolean, fromEnd;
+  internal var isHor:Boolean, fromEnd:Boolean;
 
   internal var _compWraps:Vector.<CompWrap> = new Vector.<CompWrap>();
 
@@ -64,13 +64,13 @@ internal final class LinkedDimGroup {
       sizes = new Vector.<int>(3, true);
       for (var sType:int = LayoutUtil.MIN; sType <= LayoutUtil.PREF; sType++) {
         if (linkType == TYPE_PARALLEL) {
-          sizes[sType] = getTotalSizeParallel(_compWraps, sType, isHor);
+          sizes[sType] = Grid.getTotalSizeParallel(_compWraps, sType, isHor);
         } else if (linkType == TYPE_BASELINE) {
-          var aboveBelow:Array = getBaselineAboveBelow(_compWraps, sType, false);
+          var aboveBelow:Vector.<int> = Grid.getBaselineAboveBelow(_compWraps, sType, false);
           sizes[sType] = aboveBelow[0] + aboveBelow[1];
         }
         else {
-          sizes[sType] = getTotalSizeSerial(_compWraps, sType, isHor);
+          sizes[sType] = Grid.getTotalSizeSerial(_compWraps, sType, isHor);
         }
       }
       sizes[LayoutUtil.MAX] = LayoutUtil.INF;

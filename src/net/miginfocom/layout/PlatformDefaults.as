@@ -656,7 +656,7 @@ public final class PlatformDefaults {
    * @see UnitValue #PIXEL
    * @see UnitValue #LPX
    */
-  public static function set defaultHorizontalUnit(unit:int) {
+  public static function set defaultHorizontalUnit(unit:int):void {
     if (unit < UnitValue.PIXEL || unit > UnitValue.LABEL_ALIGN) {
       throw new ArgumentError("Illegal Unit: " + unit);
     }

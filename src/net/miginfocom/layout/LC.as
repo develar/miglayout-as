@@ -26,7 +26,7 @@ public final class LC {
     return (flags & NO_CACHE) != 0;
   }
 
-  public function set noCache(value:Boolean) {
+  public function set noCache(value:Boolean):void {
     value ? flags |= NO_CACHE : flags &= ~NO_CACHE;
   }
 
@@ -87,7 +87,7 @@ public final class LC {
     return (flags & FILL_X) != 0;
   }
 
-  public function set fillX(value:Boolean) {
+  public function set fillX(value:Boolean):void {
     value ? flags |= FILL_X : flags &= ~FILL_X;
   }
 
@@ -95,7 +95,7 @@ public final class LC {
     return (flags & FILL_Y) != 0;
   }
 
-  public function set fillY(value:Boolean) {
+  public function set fillY(value:Boolean):void {
     value ? flags |= FILL_Y : flags &= ~FILL_Y;
   }
 
@@ -126,7 +126,7 @@ public final class LC {
     return _gridGapX;
   }
 
-  public function set gridGapX(value:BoundSize) {
+  public function set gridGapX(value:BoundSize):void {
     _gridGapX = value;
   }
 
@@ -179,7 +179,7 @@ public final class LC {
     return _insets != null ? new <UnitValue>[_insets[0], _insets[1], _insets[2], _insets[3]] : null;
   }
 
-  public function set insets(value:Vector.<UnitValue>) {
+  public function set insets(value:Vector.<UnitValue>):void {
     _insets = value != null ? new <UnitValue>[value[0], value[1], value[2], value[3]] : null;
   }
 
@@ -321,7 +321,7 @@ public final class LC {
   /**
    * @param value The pack alignment. Always between 0f and 1f, inclusive. Values outside this will be truncated.
    */
-  public function set packHeightAlign(value:Number) {
+  public function set packHeightAlign(value:Number):void {
     phAlign = Math.max(0, Math.min(1, value));
   }
 
@@ -345,7 +345,7 @@ public final class LC {
    * @param value The pack alignment. Always between 0f and 1f, inclusive. Values outside this will be truncated.
    * @since 3.5
    */
-  public function set packWidthAlign(value:Number) {
+  public function set packWidthAlign(value:Number):void {
     pwAlign = Math.max(0, Math.min(1, value));
   }
 

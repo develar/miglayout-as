@@ -693,7 +693,7 @@ public class CCBuilder {
    */
   public function newline(gapSize:String = null):CCBuilder {
     var bs:BoundSize;
-    if (gapSize == null || (bs = ConstraintParser.parseBoundSize(gapSize, true, (!cc.flowX && !cc.flowX))) == null) {
+    if (gapSize == null || (bs = ConstraintParser.parseBoundSize(gapSize, true, (cc.flowX && !cc.flowX))) == null) {
       cc.newline = true;
     }
     else {
@@ -713,7 +713,7 @@ public class CCBuilder {
    */
   public function wrap(gapSize:String = null):CCBuilder {
     var bs:BoundSize;
-    if (gapSize == null || (bs = ConstraintParser.parseBoundSize(gapSize, true, (!cc.flowX && !cc.flowX))) == null) {
+    if (gapSize == null || (bs = ConstraintParser.parseBoundSize(gapSize, true, (cc.flowX && !cc.flowX))) == null) {
       cc.wrap = true;
     }
     else {

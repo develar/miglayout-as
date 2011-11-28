@@ -192,7 +192,7 @@ internal final class LayoutUtil {
 
     var i:int; // fucked actionscript
     const sizesLength:int = sizes.length;
-
+    var r:Number;
     // Give all preferred size to start with
     for (i = 0; i < sizesLength; i++) {
       if (sizes[i] != null) {
@@ -242,13 +242,13 @@ internal final class LayoutUtil {
             if (resC != null) {
               if (curPrio == (/*prio*/ isGrow ? resC.growPrio : resC.shrinkPrio)) {
                 if (isGrow) {
-                  resizeWeight[i] = (force == 0 || resC.grow != NaN) ? resC.grow : (defPushWeights[i < defPushWeights.length ? i : defPushWeights.length - 1]);
+                  r = resizeWeight[i] = (force == 0 || resC.grow == resC.grow) ? resC.grow : (defPushWeights[i < defPushWeights.length ? i : defPushWeights.length - 1]);
                 }
                 else {
-                  resizeWeight[i] = resC.shrink;
+                  r = resizeWeight[i] = resC.shrink;
                 }
-                if (resizeWeight[i] != NaN) {
-                  totWeight += resizeWeight[i];
+                if (r == r) {
+                  totWeight += r;
                 }
               }
             }
@@ -263,7 +263,7 @@ internal final class LayoutUtil {
               for (i = 0; i < sizesLength && totWeight > 0.0001; i++) {
 
                 var weight:Number = resizeWeight[i];
-                if (weight != NaN) {
+                if (weight == weight) {
                   var sizeDelta:Number = toChange * weight / totWeight;
                   var newSize:Number = lengths[i] + sizeDelta;
 
@@ -361,7 +361,7 @@ internal final class LayoutUtil {
    * @return If left-to-right orientation is currently used.
    */
   public static function isLeftToRight(lc:LC, container:ContainerWrapper):Boolean {
-    if (lc != null && lc.leftToRight != null) {
+    if (lc != null && lc.leftToRight) {
       return lc.leftToRight;
     }
 

@@ -215,15 +215,15 @@ public final class Grid {
 			var cellFlowX:Boolean= rootCc.flowX;
 			cell = null;
 
-			if (rootCc.newline) {
-				this.wrap(cellXY, rootCc.newlineGapSize);
-			} else if (hitEndOfRow) {
+      if (rootCc.newline) {
+        this.wrap(cellXY, rootCc.newlineGapSize);
+      }
+      else if (hitEndOfRow) {
         this.wrap(cellXY, null);
-			}
-			hitEndOfRow = false;
+      }
+      hitEndOfRow = false;
 
 			var rowNoGrid:Boolean = lc.noGrid || (DimConstraint(LayoutUtil.getIndexSafe(specs, lc.flowX ? cellXY[1] : cellXY[0]))).noGrid;
-
 			// Move to a free y, x  if no absolute grid specified
       var cx:int = rootCc.cellX;
       var cy:int = rootCc.cellY;
@@ -266,7 +266,7 @@ public final class Grid {
       if (cell == null) {
         var spanx:int = Math.min(rowNoGrid && lc.flowX ? LayoutUtil.INF : rootCc.spanX, MAX_GRID - cellXY[0]);
         var spany:int = Math.min(rowNoGrid && !lc.flowX ? LayoutUtil.INF : rootCc.spanY, MAX_GRID - cellXY[1]);
-        cell = new Cell(null, spanx, spany, cellFlowX != null ? cellFlowX : lc.flowX);
+        cell = new Cell(null, spanx, spany, cellFlowX ? cellFlowX : lc.flowX);
         setCell(cellXY[1], cellXY[0], cell);
 
         // Add a rectangle so we can know that spanned cells occupy more space.
@@ -296,8 +296,8 @@ public final class Grid {
 					continue;       // To work with situations where there are components that does not have a layout manager, or not this one.
 				}
 
-        hasPushX |= (visible || hideMode > 1) && (cc.pushX != cc.pushX);
-        hasPushY |= (visible || hideMode > 1) && (cc.pushY != cc.pushY);
+        hasPushX ||= (visible || hideMode > 1) && (cc.pushX != cc.pushX);
+        hasPushY ||= (visible || hideMode > 1) && (cc.pushY != cc.pushY);
 
         if (cc != rootCc) { // If not first in a cell
           if (cc.newline || !cc.boundsInGrid || cc.dockSide != -1) {
@@ -315,8 +315,8 @@ public final class Grid {
 
         cw = new CompWrap(compAdd, cc, hideMode, pos, cbSz);
         cell.compWraps[cell.compWraps.length] = cw;
-        cell.hasTagged |= cc.tag != null;
-        hasTagged |= cell.hasTagged;
+        cell.hasTagged ||= cc.tag != null;
+        hasTagged ||= cell.hasTagged;
 
         if (cc != rootCc) {
           if (cc.horizontal.sizeGroup != null) {
@@ -532,7 +532,7 @@ public final class Grid {
 						for (i = 0, iSz = compWraps.length; i < iSz; i++) {
 							cw = compWraps[i];
 							if (j == 0) {
-								doAgain |= doAbsoluteCorrections(cw, bounds);
+								doAgain ||= doAbsoluteCorrections(cw, bounds);
                 if (!doAgain) { // If we are going to do this again, do not bother this time around
                   if (cw.cc.horizontal.endGroup != null) {
                     endGrpXMap = addToEndGroup(endGrpXMap, cw.cc.horizontal.endGroup, cw.x + cw.w);
@@ -559,7 +559,7 @@ public final class Grid {
 
                 cw.x += bounds[0];
                 cw.y += bounds[1];
-                layoutAgain |= cw.transferBounds(checkPrefChange && !layoutAgain);
+                layoutAgain ||= cw.transferBounds(checkPrefChange && !layoutAgain);
 
                 if (callbackList != null) {
                   for each (var callback:LayoutCallback in callbackList) {
@@ -582,7 +582,7 @@ public final class Grid {
 		// Add debug shapes for the "cells". Use the CompWraps as base for inding the cells.
 		if (debug) {
       var debugRectsLength:int = debugRects.length;
-			for (cell in grid) {
+			for each (cell in grid) {
 				compWraps = cell.compWraps;
 				for (i = 0, iSz = compWraps.length; i < iSz; i++) {
 					cw= compWraps[i];
@@ -741,7 +741,7 @@ public final class Grid {
       }
 
       linkTargetIDs[gid] = true;
-      changed |= LinkHandler.setBounds2(lay, gid, x, y, w, h, !external, true);
+      changed ||= LinkHandler.setBounds2(lay, gid, x, y, w, h, !external, true);
     }
 
     return changed;
@@ -1028,7 +1028,7 @@ public final class Grid {
 
         // If there is a link id, store the new bounds.
         if (linkTargetIDs != null) {
-          doAgain |= setLinkedBounds(cw.comp, cw.cc, stSz[0], stSz[0], stSz[1], stSz[1], false);
+          doAgain ||= setLinkedBounds(cw.comp, cw.cc, stSz[0], stSz[0], stSz[1], stSz[1], false);
         }
       }
       if (!doAgain) {
@@ -1215,7 +1215,7 @@ public final class Grid {
 		var sizeGroupMap:Dictionary = new Dictionary();
 		var allDCs:Vector.<DimConstraint> = new Vector.<DimConstraint>(primIndexes.length, true);
     var r:int = 0;
-		for (var cellIx:int in primIndexes) {
+		for (var cellIx:Object in primIndexes) {
       var rowColSizes:Vector.<int> = new Vector.<int>(3, true);
       if (cellIx >= -MAX_GRID && cellIx <= MAX_GRID) {  // If not dock cell
         allDCs[r] = primDCs[cellIx >= primDCs.length ? primDCs.length - 1 : cellIx];
@@ -1585,7 +1585,7 @@ public final class Grid {
   private static function convertSpanToSparseGrid(curIx:int, span:int, indexes:Array):int {
     var lastIx:int = curIx + span;
     var retSpan:int = 1;
-    for (var ix:int in indexes) {
+    for (var ix:Object in indexes) {
       if (ix <= curIx) {
         continue;
       }   // We have not arrived to the correct index yet
@@ -1638,7 +1638,7 @@ public final class Grid {
 	 * @param cw The compwrap to put in a cell and add.
 	 */
 	private function addDockingCell(dockInsets:Vector.<int>, side:int, cw:CompWrap):void {
-		var r:int, c, spanx:int = 1, spany:int = 1;
+		var r:int, c:int, spanx:int = 1, spany:int = 1;
 		switch (side) {
 			case 0:
 			case 2:
@@ -1672,7 +1672,7 @@ public final class Grid {
 	//***************************************************************************************
 
 	internal static function layoutBaseline(parent:ContainerWrapper, compWraps:Vector.<CompWrap>, dc:DimConstraint, start:int, size:int, sizeType:int, spanCount:int):void {
-		var aboveBelow:Array = getBaselineAboveBelow(compWraps, sizeType, true);
+		var aboveBelow:Vector.<int> = getBaselineAboveBelow(compWraps, sizeType, true);
 		var blRowSize:int= aboveBelow[0] + aboveBelow[1];
 
     var cc:CC = compWraps[0].cc;
@@ -1695,14 +1695,14 @@ public final class Grid {
     }
 	}
 
-  private static function layoutSerial(parent:ContainerWrapper, compWraps:Vector.<CompWrap>, dc:DimConstraint, start:int, size:int, isHor:Boolean, spanCount:int, fromEnd:Boolean):void {
+  internal static function layoutSerial(parent:ContainerWrapper, compWraps:Vector.<CompWrap>, dc:DimConstraint, start:int, size:int, isHor:Boolean, spanCount:int, fromEnd:Boolean):void {
     var fss:FlowSizeSpec = mergeSizesGapsAndResConstrs(
       getComponentResizeConstraints(compWraps, isHor),
       getComponentGapPush(compWraps, isHor),
       getComponentSizes(compWraps, isHor),
       getGaps(compWraps, isHor));
 
-		var pushW:Vector.<Number>= dc.fill ? GROW_100 : null;
+		var pushW:Vector.<Number> = dc.fill ? GROW_100 : null;
 		var sizes:Vector.<int> = LayoutUtil.calculateSerial(fss.sizes, fss.resConstsInclGaps, pushW, LayoutUtil.PREF, size);
 		setCompWrapBounds2(parent, sizes, compWraps, dc.getAlignOrDefault(isHor),  start, size, isHor, fromEnd);
 	}
@@ -1734,7 +1734,7 @@ public final class Grid {
     }
   }
 
-  private static function layoutParallel(parent:ContainerWrapper, compWraps:Vector.<CompWrap>, dc:DimConstraint, start:int, size:int, isHor:Boolean, fromEnd:Boolean):void {
+  internal static function layoutParallel(parent:ContainerWrapper, compWraps:Vector.<CompWrap>, dc:DimConstraint, start:int, size:int, isHor:Boolean, fromEnd:Boolean):void {
     var sizes:Vector.<Vector.<int>> = new Vector.<Vector.<int>>(compWraps.length);    // [compIx][gapBef,compSize,gapAft]
     for (var i:int = 0; i < sizes.length; i++) {
       var cw:CompWrap = compWraps[i];
@@ -1790,7 +1790,7 @@ public final class Grid {
     return align;
   }
 
-  private static function getBaselineAboveBelow(compWraps:Vector.<CompWrap>, sType:int, centerBaseline:Boolean):Vector.<int> {
+  internal static function getBaselineAboveBelow(compWraps:Vector.<CompWrap>, sType:int, centerBaseline:Boolean):Vector.<int> {
     var maxAbove:int = -32768;
     var maxBelow:int = -32768;
     for (var i:int = 0, iSz:int = compWraps.length; i < iSz; i++) {
@@ -1812,7 +1812,7 @@ public final class Grid {
     return new <int>[maxAbove, maxBelow];
   }
 
-  private static function getTotalSizeParallel(compWraps:Vector.<CompWrap>, sType:int, isHor:Boolean):int {
+  internal static function getTotalSizeParallel(compWraps:Vector.<CompWrap>, sType:int, isHor:Boolean):int {
     var size:int = sType == LayoutUtil.MAX ? LayoutUtil.INF : 0;
     for (var i:int = 0, iSz:int = compWraps.length; i < iSz; i++) {
       var cw:CompWrap = compWraps[i];
@@ -1828,7 +1828,7 @@ public final class Grid {
     return constrainSize(size);
   }
 
-  private static function getTotalSizeSerial(compWraps:Vector.<CompWrap>, sType:int, isHor:Boolean):int {
+  internal static function getTotalSizeSerial(compWraps:Vector.<CompWrap>, sType:int, isHor:Boolean):int {
     var totSize:int = 0;
     for (var i:int = 0, iSz:int = compWraps.length, lastGapAfter:int = 0; i < iSz; i++) {
       var wrap:CompWrap = compWraps[i];
@@ -1885,7 +1885,7 @@ public final class Grid {
 	 * @param gapSizes The gaps before and after each row/component packed in one double sized array.
 	 * @return A holder for the merged values.
 	 */
-	private static function mergeSizesGapsAndResConstrs(resConstr:Array, gapPush:Array, minPrefMaxSizes:Vector.<Vector.<int>>, gapSizes:Vector.<Vector.<int>>):FlowSizeSpec {
+	private static function mergeSizesGapsAndResConstrs(resConstr:Vector.<ResizeConstraint>, gapPush:Vector.<Boolean>, minPrefMaxSizes:Vector.<Vector.<int>>, gapSizes:Vector.<Vector.<int>>):FlowSizeSpec {
     var sizes:Vector.<Vector.<int>> = new Vector.<Vector.<int>>((minPrefMaxSizes.length << 1) + 1);  // Make room for gaps around.
 		var resConstsInclGaps:Vector.<ResizeConstraint> = new Vector.<ResizeConstraint>(sizes.length, true);
 		sizes[0] = gapSizes[0];

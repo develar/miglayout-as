@@ -382,7 +382,7 @@ public final class UnitValue {
 				case LINK_Y2:
 				case LINK_XPOS:
 				case LINK_YPOS:
-					var v:Number = LinkHandler.getValue(parent.layout, getLinkTargetId(), _unit - (_unit >= LINK_XPOS ? LINK_XPOS : LINK_X));
+					var v:Number = LinkHandler.getValue(parent.layout, linkId, _unit - (_unit >= LINK_XPOS ? LINK_XPOS : LINK_X));
           if (v != v) {
             return 0;
           }
@@ -448,12 +448,12 @@ public final class UnitValue {
       return isHor ? PlatformDefaults.defaultHorizontalUnit : PlatformDefaults.defaultVerticalUnit;
     }
 
-    var uu:Object = UNIT_MAP[unitStr];
+    var uu:* = UNIT_MAP[unitStr];
     if (uu != undefined) {
       return int(uu);
     }
 
-    if (unitStr = "lp") {
+    if (unitStr == "lp") {
       return isHor ? LPX : LPY;
     }
 
