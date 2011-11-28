@@ -374,7 +374,7 @@ public final class CC {
 	 * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
 	 * @return The current value. 0 if no skip.
 	 */
-	public function getSkip():int {
+	public function get skip():int {
 		return _skip;
 	}
 

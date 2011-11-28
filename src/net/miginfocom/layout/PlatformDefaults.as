@@ -102,7 +102,7 @@ public final class PlatformDefaults {
 
   private static var dra:Boolean = true;
 
-  static {
+  {
     setPlatform(getCurrentPlatform());
     MOD_COUNT = 0;
   }
@@ -470,33 +470,33 @@ public final class PlatformDefaults {
    * @param c The char. Must be lower case!
    * @return The tag that corresponds to the char or <code>null</code> if the char is unrecognized.
    */
-  internal static function getTagForChar(c:String):String {
+  internal static function getTagForChar(c:int):String {
     switch (c) {
-      case 'o':
+      case 111:
         return "ok";
-      case 'c':
+      case 99:
         return "cancel";
-      case 'h':
+      case 104:
         return "help";
-      case 'e':
+      case 101:
         return "help2";
-      case 'y':
+      case 121:
         return "yes";
-      case 'n':
+      case 110:
         return "no";
-      case 'a':
+      case 97:
         return "apply";
-      case 'x':
+      case 120:
         return "next";  // a.k.a forward
-      case 'b':
+      case 98:
         return "back";  // a.k.a. previous
-      case 'i':
+      case 105:
         return "finish";
-      case 'l':
+      case 108:
         return "left";
-      case 'r':
+      case 114:
         return "right";
-      case 'u':
+      case 117:
         return "other";
       default:
         return null;

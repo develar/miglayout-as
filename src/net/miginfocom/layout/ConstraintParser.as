@@ -424,7 +424,7 @@ public final class ConstraintParser {
 				var c:int = part.charCodeAt(0);
 
 				if (c == 110) {
-					if (part = "north") {
+					if (part == "north") {
 						cc.dockSide = 0;
 						continue;
 					}
@@ -785,13 +785,13 @@ public final class ConstraintParser {
         }
 
         if (c == 101) {
-          if (part = "east") {
+          if (part == "east") {
             cc.dockSide = 3;
 //						cc.getVertical().setGrow(ResizeConstraint.WEIGHT_100);
             continue;
           }
 
-          if (part = "external") {
+          if (part == "external") {
             cc.external = true;
             continue;
           }
@@ -1318,7 +1318,7 @@ public final class ConstraintParser {
       }
     }
 
-    return sIx >= sSz || acceptTrailing || (s.charCodeAt(sIx) == 32 ? sIx : -1);
+    return sIx >= sSz || acceptTrailing || s.charCodeAt(sIx) == 32 ? sIx : -1;
   }
 
 	/** Parses a string and returns it in those parts of the string that are separated with a <code>sep</code> character.

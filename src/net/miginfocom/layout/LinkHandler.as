@@ -18,7 +18,7 @@ public final class LinkHandler {
     var cont:Boolean = true;
 
     for (var i:int = LAYOUTS.length - 1; i >= 0; i--) {
-      var l:Object = getObjectFromDictionary(LAYOUTS[i]);
+      var l:Object = Dictionaries.getFirst(LAYOUTS[i]);
       if (ret != ret && l == layout) {
         var rect:Vector.<int> = VALUES_TEMP[i][key];
         if (cont && rect != null && rect[type] != LayoutUtil.NOT_SET) {
@@ -55,7 +55,7 @@ public final class LinkHandler {
 
   internal static function setBounds2(layout:Object, key:String, x:int, y:int, width:int, height:int, temporary:Boolean, incCur:Boolean):Boolean {
     for (var i:int = LAYOUTS.length - 1; i >= 0; i--) {
-      var l:Object = getObjectFromDictionary(LAYOUTS[i]);
+      var l:Object = Dictionaries.getFirst(LAYOUTS[i]);
       if (l == layout) {
         var map:Dictionary = (temporary ? VALUES_TEMP : VALUES)[i];
         var old:Vector.<int> = map[key];
@@ -138,7 +138,7 @@ public final class LinkHandler {
 
   public static function clearBounds(layout:Object, key:String):Boolean {
     for (var i:int = LAYOUTS.length - 1; i >= 0; i--) {
-      var l:Object = getObjectFromDictionary(LAYOUTS[i]);
+      var l:Object = Dictionaries.getFirst(LAYOUTS[i]);
       if (l == layout) {
         var d:Dictionary = VALUES[i];
         const r:Boolean = d[key] != undefined;
@@ -151,7 +151,7 @@ public final class LinkHandler {
 
   internal static function clearTemporaryBounds(layout:Object):void {
     for (var i:int = LAYOUTS.length - 1; i >= 0; i--) {
-      var l:Object = getObjectFromDictionary(LAYOUTS[i]);
+      var l:Object = Dictionaries.getFirst(LAYOUTS[i]);
       if (l == layout) {
         VALUES_TEMP[i].clear();
         return;
@@ -172,15 +172,6 @@ public final class LinkHandler {
     }
 
     return value;
-  }
-
-  private static function getObjectFromDictionary(dictionary:Dictionary):Object {
-    //noinspection LoopStatementThatDoesntLoopJS
-    for (var object:Object in dictionary) {
-      return object;
-    }
-
-    return null;
   }
 }
 }

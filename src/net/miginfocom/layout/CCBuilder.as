@@ -561,14 +561,14 @@ public class CCBuilder {
     return this;
   }
 
-  /** Same functionality as {@link #setSpanY(int)} only this method returns <code>this</code> for chaining multiple calls.
+  /** Same functionality as {@link #spanY(int)} only this method returns <code>this</code> for chaining multiple calls.
    * <p>
    * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
    * @param cells The number of cells to span (i.e. merge).
    * @return <code>this</code> so it is possible to chain calls. E.g. <code>new LayoutConstraint().noGrid().gap().fill()</code>.
-   * @see #setSpanY(int)
+   * @see #spanY(int)
    */
-  public function spanY(cells:int = LayoutUtil.INF):CCBuilder {
+  public function spanY(cells:int = 2097051):CCBuilder {
     cc.spanY = cells;
     return this;
   }
@@ -580,7 +580,7 @@ public class CCBuilder {
    * @return <code>this</code> so it is possible to chain calls. E.g. <code>new LayoutConstraint().noGrid().gap().fill()</code>.
    * @see #setSpanY(int)
    */
-  public function spanX(cells:int = LayoutUtil.INF):CCBuilder {
+  public function spanX(cells:int = 2097051):CCBuilder {
     cc.spanX = cells;
     return this;
   }
@@ -632,7 +632,7 @@ public class CCBuilder {
    * @return <code>this</code> so it is possible to chain calls. E.g. <code>new ComponentConstraint().noGrid().gap().fill()</code>.
    * @see #setSplit(int)
    */
-  public function split(parts:int = LayoutUtil.INF):CCBuilder {
+  public function split(parts:int = 2097051):CCBuilder {
     cc.split = parts;
     return this;
   }
@@ -693,7 +693,7 @@ public class CCBuilder {
    */
   public function newline(gapSize:String = null):CCBuilder {
     var bs:BoundSize;
-    if (gapSize == null || (bs = ConstraintParser.parseBoundSize(gapSize, true, (cc.flowX != null && !cc.flowX))) == null) {
+    if (gapSize == null || (bs = ConstraintParser.parseBoundSize(gapSize, true, (!cc.flowX && !cc.flowX))) == null) {
       cc.newline = true;
     }
     else {
@@ -713,7 +713,7 @@ public class CCBuilder {
    */
   public function wrap(gapSize:String = null):CCBuilder {
     var bs:BoundSize;
-    if (gapSize == null || (bs = ConstraintParser.parseBoundSize(gapSize, true, (cc.flowX != null && !cc.flowX))) == null) {
+    if (gapSize == null || (bs = ConstraintParser.parseBoundSize(gapSize, true, (!cc.flowX && !cc.flowX))) == null) {
       cc.wrap = true;
     }
     else {

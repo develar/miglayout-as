@@ -9,7 +9,7 @@ package net.miginfocom.layout {
  * <code>new AxisConstraint().size("100").gap("3").size("200").fill()</code>.
  */
 public final class AC {
-  private var constraints:Vector.<DimConstraint>;
+  internal var constraints:Vector.<DimConstraint>;
 
   public function AC(constraints:Vector.<DimConstraint>) {
     this.constraints = constraints;

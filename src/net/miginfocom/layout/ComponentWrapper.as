@@ -35,7 +35,7 @@ public interface ComponentWrapper {
   /** Returns the current y coordinate for this component.
    * @return The current y coordinate for this component.
    */
-  function y():Number ;
+  function get y():Number ;
 
   /** Returns the current width for this component.
    * @return The current width for this component.
@@ -129,7 +129,7 @@ public interface ComponentWrapper {
    * actually visible, but if the visibility is set to true or not.
    * @return <code>true</code> means visible.
    */
-  function get isVisible():Boolean ;
+  function get visible():Boolean;
 
   /** Returns the baseline for the component given the suggested height.
    * @param width The width to calculate for if other than the current. If <code>-1</code> the current size should be used.

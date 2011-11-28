@@ -180,7 +180,7 @@ public final class DimConstraint {
     return _gapAfter != null && !_gapAfter.isUnset;
   }
 
-  internal function get isGapAfterPush():Boolean {
+  internal function get gapAfterPush():Boolean {
     return _gapAfter != null && _gapAfter.gapPush;
   }
 
@@ -209,7 +209,7 @@ public final class DimConstraint {
     return _gapBefore != null && !_gapBefore.isUnset;
   }
 
-  internal function get isGapBeforePush():Boolean {
+  internal function get gapBeforePush():Boolean {
     return _gapBefore != null && _gapBefore.gapPush;
   }
 
@@ -295,7 +295,7 @@ public final class DimConstraint {
    * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
    * @return code>true</code> means that components should grow.
    */
-  public function get isFill():Boolean {
+  public function get fill():Boolean {
     return _fill;
   }
 

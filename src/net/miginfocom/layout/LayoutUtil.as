@@ -11,7 +11,7 @@ internal final class LayoutUtil {
    * for potential overflow must exist in many places. This value is large enough for being unreasonable yet it is hard to
    * overflow.
    */
-  public static const INF:int = (int.MAX_VALUE >> 10) - 100; // To reduce likelihood of overflow errors when calculating.
+  public static const INF:int = 2097051;//  (int.MAX_VALUE >> 10) - 100; // To reduce likelihood of overflow errors when calculating.
 
   /**
    * Tag int for a value that in considered "not set". Used as "null" element in int arrays.
