@@ -261,13 +261,11 @@ public final class ConstraintParser {
     s = Strings.trim(s);
     // Short circuit for performance.
     if (s.length == 0) {
-      return new AC();
+      return new AC(new Vector.<DimConstraint>());
     }
 
     s = s.toLowerCase();
-
 		var parts:Vector.<String> = getRowColAndGapsTrimmed(s);
-
 		var gaps:Vector.<BoundSize> = new Vector.<BoundSize>((parts.length >> 1) + 1, true);
     var i:int;
     var iSz:int = parts.length, gIx:int = 0;
@@ -275,18 +273,16 @@ public final class ConstraintParser {
       gaps[gIx] = parseBoundSize(parts[i], true, isCols);
     }
 
-		var colSpecs:Vector.<DimConstraint> = new Vector.<DimConstraint>(parts.length >> 1, true);
-    for (i = 0, gIx = 0; i < colSpecs.length; i++, gIx++) {
+		var constraints:Vector.<DimConstraint> = new Vector.<DimConstraint>(parts.length >> 1, true);
+    for (i = 0, gIx = 0; i < constraints.length; i++, gIx++) {
       if (gIx >= gaps.length - 1) {
         gIx = gaps.length - 2;
       }
 
-      colSpecs[i] = parseDimConstraint(parts[(i << 1) + 1], gaps[gIx], gaps[gIx + 1], isCols);
+      constraints[i] = parseDimConstraint(parts[(i << 1) + 1], gaps[gIx], gaps[gIx + 1], isCols);
     }
 
-		var ac:AC = new AC();
-		ac.setConstaints(colSpecs);
-		return ac;
+    return new AC(constraints);
 	}
 
 	/** Parses a single column or row constriant.
