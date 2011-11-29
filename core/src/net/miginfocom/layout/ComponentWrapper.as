@@ -238,6 +238,6 @@ public interface ComponentWrapper {
    * of the scrolled component should be returned.
    * @return The type of component that this wrapper is wrapping. E.g. {@link #TYPE_LABEL}.
    */
-  function getComponetType(disregardScrollPane:Boolean):int;
+  function getComponentType(disregardScrollPane:Boolean):int;
 }
 }

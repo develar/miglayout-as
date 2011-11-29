@@ -1,5 +1,5 @@
 package net.miginfocom.layout {
-internal final class Strings {
+public final class Strings {
   public static function trim(str:String):String {
     return trim2(str, 0, str.length);
   }
@@ -32,6 +32,17 @@ internal final class Strings {
 
   public static function endsWith(s:String, suffix:String):Boolean {
     return startsWith(s, suffix, s.length - suffix.length);
+  }
+  
+  public static function hashCode(s:String):int {
+    var h:int = 0;
+    if (s.length != 0) {
+      for (var i:int = 0, n:int = s.length; i < n; i++) {
+        h = 31 * h + s.charCodeAt(i);
+      }
+    }
+
+    return h;
   }
 }
 }

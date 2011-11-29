@@ -48,19 +48,19 @@ internal final class CompWrap {
     }
 	}
 
-	private function getSize2(uvs:BoundSize, sizeType:int, isHor:Boolean, sizeHint:int):int {
-		if (uvs == null || uvs.getSize(sizeType) == null) {
-			switch(sizeType) {
-				case LayoutUtil.MIN:
-					return isHor ? comp.getMinimumWidth(sizeHint) : comp.getMinimumHeight(sizeHint);
-				case LayoutUtil.PREF:
-					return isHor ? comp.getPreferredWidth(sizeHint) : comp.getPreferredHeight(sizeHint);
-				default:
-					return isHor ? comp.getMaximumWidth(sizeHint) : comp.getMaximumHeight(sizeHint);
-			}
-		}
+  private function getSize2(uvs:BoundSize, sizeType:int, isHor:Boolean, sizeHint:int):int {
+    if (uvs == null || uvs.getSize(sizeType) == null) {
+      switch (sizeType) {
+        case LayoutUtil.MIN:
+          return isHor ? comp.getMinimumWidth(sizeHint) : comp.getMinimumHeight(sizeHint);
+        case LayoutUtil.PREF:
+          return isHor ? comp.getPreferredWidth(sizeHint) : comp.getPreferredHeight(sizeHint);
+        default:
+          return isHor ? comp.getMaximumWidth(sizeHint) : comp.getMaximumHeight(sizeHint);
+      }
+    }
 
-		var par:ContainerWrapper= comp.parent;
+    var par:ContainerWrapper= comp.parent;
 		return uvs.getSize(sizeType).getPixels(isHor ? par.width : par.height, par, comp);
 	}
 
