@@ -166,7 +166,6 @@ public final class Grid {
 			addLinkIDs(rootCc);
 
       var hideMode:int = comp.visible ? -1 : rootCc.hideMode != -1 ? rootCc.hideMode : lc.hideMode;
-
       if (hideMode == 3) { // To work with situations where there are components that does not have a layout manager, or not this one.
         setLinkedBounds(comp, rootCc, comp.x, comp.y, comp.width, comp.height, rootCc.external);
         i++;
@@ -287,8 +286,8 @@ public final class Grid {
 					continue;       // To work with situations where there are components that does not have a layout manager, or not this one.
 				}
 
-        hasPushX ||= (visible || hideMode > 1) && (cc.pushX != cc.pushX);
-        hasPushY ||= (visible || hideMode > 1) && (cc.pushY != cc.pushY);
+        hasPushX ||= (visible || hideMode > 1) && cc.pushX == cc.pushX;
+        hasPushY ||= (visible || hideMode > 1) && cc.pushY == cc.pushY;
 
         if (cc != rootCc) { // If not first in a cell
           if (cc.newline || !cc.boundsInGrid || cc.dockSide != -1) {
