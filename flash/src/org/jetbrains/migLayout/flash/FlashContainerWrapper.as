@@ -1,6 +1,8 @@
 package org.jetbrains.migLayout.flash {
 import flash.display.DisplayObject;
 import flash.display.DisplayObjectContainer;
+import flash.display.Graphics;
+import flash.display.Sprite;
 
 import net.miginfocom.layout.CC;
 import net.miginfocom.layout.ComponentType;
@@ -9,7 +11,7 @@ import net.miginfocom.layout.ConstraintParser;
 import net.miginfocom.layout.ContainerWrapper;
 
 public final class FlashContainerWrapper extends FlashComponentWrapper implements ContainerWrapper {
-  private var _layout:MigLayout;
+  private static const DB_CELL_OUTLINE:uint = 0xff0000;
 
   function FlashContainerWrapper(c:DisplayObjectContainer, layout:MigLayout) {
     super(c, null, null);
@@ -35,6 +37,7 @@ public final class FlashContainerWrapper extends FlashComponentWrapper implement
     return DisplayObjectContainer(c).numChildren;
   }
 
+  private var _layout:MigLayout;
   public function get layout():Object {
     return _layout;
   }
@@ -43,14 +46,16 @@ public final class FlashContainerWrapper extends FlashComponentWrapper implement
     return true;
   }
 
-  public function paintDebugCell(x:Number, y:Number, width:Number, height:Number):void {
-    //if (!c.visible) {
-    //  return;
-    //}
-    
-    //var g:Graphics = c.
+  public function paintDebugCell(x:Number, y:Number, width:Number, height:Number, first:Boolean):void {
+    var g:Graphics = Sprite(c).graphics;
+    if (first) {
+      g.clear();
+      g.lineStyle(1, DB_CELL_OUTLINE);
+    }
+
+    g.moveTo(x, y);
+    g.drawRect(x, y, width, height);
   }
-  
 
   override public function get layoutHashCode():int {
     return 0;

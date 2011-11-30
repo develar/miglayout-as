@@ -30,6 +30,6 @@ public interface ContainerWrapper extends ComponentWrapper {
    * @param width The width to draw/fill
    * @param height The height to draw/fill
    */
-  function paintDebugCell(x:Number, y:Number, width:Number, height:Number):void;
+  function paintDebugCell(x:Number, y:Number, width:Number, height:Number, first:Boolean):void;
 }
 }

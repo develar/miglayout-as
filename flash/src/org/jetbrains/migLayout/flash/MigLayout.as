@@ -16,15 +16,16 @@ public class MigLayout extends AbstractMigLayout {
     checkCache(container);
 
     var b:Vector.<int> = new <int>[0, 0, container.width, container.height];
-    if (grid.layout(b, lc.alignX, lc.alignY, getDebug(), true)) {
+    if (grid.layout(b, lc.alignX, lc.alignY, _debug, true)) {
       grid = null;
       checkCache(container);
-      grid.layout(b, lc.alignX, lc.alignY, getDebug(), false);
+      grid.layout(b, lc.alignX, lc.alignY, _debug, false);
     }
   }
 
-  private function getDebug():Boolean {
-    return false;
+  private var _debug:Boolean;
+  public function set debug(value:Boolean):void {
+    _debug = true;
   }
 
   /** Check if something has changed and if so recreate it to the cached objects.

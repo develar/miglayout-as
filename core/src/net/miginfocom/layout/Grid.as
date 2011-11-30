@@ -102,7 +102,6 @@ public final class Grid {
 	/** If debug is on contains the bounds for things to paint when calling {@link ContainerWrapper#paintDebugCell(int, int, int, int)}
 	  */
   //private ArrayList<int[]> debugRects = null; // [x, y, width, height]
-	private var debugRects:Vector.<Vector.<int>>; // [x, y, width, height]
 
 	/** If any of the absolute coordinates for component bounds has links the name of the target is in this Set.
 	 * Since it requires some memory and computations this is checked at the creation so that
@@ -238,15 +237,10 @@ public final class Grid {
             cellXY[1] = cy;
           }
           else {    // Only one coordinate is specified. Use the current row (flowx) or column (flowy) to fill in.
-            if (lc.flowX) {
-              cellXY[0] = cx;
-            }
-            else {
-              cellXY[1] = cx;
-            }
+            cellXY[lc.flowX ? 0 : 1] = cx;
           }
         }
-        cell = getCell(cellXY[1], cellXY[0]);   // Might be null
+        cell = getCell(cellXY[1], cellXY[0]); // Might be null
       }
 
 			// Skip a number of cells. Changed for 3.6.1 to take wrap into account and thus "skip" to the next and possibly more rows.
@@ -432,10 +426,10 @@ public final class Grid {
       var lastI:int = cws.length - 1;
 			for (i = 0; i <= lastI; i++) {
 				cw = cws[i];
-				var cwBef:ComponentWrapper= i > 0? cws[i - 1].comp : null;
-				var cwAft:ComponentWrapper= i < lastI ? cws[i + 1].comp : null;
+				var cwBef:ComponentWrapper= i > 0 ? cws[i - 1].comp : null;
+        var cwAft:ComponentWrapper = i < lastI ? cws[i + 1].comp : null;
 
-				var tag:String = (cw.comp.constraints || DEF_CC).tag;
+        var tag:String = (cw.comp.constraints || DEF_CC).tag;
 				var ccBef:CC = cwBef != null ? cwBef.constraints || DEF_CC : null;
         var ccAft:CC = cwAft != null ? cwAft.constraints || DEF_CC : null;
         cw.calcGaps(cwBef, ccBef, cwAft, ccAft, tag, cell.flowx, ltr);
@@ -486,16 +480,12 @@ public final class Grid {
 	 * @param bounds The bounds to layout against. Normally that of the parent. [x, y, width, height].
 	 * @param alignX The alignment for the x-axis.
 	 * @param alignY The alignment for the y-axis.
-	 * @param debug If debug information should be saved in {@link #debugRects}.
+	 * @param debug If debug information should be saved in {link #debugRects}.
 	 * @param checkPrefChange If a check should be done to see if the setting of any new bounds changes the preferred size
 	 * of a component.
 	 * @return If the layout has probably changed the preferred size and there is need for a new layout (normally only SWT).
 	 */
 	public function layout(bounds:Vector.<int>, alignX:UnitValue, alignY:UnitValue, debug:Boolean, checkPrefChange:Boolean):Boolean {
-    if (debug) {
-      debugRects = new Vector.<Vector.<int>>();
-    }
-
 		checkSizeCalcs();
 
 		resetLinkValues(true, true);
@@ -573,43 +563,22 @@ public final class Grid {
 
 		// Add debug shapes for the "cells". Use the CompWraps as base for inding the cells.
 		if (debug) {
-      var debugRectsLength:int = debugRects.length;
+      var first:Boolean = true;
 			for each (cell in grid) {
 				compWraps = cell.compWraps;
 				for (i = 0, iSz = compWraps.length; i < iSz; i++) {
-					cw= compWraps[i];
-					var hGrp:LinkedDimGroup= getGroupContaining(colGroupLists, cw);
-					var vGrp:LinkedDimGroup= getGroupContaining(rowGroupLists, cw);
-					if (hGrp != null && vGrp != null)
-						debugRects[debugRectsLength++] = new <int>[hGrp.lStart + bounds[0] - (hGrp.fromEnd ? hGrp.lSize : 0), vGrp.lStart + bounds[1] - (vGrp.fromEnd ? vGrp.lSize : 0), hGrp.lSize, vGrp.lSize];
-				}
+					cw = compWraps[i];
+          var hGrp:LinkedDimGroup = getGroupContaining(colGroupLists, cw);
+          var vGrp:LinkedDimGroup = getGroupContaining(rowGroupLists, cw);
+          if (hGrp != null && vGrp != null) {
+            container.paintDebugCell(hGrp.lStart + bounds[0] - (hGrp.fromEnd ? hGrp.lSize : 0), vGrp.lStart + bounds[1] - (vGrp.fromEnd ? vGrp.lSize : 0), hGrp.lSize, vGrp.lSize, first);
+            first = false;
+          }
+        }
 			}
 		}
+
 		return layoutAgain;
-	}
-
-	public function paintDebug():void {
-		if (debugRects != null) {
-			container.paintDebugOutline();
-
-      var i:int, iSz:int;
-			var painted:Vector.<Vector.<int>> = new Vector.<Vector.<int>>();
-      var paintedLength:int = 0;
-			for (i = 0, iSz = debugRects.length; i < iSz; i++) {
-				var r:Vector.<int> = debugRects[i];
-				if (painted.indexOf(r) == -1) {
-					container.paintDebugCell(r[0], r[1], r[2], r[3]);
-					painted[paintedLength++] = r;
-				}
-      }
-
-      for each (var cell:Cell in grid) {
-        var compWraps:Vector.<CompWrap> = cell.compWraps;
-        for (i = 0, iSz = compWraps.length; i < iSz; i++) {
-          compWraps[i].comp.paintDebugOutline();
-        }
-      }
-    }
 	}
 
   public function getContainer():ContainerWrapper {
@@ -1662,7 +1631,6 @@ public final class Grid {
 
 		grid[(r << 16) + c] = new Cell(cw, spanx, spany, spanx > 1);
 	}
-
 
 	//***************************************************************************************
 	//* Helper Methods

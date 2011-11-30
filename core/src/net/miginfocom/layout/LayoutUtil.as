@@ -190,7 +190,7 @@ internal final class LayoutUtil {
     var lengths:Vector.<Number> = new Vector.<Number>(sizes.length);	// heights/widths that are set
     var usedLength:Number = 0;
 
-    var i:int; // fucked actionscript
+    var i:int;
     const sizesLength:int = sizes.length;
     var r:Number;
     // Give all preferred size to start with
@@ -207,7 +207,7 @@ internal final class LayoutUtil {
       }
     }
 
-    var resC:ResizeConstraint; // fucked actionscript
+    var resC:ResizeConstraint;
     const useLengthI:int = Math.round(usedLength);
     if (useLengthI != bounds && resConstr != null) {
       const isGrow:Boolean = useLengthI < bounds;

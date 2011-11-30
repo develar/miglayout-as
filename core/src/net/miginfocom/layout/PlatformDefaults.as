@@ -277,12 +277,12 @@ public final class PlatformDefaults {
     return LP_BASE;
   }
 
-  /** What base value should be used to calculate logical pixel sizes.
-   * @param base The new base. Default is {@link # BASE_SCALE_FACTOR}
-   * @see # BASE_FONT_SIZE
-   * @see # BASE_SCREEN_DPI_FACTOR
-   * @see # BASE_REAL_PIXEL
-   */
+  ///** What base value should be used to calculate logical pixel sizes.
+  // * @param base The new base. Default is {@link # BASE_SCALE_FACTOR}
+  // * @see # BASE_FONT_SIZE
+  // * @see # BASE_SCREEN_DPI_FACTOR
+  // * @see # BASE_REAL_PIXEL
+  // */
 //	public static void setLogicalPixelBase(int base)
 //	{
 //		if (LP_BASE != base) {

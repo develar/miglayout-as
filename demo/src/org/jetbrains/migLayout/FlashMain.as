@@ -24,7 +24,9 @@ public class FlashMain extends Sprite {
     g.drawRect(0, 0, 500, 500);
     g.endFill();
 
-    var containerWrapper:FlashContainerWrapper = new FlashContainerWrapper(this, new MigLayout("", "[][grow][][grow]", "[][]"));
+    var layout:MigLayout = new MigLayout("", "[][grow][][grow]", "[][]");
+    layout.debug = true;
+    var containerWrapper:FlashContainerWrapper = new FlashContainerWrapper(this, layout);
 
     //var lblFirstName:Label = new Label();
     var lblFirstName:TestShape = new TestShape(40, 20);
