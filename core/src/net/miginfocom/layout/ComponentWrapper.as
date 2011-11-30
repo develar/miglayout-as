@@ -239,5 +239,7 @@ public interface ComponentWrapper {
    * @return The type of component that this wrapper is wrapping. E.g. {@link #TYPE_LABEL}.
    */
   function getComponentType(disregardScrollPane:Boolean):int;
+
+  function get constraints():CC;
 }
 }

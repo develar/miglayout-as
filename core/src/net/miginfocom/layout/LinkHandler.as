@@ -153,7 +153,7 @@ public final class LinkHandler {
     for (var i:int = LAYOUTS.length - 1; i >= 0; i--) {
       var l:Object = Dictionaries.getFirst(LAYOUTS[i]);
       if (l == layout) {
-        VALUES_TEMP[i].clear();
+        clearDictionary(VALUES_TEMP[i]);
         return;
       }
     }

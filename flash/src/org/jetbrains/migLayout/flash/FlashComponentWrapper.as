@@ -3,6 +3,8 @@ import flash.display.DisplayObject;
 import flash.display.DisplayObjectContainer;
 import flash.geom.Point;
 
+import net.miginfocom.layout.CC;
+
 import net.miginfocom.layout.ComponentType;
 import net.miginfocom.layout.ComponentWrapper;
 import net.miginfocom.layout.ContainerWrapper;
@@ -13,9 +15,15 @@ internal class FlashComponentWrapper implements ComponentWrapper {
   protected var c:DisplayObject;
   private var parentWrapper:FlashContainerWrapper;
 
-  function FlashComponentWrapper(c:DisplayObject, parentWrapper:FlashContainerWrapper) {
+  function FlashComponentWrapper(c:DisplayObject, parentWrapper:FlashContainerWrapper, constraints:CC) {
     this.c = c;
     this.parentWrapper = parentWrapper;
+    _constraints = constraints;
+  }
+
+  private var _constraints:CC;
+  public function get constraints():CC {
+    return _constraints;
   }
   
   public function get component():Object {
@@ -47,11 +55,11 @@ internal class FlashComponentWrapper implements ComponentWrapper {
   }
 
   public function getMinimumWidth(hHint:int):Number {
-    return c.width;
+    return 0;
   }
 
   public function getMinimumHeight(wHint:Number):Number {
-    return c.height;
+    return 0;
   }
 
   public function getPreferredWidth(hHint:Number):Number {
@@ -63,11 +71,11 @@ internal class FlashComponentWrapper implements ComponentWrapper {
   }
 
   public function getMaximumWidth(hHint:Number):Number {
-    return c.width;
+    return 32767;
   }
 
   public function getMaximumHeight(wHint:Number):Number {
-    return c.height;
+    return 32767;
   }
 
   public function setBounds(x:Number, y:Number, width:Number, height:Number):void {
@@ -142,5 +150,4 @@ internal class FlashComponentWrapper implements ComponentWrapper {
     return ComponentType.TYPE_UNKNOWN;
   }
 }
-
 }

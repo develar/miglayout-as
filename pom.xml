@@ -15,7 +15,15 @@
   <modules>
     <module>core</module>
     <module>flash</module>
+    <module>demo</module>
   </modules>
+
+  <repositories>
+    <repository>
+      <id>flash-mvn-repo</id>
+      <url>http://develar.github.com/flash-mvn-repo/</url>
+    </repository>
+  </repositories>
 
   <dependencies>
     <dependency>

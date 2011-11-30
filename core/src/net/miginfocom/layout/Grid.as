@@ -39,9 +39,7 @@ public final class Grid {
 	private static const GROW_100:Vector.<Number> = new <Number>[ResizeConstraint.WEIGHT_100];
 
 	private static const DOCK_DIM_CONSTRAINT:DimConstraint = new DimConstraint();
-	{
-		DOCK_DIM_CONSTRAINT.growPriority = 0;
-	}
+  DOCK_DIM_CONSTRAINT.growPriority = 0;
 
 	/** This is the maximum grid position for "normal" components. Docking components use the space out to
 	 * <code>MAX_DOCK_GRID</code> and below 0.
@@ -127,19 +125,18 @@ public final class Grid {
 	 * @param lc The form flow constraints.
 	 * @param rowConstr The rows specifications. If more cell rows are required, the last element will be used for when there is no corresponding element in this array.
 	 * @param colConstr The columns specifications. If more cell rows are required, the last element will be used for when there is no corresponding element in this array.
-	 * @param ccMap The map containing the parsed constraints for each child component of <code>parent</code>. Will not be altered.
 	 * @param callbackList A list of callbacks or <code>null</code> if none. Will not be altered.
 	 */
-  public function Grid(container:ContainerWrapper, lc:LC, rowConstr:AC, colConstr:AC, ccMap:Dictionary /*Map<ComponentWrapper, CC>*/, callbackList:Vector.<LayoutCallback>) {
+  public function Grid(container:ContainerWrapper, lc:LC, rowConstr:AC, colConstr:AC, callbackList:Vector.<LayoutCallback>) {
     this.lc = lc;
     this.rowConstr = rowConstr;
     this.colConstr = colConstr;
     this.container = container;
     this.callbackList = callbackList;
-    construct(ccMap);
+    construct();
   }
 
-  private function construct(ccMap:Dictionary):void {
+  private function construct():void {
 		var wrap:int = lc.wrapAfter != 0 ? lc.wrapAfter : (lc.flowX ? colConstr : rowConstr).constraints.length;
 
 		var comps:Vector.<ComponentWrapper>= container.components;
@@ -162,10 +159,10 @@ public final class Grid {
     
     var sizeGroupMapX:Dictionary;
     var sizeGroupMapY:Dictionary;
-      
-		for (i= 0; i < comps.length;) {
-			var comp:ComponentWrapper = comps[i];
-			var rootCc:CC = getCC(comp, ccMap);
+
+    for (i = 0; i < comps.length;) {
+      var comp:ComponentWrapper = comps[i];
+			var rootCc:CC = comp.constraints || DEF_CC;
 
 			addLinkIDs(rootCc);
 
@@ -212,8 +209,8 @@ public final class Grid {
 				continue;
 			}
 
-			var cellFlowX:Boolean= rootCc.flowX;
-			cell = null;
+      var cellFlowX:int = rootCc.flowX;
+      cell = null;
 
       if (rootCc.newline) {
         this.wrap(cellXY, rootCc.newlineGapSize);
@@ -266,7 +263,7 @@ public final class Grid {
       if (cell == null) {
         var spanx:int = Math.min(rowNoGrid && lc.flowX ? LayoutUtil.INF : rootCc.spanX, MAX_GRID - cellXY[0]);
         var spany:int = Math.min(rowNoGrid && !lc.flowX ? LayoutUtil.INF : rootCc.spanY, MAX_GRID - cellXY[1]);
-        cell = new Cell(null, spanx, spany, cellFlowX ? cellFlowX : lc.flowX);
+        cell = new Cell(null, spanx, spany, cellFlowX == 0 ? lc.flowX : cellFlowX == 1);
         setCell(cellXY[1], cellXY[0], cell);
 
         // Add a rectangle so we can know that spanned cells occupy more space.
@@ -283,7 +280,7 @@ public final class Grid {
 
       for (; splitLeft >= 0 && i < comps.length; splitLeft--) {
         var compAdd:ComponentWrapper = comps[i];
-        var cc:CC = getCC(compAdd, ccMap);
+        var cc:CC = compAdd.constraints || DEF_CC;
 
         addLinkIDs(cc);
 
@@ -438,10 +435,10 @@ public final class Grid {
 				var cwBef:ComponentWrapper= i > 0? cws[i - 1].comp : null;
 				var cwAft:ComponentWrapper= i < lastI ? cws[i + 1].comp : null;
 
-				var tag:String= getCC(cw.comp, ccMap).tag;
-				var ccBef:CC= cwBef != null ? getCC(cwBef, ccMap) : null;
-				var ccAft:CC= cwAft != null ? getCC(cwAft, ccMap) : null;
-				cw.calcGaps(cwBef, ccBef, cwAft, ccAft, tag, cell.flowx, ltr);
+				var tag:String = (cw.comp.constraints || DEF_CC).tag;
+				var ccBef:CC = cwBef != null ? cwBef.constraints || DEF_CC : null;
+        var ccAft:CC = cwAft != null ? cwAft.constraints || DEF_CC : null;
+        cw.calcGaps(cwBef, ccBef, cwAft, ccAft, tag, cell.flowx, ltr);
 			}
 		}
 
@@ -467,11 +464,6 @@ public final class Grid {
       saveGrid(container, grid);
     }
 	}
-
-  private static function getCC(comp:ComponentWrapper, ccMap:Dictionary):CC {
-    var cc:CC = ccMap[comp];
-    return cc != null ? cc : DEF_CC;
-  }
 
 	private function addLinkIDs(cc:CC):void {
 		var linkIDs:Vector.<String> = cc.getLinkTargets();
@@ -775,10 +767,10 @@ public final class Grid {
 
     // add the row/column so that the gap in the last row/col will not be removed.
     if (flowx) {
-      rowIndexes.add(cellXY[1]);
+      rowIndexes[cellXY[1]] = true;
     }
     else {
-      colIndexes.add(cellXY[0]);
+      colIndexes[cellXY[0]] = true;
     }
   }
 
@@ -1168,15 +1160,17 @@ public final class Grid {
     }
   }
 
-  private static function addToSizeGroup(sizeGroups:Dictionary, sizeGroup:String, size:Vector.<int>):void {
+  private static function addToSizeGroup(sizeGroups:Dictionary, sizeGroup:String, size:Vector.<int>):Boolean {
     var sgSize:Vector.<int> = sizeGroups[sizeGroup];
     if (sgSize == null) {
       sizeGroups[sizeGroup] = new <int>[size[LayoutUtil.MIN], size[LayoutUtil.PREF], size[LayoutUtil.MAX]];
+      return true;
     }
     else {
       sgSize[LayoutUtil.MIN] = Math.max(size[LayoutUtil.MIN], sgSize[LayoutUtil.MIN]);
       sgSize[LayoutUtil.PREF] = Math.max(size[LayoutUtil.PREF], sgSize[LayoutUtil.PREF]);
       sgSize[LayoutUtil.MAX] = Math.min(size[LayoutUtil.MAX], sgSize[LayoutUtil.MAX]);
+      return false;
     }
   }
 
@@ -1213,6 +1207,7 @@ public final class Grid {
 		var rowColBoundSizes:Vector.<Vector.<int>> = new Vector.<Vector.<int>>(primIndexes.length, true);
 		//HashMap<String, int[]> sizeGroupMap = new HashMap<String, int[]>(2);
 		var sizeGroupMap:Dictionary = new Dictionary();
+    var sizeGroupMapSize:int = 0;
 		var allDCs:Vector.<DimConstraint> = new Vector.<DimConstraint>(primIndexes.length, true);
     var r:int = 0;
 		for (var cellIx:Object in primIndexes) {
@@ -1232,9 +1227,9 @@ public final class Grid {
 
 			correctMinMax(groupSizes);
 			var dimSize:BoundSize = allDCs[r].size;
-			for (var sType:int= LayoutUtil.MIN; sType <= LayoutUtil.MAX; sType++) {
-				var rowColSize:int= groupSizes[sType];
-				var uv:UnitValue= dimSize.getSize(sType);
+			for (var sType:int = LayoutUtil.MIN; sType <= LayoutUtil.MAX; sType++) {
+        var rowColSize:int = groupSizes[sType];
+        var uv:UnitValue = dimSize.getSize(sType);
 				if (uv != null) {
           // If the size of the column is a link to some other size, use that instead
           var unit:int = uv.unit;
@@ -1256,7 +1251,9 @@ public final class Grid {
 			}
 
 			correctMinMax(rowColSizes);
-			addToSizeGroup(sizeGroupMap, allDCs[r].sizeGroup, rowColSizes);
+			if (addToSizeGroup(sizeGroupMap, allDCs[r].sizeGroup, rowColSizes)) {
+        sizeGroupMapSize++;
+      }
 
 			rowColBoundSizes[r] = rowColSizes;
 
@@ -1264,7 +1261,7 @@ public final class Grid {
 		}
 
 		// Set/equalize the size groups to same the values.
-    if (sizeGroupMap.size() > 0) {
+    if (sizeGroupMapSize > 0) {
       for (r = 0; r < rowColBoundSizes.length; r++) {
         if (allDCs[r].sizeGroup != null) {
           rowColBoundSizes[r] = sizeGroupMap[allDCs[r].sizeGroup];
@@ -1273,13 +1270,13 @@ public final class Grid {
     }
 
 		// Add the gaps
-		var resConstrs:Vector.<ResizeConstraint> = getRowResizeConstraints(allDCs);
-		var fillInPushGaps:Vector.<Boolean>= new Vector.<Boolean>(allDCs.length + 1, true);
-		var gapSizes:Vector.<Vector.<int>> = getRowGaps(allDCs, refSize, isHor, fillInPushGaps);
-		var fss:FlowSizeSpec = mergeSizesGapsAndResConstrs(resConstrs, fillInPushGaps, rowColBoundSizes, gapSizes);
-		// Spanning components are not handled yet. Check and adjust the multi-row min/pref they enforce.
-		adjustMinPrefForSpanningComps(allDCs, defPush, fss, groupsLists);
-		return fss;
+    var resConstrs:Vector.<ResizeConstraint> = getRowResizeConstraints(allDCs);
+    var fillInPushGaps:Vector.<Boolean> = new Vector.<Boolean>(allDCs.length + 1, true);
+    var gapSizes:Vector.<Vector.<int>> = getRowGaps(allDCs, refSize, isHor, fillInPushGaps);
+    var fss:FlowSizeSpec = mergeSizesGapsAndResConstrs(resConstrs, fillInPushGaps, rowColBoundSizes, gapSizes);
+    // Spanning components are not handled yet. Check and adjust the multi-row min/pref they enforce.
+    adjustMinPrefForSpanningComps(allDCs, defPush, fss, groupsLists);
+    return fss;
 	}
 
 	private static function getParentSize(cw:ComponentWrapper, isHor:Boolean):int {
@@ -1452,7 +1449,7 @@ public final class Grid {
   }
 
   private function hasDocks():Boolean {
-		return (dockOffX > 0|| dockOffY > 0|| rowIndexes.last() > MAX_GRID || colIndexes.last() > MAX_GRID);
+		return (dockOffX > 0|| dockOffY > 0|| rowIndexes[rowIndexes.length - 1] > MAX_GRID || colIndexes[colIndexes.length - 1] > MAX_GRID);
 	}
 
 	/** Adjust min/pref size for columns(or rows) that has components that spans multiple columns (or rows).
@@ -1506,7 +1503,7 @@ public final class Grid {
     var primIndexes:Array = isRows ? rowIndexes : colIndexes;
     var secIndexes:Array = isRows ? colIndexes : rowIndexes;
     var primDCs:Vector.<DimConstraint> = (isRows ? rowConstr : colConstr).constraints;
-    var groupLists:Vector.<Vector.<LinkedDimGroup>> = new Vector.<Vector.<LinkedDimGroup>>(primIndexes.size(), true);
+    var groupLists:Vector.<Vector.<LinkedDimGroup>> = new Vector.<Vector.<LinkedDimGroup>>(primIndexes.length, true);
     var gIx:int = 0;
     var adobeBurnInHell:Object;
     var linkType:int;
@@ -1535,7 +1532,7 @@ public final class Grid {
           span = convertSpanToSparseGrid(i, span, primIndexes);
         }
 
-        var isPar:Boolean = (cell.flowx == isRows);
+        var isPar:Boolean = cell.flowx == isRows;
         if ((!isPar && cell.compWraps.length > 1) || span > 1) {
           linkType = isPar ? LinkedDimGroup.TYPE_PARALLEL : LinkedDimGroup.TYPE_SERIAL;
           var lg:LinkedDimGroup = new LinkedDimGroup("p," + ix, span, linkType, !isRows, fromEnd);
@@ -1626,8 +1623,8 @@ public final class Grid {
       throw new ArgumentError("Cell position out of bounds. Out of cells. row: " + r + ", col: " + c);
     }
 
-    rowIndexes.add(r);
-    colIndexes.add(c);
+    rowIndexes[r] = true;
+    colIndexes[c] = true;
 
     grid[(r << 16) + c] = cell;
   }
@@ -1645,7 +1642,7 @@ public final class Grid {
 				r = side == 0? dockInsets[0]++ : dockInsets[2]--;
 				c = dockInsets[1];
 				spanx = dockInsets[3] - dockInsets[1] + 1;  // The +1 is for cell 0.
-				colIndexes.add(dockInsets[3]); // Make sure there is a receiving cell
+				colIndexes[dockInsets[3]] = true; // Make sure there is a receiving cell
 				break;
 
 			case 1:
@@ -1653,15 +1650,15 @@ public final class Grid {
 				c = side == 1? dockInsets[1]++ : dockInsets[3]--;
 				r = dockInsets[0];
 				spany = dockInsets[2] - dockInsets[0] + 1;  // The +1 is for cell 0.
-				rowIndexes.add(dockInsets[2]); // Make sure there is a receiving cell
+				rowIndexes[dockInsets[2]] = true; // Make sure there is a receiving cell
 				break;
 
 			default:
 				throw new ArgumentError("Internal error 123.");
 		}
 
-		rowIndexes.add(r);
-		colIndexes.add(c);
+		rowIndexes[r] = true;
+		colIndexes[c] = true;
 
 		grid[(r << 16) + c] = new Cell(cw, spanx, spany, spanx > 1);
 	}
@@ -1745,7 +1742,8 @@ public final class Grid {
         cw.isPushGap(isHor, false) ? GAP_RC_CONST_PUSH : GAP_RC_CONST
       ];
 
-      sizes[i] = LayoutUtil.calculateSerial(new <Vector.<int>>[cw.getGaps(isHor, true), (isHor ? cw.horSizes : cw.verSizes), cw.getGaps(isHor, false)], resConstr, dc.fill ? GROW_100 : null, LayoutUtil.PREF, size);
+      var sz:Vector.<Vector.<int>> = new <Vector.<int>>[cw.getGaps(isHor, true), (isHor ? cw.horSizes : cw.verSizes), cw.getGaps(isHor, false)];
+      sizes[i] = LayoutUtil.calculateSerial(sz, resConstr, dc.fill ? GROW_100 : null, LayoutUtil.PREF, size);
     }
 
     setCompWrapBounds(parent, sizes, compWraps, dc.getAlignOrDefault(isHor), start, size, isHor, fromEnd);

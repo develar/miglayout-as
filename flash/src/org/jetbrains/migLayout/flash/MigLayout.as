@@ -1,26 +1,24 @@
 package org.jetbrains.migLayout.flash {
-import flash.display.DisplayObject;
-import flash.display.DisplayObjectContainer;
-import flash.display.Sprite;
-
 import net.miginfocom.layout.AbstractMigLayout;
-import net.miginfocom.layout.ComponentWrapper;
-import net.miginfocom.layout.ContainerWrapper;
 import net.miginfocom.layout.Grid;
 import net.miginfocom.layout.PlatformDefaults;
 
 public class MigLayout extends AbstractMigLayout {
-  private var cacheParentW:FlashContainerWrapper;
+  private var lastHash:int = -1;
+  private var lastInvalidW:Number;
+  private var lastInvalidH:Number;
 
   public function MigLayout(layoutConstraints:String = null, colConstraints:String = null, rowConstraints:String = null) {
     super(layoutConstraints, colConstraints, rowConstraints);
   }
 
-  public function layoutContainer(parent:Sprite):void {
-    var b:Vector.<int> = new <int>[0, 0, parent.width, parent.height];
+  public function layoutContainer(container:FlashContainerWrapper):void {
+    checkCache(container);
+
+    var b:Vector.<int> = new <int>[0, 0, container.width, container.height];
     if (grid.layout(b, lc.alignX, lc.alignY, getDebug(), true)) {
       grid = null;
-      checkCache(parent);
+      checkCache(container);
       grid.layout(b, lc.alignX, lc.alignY, getDebug(), false);
     }
   }
@@ -30,18 +28,16 @@ public class MigLayout extends AbstractMigLayout {
   }
 
   /** Check if something has changed and if so recreate it to the cached objects.
-   * @param parent The parent that is the target for this layout manager.
+   * @param container The container that is the target for this layout manager.
    */
-  private function checkCache(parent:Sprite):void {
-    if (parent == null) {
+  private function checkCache(container:FlashContainerWrapper):void {
+    if (container == null) {
       return;
     }
 
     if (dirty) {
       grid = null;
     }
-
-    cleanConstraintMaps(parent);
 
     // Check if the grid is valid
     var mc:int = PlatformDefaults.modCount;
@@ -50,38 +46,33 @@ public class MigLayout extends AbstractMigLayout {
       lastModCount = mc;
     }
 
-    var par:ContainerWrapper = checkParent(parent);
+    var hash:int = 0;
+    for each (var componentWrapper:FlashComponentWrapper in container.components) {
+      hash ^= componentWrapper.layoutHashCode;
+      hash += 285134905;
+    }
+
+    if (hash != lastHash) {
+      grid = null;
+      lastHash = hash;
+    }
+
+    if (lastInvalidW != container.width || lastInvalidH != container.height) {
+      if (grid != null) {
+        grid.invalidateContainerSize();
+      }
+
+      lastInvalidW = container.width;
+      lastInvalidH = container.height;
+    }
+
     //setDebug(par, getDebugMillis() > 0);
 
     if (grid == null) {
-      grid = new Grid(par, lc, rowSpecs, colSpecs, ccMap, null);
+      grid = new Grid(container, lc, rowSpecs, colSpecs, null);
     }
 
     dirty = false;
-  }
-
-  private function checkParent(parent:DisplayObjectContainer):ContainerWrapper {
-    if (cacheParentW == null || cacheParentW.component != parent) {
-      cacheParentW = new FlashContainerWrapper(parent, this);
-    }
-
-    return cacheParentW;
-  }
-
-  private function cleanConstraintMaps(parent:DisplayObjectContainer):void {
-    var removed:Vector.<ComponentWrapper> = new Vector.<ComponentWrapper>();
-    var componentWrapper:ComponentWrapper;
-    for (var adobeBurnInHell:Object in ccMap) {
-      componentWrapper = ComponentWrapper(adobeBurnInHell);
-      if (DisplayObject(componentWrapper.component).parent != parent) {
-        removed[removed.length] = componentWrapper;
-        delete scrConstrMap[componentWrapper.component];
-      }
-    }
-
-    for each (componentWrapper in removed) {
-      delete ccMap[componentWrapper];
-    }
   }
 }
 }

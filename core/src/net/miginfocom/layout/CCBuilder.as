@@ -667,7 +667,7 @@ public class CCBuilder {
    * @see #setFlowX(Boolean)
    */
   public function flowX():CCBuilder {
-    cc.flowX = true;
+    cc.flowX = 1;
     return this;
   }
 
@@ -678,7 +678,7 @@ public class CCBuilder {
    * @see #setFlowX(Boolean)
    */
   public function flowY():CCBuilder {
-    cc.flowX = false;
+    cc.flowX = -1;
     return this;
   }
   
@@ -693,7 +693,7 @@ public class CCBuilder {
    */
   public function newline(gapSize:String = null):CCBuilder {
     var bs:BoundSize;
-    if (gapSize == null || (bs = ConstraintParser.parseBoundSize(gapSize, true, (cc.flowX && !cc.flowX))) == null) {
+    if (gapSize == null || (bs = ConstraintParser.parseBoundSize(gapSize, true, cc.flowX == -1)) == null) {
       cc.newline = true;
     }
     else {
@@ -713,7 +713,7 @@ public class CCBuilder {
    */
   public function wrap(gapSize:String = null):CCBuilder {
     var bs:BoundSize;
-    if (gapSize == null || (bs = ConstraintParser.parseBoundSize(gapSize, true, (cc.flowX && !cc.flowX))) == null) {
+    if (gapSize == null || (bs = ConstraintParser.parseBoundSize(gapSize, true, cc.flowX == -1)) == null) {
       cc.wrap = true;
     }
     else {
@@ -722,44 +722,44 @@ public class CCBuilder {
     return this;
   }
 
-  /** Same functionality as {@link #setDockSide(int 0)} only this method returns <code>this</code> for chaining multiple calls.
+  /** Same functionality as {@link CC#dockSide(int 0)} only this method returns <code>this</code> for chaining multiple calls.
    * <p>
    * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
    * @return <code>this</code> so it is possible to chain calls. E.g. <code>new ComponentConstraint().noGrid().gap().fill()</code>.
-   * @see #setDockSide(int)
+   * @see CC#dockSide(int)
    */
   public function dockNorth():CCBuilder {
     cc.dockSide = 0;
     return this;
   }
 
-  /** Same functionality as {@link #setDockSide(int 1)} only this method returns <code>this</code> for chaining multiple calls.
+  /** Same functionality as {@link CC#dockSide(int 1)} only this method returns <code>this</code> for chaining multiple calls.
    * <p>
    * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
    * @return <code>this</code> so it is possible to chain calls. E.g. <code>new ComponentConstraint().noGrid().gap().fill()</code>.
-   * @see #setDockSide(int)
+   * @see CC#dockSide(int)
    */
   public function dockWest():CCBuilder {
     cc.dockSide = 1;
     return this;
   }
 
-  /** Same functionality as {@link #setDockSide(int 2)} only this method returns <code>this</code> for chaining multiple calls.
+  /** Same functionality as {@link CC#dockSide(int 2)} only this method returns <code>this</code> for chaining multiple calls.
    * <p>
    * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
    * @return <code>this</code> so it is possible to chain calls. E.g. <code>new ComponentConstraint().noGrid().gap().fill()</code>.
-   * @see #setDockSide(int)
+   * @see CC#dockSide(int)
    */
   public function dockSouth():CCBuilder {
     cc.dockSide = 2;
     return this;
   }
 
-  /** Same functionality as {@link #setDockSide(int 3)} only this method returns <code>this</code> for chaining multiple calls.
+  /** Same functionality as {@link CC#dockSide(int 3)} only this method returns <code>this</code> for chaining multiple calls.
    * <p>
    * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
    * @return <code>this</code> so it is possible to chain calls. E.g. <code>new ComponentConstraint().noGrid().gap().fill()</code>.
-   * @see #setDockSide(int)
+   * @see CC#dockSide(int)
    */
   public function dockEast():CCBuilder {
     cc.dockSide = 3;
@@ -772,8 +772,8 @@ public class CCBuilder {
    * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
    * @param x The x position as a UnitValue. E.g. "10" or "40mm" or "container.x+10".
    * @return <code>this</code> so it is possible to chain calls. E.g. <code>new ComponentConstraint().noGrid().gap().fill()</code>.
-   * @see #setPos(UnitValue[])
-   * @see #setBoundsInGrid(boolean)
+   * @see #pos(UnitValue[])
+   * @see CC#boundsInGrid(boolean)
    */
   public function x(x:String):CCBuilder {
     return corrPos(x, 0);
@@ -785,8 +785,8 @@ public class CCBuilder {
    * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
    * @param y The y position as a UnitValue. E.g. "10" or "40mm" or "container.x+10".
    * @return <code>this</code> so it is possible to chain calls. E.g. <code>new ComponentConstraint().noGrid().gap().fill()</code>.
-   * @see #setPos(UnitValue[])
-   * @see #setBoundsInGrid(boolean)
+   * @see #pos(UnitValue[])
+   * @see CC#boundsInGrid(boolean)
    */
   public function y(y:String):CCBuilder {
     return corrPos(y, 1);
@@ -798,8 +798,8 @@ public class CCBuilder {
    * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
    * @param x2 The x2 side's position as a UnitValue. E.g. "10" or "40mm" or "container.x2 - 10".
    * @return <code>this</code> so it is possible to chain calls. E.g. <code>new ComponentConstraint().noGrid().gap().fill()</code>.
-   * @see #setPos(UnitValue[])
-   * @see #setBoundsInGrid(boolean)
+   * @see #pos(UnitValue[])
+   * @see CC#boundsInGrid(boolean)
    */
   public function x2(x2:String):CCBuilder {
     return corrPos(x2, 2);
@@ -811,8 +811,8 @@ public class CCBuilder {
    * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
    * @param y2 The y2 side's position as a UnitValue. E.g. "10" or "40mm" or "container.x2 - 10".
    * @return <code>this</code> so it is possible to chain calls. E.g. <code>new ComponentConstraint().noGrid().gap().fill()</code>.
-   * @see #setPos(UnitValue[])
-   * @see #setBoundsInGrid(boolean)
+   * @see #pos(UnitValue[])
+   * @see CC#boundsInGrid(boolean)
    */
   public function y2(y2:String):CCBuilder {
     return corrPos(y2, 3);
@@ -839,7 +839,7 @@ public class CCBuilder {
    * @param x2 The x2 side's position as a UnitValue. E.g. "10" or "40mm" or "container.x2 - 10".
    * @param y2 The y2 side's position as a UnitValue. E.g. "10" or "40mm" or "container.x2 - 10".
    * @return <code>this</code> so it is possible to chain calls. E.g. <code>new ComponentConstraint().noGrid().gap().fill()</code>.
-   * @see #setPos(UnitValue[])
+   * @see #pos(UnitValue[])
    */
   public function pos(x:String, y:String, x2:String = null, y2:String = null):CCBuilder {
     var b:Vector.<UnitValue> = cc.pos;
@@ -860,7 +860,7 @@ public class CCBuilder {
     return this;
   }
 
-  /** Same functionality as {@link #setPadding(UnitValue[])} but the unit values as absolute pixels. This method returns <code>this</code> for chaining multiple calls.
+  /** Same functionality as {@link CC#padding(UnitValue[])} but the unit values as absolute pixels. This method returns <code>this</code> for chaining multiple calls.
    * <p>
    * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
    * @param top The top padding that will be added to the y coordinate at the last stage in the layout.

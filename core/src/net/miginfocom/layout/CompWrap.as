@@ -31,7 +31,7 @@ internal final class CompWrap {
 				wHint = comp.height;
 			}
 
-      for (i = 0; i <= 2; i++) {
+      for (i = LayoutUtil.MIN; i <= LayoutUtil.MAX; i++) {
         horSizes[i] = getSize2(hBS, i, true, hHint);
         verSizes[i] = getSize2(vBS, i, false, wHint > 0 ? wHint : horSizes[i]);
       }
@@ -202,5 +202,4 @@ internal final class CompWrap {
 		return comp.getBaseline(getSize(sizeType, true), getSize(sizeType, false));
 	}
 }
-
 }

@@ -2,7 +2,7 @@ package net.miginfocom.layout {
 // 1) getter/setter conflicts with chained method, so, extract it as separated class
 // 2) reduce swf size (if client doesn't use API Creation of Constraints)
 public final class LCBuilder {
-  internal const lc:LC = new LC();
+  private const lc:LC = new LC();
 
   public function to():LC {
     return lc;
@@ -65,7 +65,7 @@ public final class LCBuilder {
     return this;
   }
 
-  /** Same functionality as {@link #setNoCache(boolean true)} only this method returns <code>this</code> for chaining multiple calls.
+  /** Same functionality as {@link #noCache(boolean true)} only this method returns <code>this</code> for chaining multiple calls.
    * <p>
    * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
    * @return <code>this</code> so it is possible to chain calls. E.g. <code>new LayoutConstraint().noGrid().gap().fill()</code>.
@@ -75,7 +75,7 @@ public final class LCBuilder {
     return this;
   }
 
-  /** Same functionality as {@link #setFlowX(boolean false)} only this method returns <code>this</code> for chaining multiple calls.
+  /** Same functionality as {@link #flowX(boolean false)} only this method returns <code>this</code> for chaining multiple calls.
    * <p>
    * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
    * @return <code>this</code> so it is possible to chain calls. E.g. <code>new LayoutConstraint().noGrid().gap().fill()</code>.
@@ -85,7 +85,7 @@ public final class LCBuilder {
     return this;
   }
 
-  /** Same functionality as {@link #setFlowX(boolean true)} only this method returns <code>this</code> for chaining multiple calls.
+  /** Same functionality as {@link #flowX(boolean true)} only this method returns <code>this</code> for chaining multiple calls.
    * <p>
    * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
    * @return <code>this</code> so it is possible to chain calls. E.g. <code>new LayoutConstraint().noGrid().gap().fill()</code>.
@@ -95,7 +95,7 @@ public final class LCBuilder {
     return this;
   }
 
-  /** Same functionality as {@link #setFillX(boolean true)} and {@link #setFillY(boolean true)} conmbined.T his method returns
+  /** Same functionality as {@link #fillX(boolean true)} and {@link #fillY(boolean true)} conmbined.T his method returns
    * <code>this</code> for chaining multiple calls.
    * <p>
    * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
@@ -107,7 +107,7 @@ public final class LCBuilder {
     return this;
   }
 
-  /** Same functionality as {@link #setFillX(boolean true)} only this method returns <code>this</code> for chaining multiple calls.
+  /** Same functionality as {@link #fillX(boolean true)} only this method returns <code>this</code> for chaining multiple calls.
    * <p>
    * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
    * @return <code>this</code> so it is possible to chain calls. E.g. <code>new LayoutConstraint().noGrid().gap().fill()</code>.
@@ -134,7 +134,7 @@ public final class LCBuilder {
    * @return <code>this</code> so it is possible to chain calls. E.g. <code>new LayoutConstraint().noGrid().gap().fill()</code>.
    */
   public function leftToRight(value:Boolean):LCBuilder {
-    lc.leftToRight = value;
+    lc.leftToRight = value ? 1 : -1;
     return this;
   }
 
@@ -145,7 +145,7 @@ public final class LCBuilder {
    * @since 3.7.2
    */
   public function rightToLeft():LCBuilder {
-    lc.leftToRight = false;
+    lc.leftToRight = -1;
     return this;
   }
 
@@ -366,7 +366,7 @@ public final class LCBuilder {
    * @return <code>this</code> so it is possible to chain calls. E.g. <code>new LayoutConstraint().noGrid().gap().fill()</code>.
    */
   public function minWidth(value:String):LCBuilder {
-    lc.width = LayoutUtil.derive(lc.width, ConstraintParser.parseUnitValue(value, null, true), null, null);
+    ConstraintParser.minWidth(value, lc);
     return this;
   }
 
@@ -389,7 +389,7 @@ public final class LCBuilder {
    * @return <code>this</code> so it is possible to chain calls. E.g. <code>new LayoutConstraint().noGrid().gap().fill()</code>.
    */
   public function maxWidth(value:String):LCBuilder {
-    lc.width = LayoutUtil.derive(lc.width, null, null, ConstraintParser.parseUnitValue(value, null, true));
+    ConstraintParser.maxWidth(value, lc);
     return this;
   }
 
@@ -400,7 +400,7 @@ public final class LCBuilder {
    * @return <code>this</code> so it is possible to chain calls. E.g. <code>new LayoutConstraint().noGrid().gap().fill()</code>.
    */
   public function minHeight(value:String):LCBuilder {
-    lc.height = LayoutUtil.derive(lc.height, ConstraintParser.parseUnitValue(value, null, false), null, null);
+    ConstraintParser.minHeight(value, lc);
     return this;
   }
 
@@ -424,7 +424,7 @@ public final class LCBuilder {
    * @return <code>this</code> so it is possible to chain calls. E.g. <code>new LayoutConstraint().noGrid().gap().fill()</code>.
    */
   public function maxHeight(value:String):LCBuilder {
-    lc.height = LayoutUtil.derive(lc.height, null, null, ConstraintParser.parseUnitValue(value, null, false));
+    ConstraintParser.maxHeight(value, lc);
     return this;
   }
 }

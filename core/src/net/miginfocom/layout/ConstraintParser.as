@@ -11,8 +11,7 @@ public final class ConstraintParser {
    * @return The parsed constraint. Never <code>null</code>.
    */
   public static function parseLayoutConstraint(s:String):LC {
-		var lcBuilder:LCBuilder = new LCBuilder();
-		var lc:LC = lcBuilder.lc;
+		var lc:LC = new LC();
 		if (s.length == 0) {
 			return lc;
     }
@@ -30,7 +29,7 @@ public final class ConstraintParser {
 			var len:int = part.length;
 			if (len == 3 || len == 11) {   // Optimization
 				if (part == "ltr" || part == "rtl" || part == "lefttoright" || part == "righttoleft") {
-					lc.leftToRight = part.charCodeAt(0) == 108  /* l */;
+					lc.leftToRight = part.charCodeAt(0) == 108 ? 1 : -1 /* l */;
 					parts[i] = null;    // So we will not try to interpret it again
 				}
         else if (part == "ttb" || part == "btt" || part == "toptobottom" || part == "bottomtotop") {
@@ -75,19 +74,19 @@ public final class ConstraintParser {
 					if (part.length > 5) {
 						sz = Strings.trim2(part, 5, part.length);
             if (Strings.startsWith(part, "wmin ")) {
-              lcBuilder.minWidth(sz);
+              minWidth(sz, lc);
               continue;
             }
             else if (Strings.startsWith(part, "wmax ")) {
-              lcBuilder.maxWidth(sz);
+              maxWidth(sz, lc);
               continue;
             }
             else if (Strings.startsWith(part, "hmin ")) {
-              lcBuilder.minHeight(sz);
+              minHeight(sz, lc);
               continue;
             }
             else if (Strings.startsWith(part, "hmax ")) {
-              lcBuilder.maxHeight(sz);
+              maxHeight(sz, lc);
               continue;
             }
 					}
@@ -235,6 +234,22 @@ public final class ConstraintParser {
 
 		return lc;
 	}
+
+  internal static function minWidth(value:String, lc:LC):void {
+    lc.width = LayoutUtil.derive(lc.width, parseUnitValue(value, null, true), null, null);
+  }
+
+  internal static function maxWidth(value:String, lc:LC):void {
+    lc.width = LayoutUtil.derive(lc.width, null, null, ConstraintParser.parseUnitValue(value, null, true));
+  }
+
+  internal static function minHeight(value:String, lc:LC):void {
+    lc.height = LayoutUtil.derive(lc.height, parseUnitValue(value, null, false), null, null);
+  }
+
+  internal static function maxHeight(value:String, lc:LC):void {
+    lc.height = LayoutUtil.derive(lc.height, null, null, parseUnitValue(value, null, false));
+  }
 
   /** Parses the column or rows constraints. They normally looks something like <code>"[min:pref]rel[10px][]"</code>.
    * @param s The string to parse. Not <code>null</code>.
@@ -441,7 +456,7 @@ public final class ConstraintParser {
 				}
 
 				if (c == 102 && (part == "flowy" || part == "flowx")) {
-          cc.flowX = part.charCodeAt(4) == 120;
+          cc.flowX = part.charCodeAt(4) == 120 ? 1 : -1;
 					continue;
 				}
 
@@ -1454,7 +1469,12 @@ public final class ConstraintParser {
    * @return Not null.
    */
   public static function prepare(s:String):String {
-    return s != null ? Strings.trim(s).toLowerCase() : "";
+    if (s == null) {
+      return "";
+    }
+    else {
+      return s.length == 0 ? s : Strings.trim(s).toLowerCase();
+    }
   }
 }
 }

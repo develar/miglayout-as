@@ -51,7 +51,7 @@ internal final class LayoutUtil {
   /**
    * If global debug should be on or off. If &gt; 0 then debug is turned on for all MigLayout instances.
    * @return The current debug milliseconds.
-   * @see LC#setDebugMillis(int)
+   * @see LC#debugMillis(int)
    */
   public static function get globalDebugMillis():int {
     return _globalDebugMillis;
@@ -62,9 +62,9 @@ internal final class LayoutUtil {
    * <p>
    * Note! This is a passive value and will be read by panels when the needed, which is normally
    * when they repaint/layout.
-   * @param millis The new debug milliseconds. 0 turns of global debug and leaves debug up to every
+   * @param value The new debug milliseconds. 0 turns of global debug and leaves debug up to every
    * individual panel.
-   * @see LC#setDebugMillis(int)
+   * @see LC#debugMillis(int)
    */
   public static function set globalDebugMillis(value:int):void {
     _globalDebugMillis = value;
@@ -361,8 +361,8 @@ internal final class LayoutUtil {
    * @return If left-to-right orientation is currently used.
    */
   public static function isLeftToRight(lc:LC, container:ContainerWrapper):Boolean {
-    if (lc != null && lc.leftToRight) {
-      return lc.leftToRight;
+    if (lc != null && lc.leftToRight != 0) {
+      return lc.leftToRight == 1;
     }
 
     return container == null || container.isLeftToRight;

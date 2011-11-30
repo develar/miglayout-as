@@ -22,6 +22,9 @@ public final class LC {
   // If visual padding should be automatically used and compensated for by this layout instance.
   private static const VISUAL_PADDING:uint = 1 << 6;
 
+  private static const LTR:uint = 1 << 7;
+  private static const HAS_LTR:uint = 1 << 8;
+
   public function get noCache():Boolean {
     return (flags & NO_CACHE) != 0;
   }
@@ -188,13 +191,18 @@ public final class LC {
    * @return <code>Boolean.TRUE</code> if force left-to-right. <code>Boolean.FALSE</code> if force tight-to-left. <code>null</code>
    * for the default "let the current Locale decide".
    */
-  private var _leftToRight:Boolean;
-  public function get leftToRight():Boolean {
-    return _leftToRight;
+  public function get leftToRight():int {
+    return (flags & HAS_LTR) == 0 ? 0 : (flags & LTR) == 0 ? -1 : 1;
   }
 
-  public function set leftToRight(value:Boolean):void {
-    _leftToRight = value;
+  public function set leftToRight(value:int):void {
+    if (value == -1) {
+      flags &= ~HAS_LTR;
+    }
+    else {
+      value ? flags |= LTR : flags &= ~LTR;
+      flags |= HAS_LTR;
+    }
   }
 
   public function get noGrid():Boolean {

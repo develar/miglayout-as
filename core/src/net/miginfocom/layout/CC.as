@@ -6,41 +6,42 @@ public final class CC {
 
 	internal static const DOCK_SIDES:Vector.<String> = new <String>["north", "west", "south", "east"];
 
+  private static const FLOW_X:uint = 1 << 0;
+  private static const HAS_FLOW_X:uint = 1 << 1;
+  
+  private static const EXTERNAL:uint = 1 << 2;
+  private static const BOUNDS_IN_GRID:uint = 1 << 3;
+
+  private var flags:uint;
 	// See the getters and setters for information about the properties below.
 
-	private var dock:int= -1;
+	private var dock:int = -1;
 
-	private var _pos:Vector.<UnitValue>; // [x1, y1, x2, y2]
+  private var _pos:Vector.<UnitValue>; // [x1, y1, x2, y2]
 
-	private var _padding:Vector.<UnitValue>;   // top, left, bottom, right
+  private var _padding:Vector.<UnitValue>;   // top, left, bottom, right
 
-	private var _flowX:Boolean;
+  private var _skip:int = 0;
 
-	private var _skip:int= 0;
+  private var _split:int = 1;
 
-	private var _split:int= 1;
+  private var _spanX:int = 1, _spanY:int = 1;
 
-	private var _spanX:int = 1, _spanY:int = 1;
+  private var _cellX:int = -1, _cellY:int = 0; // If cellX is -1 then cellY is also considered -1. cellY is never negative.
 
-	private var _cellX:int = -1, _cellY:int = 0; // If cellX is -1 then cellY is also considered -1. cellY is never negative.
+  private var _tag:String;
 
-	private var _tag:String;
+  private var _id:String;
 
-	private var _id:String;
+  private var _hideMode:int = -1;
 
-	private var _hideMode:int = -1;
+  private var hor:DimConstraint = new DimConstraint();
 
-	private var hor:DimConstraint = new DimConstraint();
+  private var ver:DimConstraint = new DimConstraint();
 
-	private var ver:DimConstraint = new DimConstraint();
-
-	private var _newline:BoundSize;
+  private var _newline:BoundSize;
 
 	private var _wrap:BoundSize;
-
-	private var _boundsInGrid:Boolean;
-
-	private var _external:Boolean= false;
 
 	private var _pushX:Number, _pushY:Number;
 
@@ -144,7 +145,7 @@ public final class CC {
 	 * <code>null</code> value(s) for the x2 and y2 will be interpreted as to keep the preferred size and thus the x1
 	 * and x2 will just absolutely positions the component.
 	 * <p>
-	 * Note that {@link #setBoundsInGrid(boolean)} changes the interpretation of thisproperty slightly.
+	 * Note that {@link #boundsInGrid(Boolean)} changes the interpretation of thisproperty slightly.
 	 * <p>
 	 * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
 	 * @return The current value as a new array, free to modify.
@@ -159,7 +160,7 @@ public final class CC {
 	 * <code>null</code> value(s) for the x2 and y2 will be interpreted as to keep the preferred size and thus the x1
 	 * and x2 will just absolutely positions the component.
 	 * <p>
-	 * Note that {@link #setBoundsInGrid(boolean)} changes the interpretation of thisproperty slightly.
+	 * Note that {@link #boundsInGrid(Boolean)} changes the interpretation of thisproperty slightly.
 	 * <p>
 	 * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
 	 * @param pos <code>UnitValue[] {x, y, x2, y2}</code>. Must be <code>null</code> or of length 4. Elements can be <code>null</code>.
@@ -174,10 +175,10 @@ public final class CC {
 	 * <p>
 	 * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
 	 * @return The current value.
-	 * @see #getPos()
+	 * @see #pos()
 	 */
   internal function get boundsInGrid():Boolean {
-		return _boundsInGrid;
+		return (flags & BOUNDS_IN_GRID) != 0;
 	}
 
 	/** Sets if the absolute <code>pos</code> value should be corrections to the component that is in a normal cell. If <code>false</code>
@@ -185,10 +186,10 @@ public final class CC {
 	 * <p>
 	 * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
 	 * @param value <code>true</code> for bounds taken from the grid position. <code>false</code> is default.
-	 * @see #setPos(UnitValue[])
+	 * @see #pos(UnitValue[])
 	 */
   internal function set boundsInGrid(value:Boolean):void {
-		_boundsInGrid = value;
+    value ? flags |= BOUNDS_IN_GRID : flags &= ~BOUNDS_IN_GRID;
 	}
 
 	/** Returns the absolute cell position in the grid or <code>-1</code> if cell positioning is not used.
@@ -261,7 +262,7 @@ public final class CC {
 	 * @return The current value.
 	 */
 	public function get external():Boolean {
-		return _external;
+		return (flags & EXTERNAL) != 0;
 	}
 
 	/** If this boolean is true this component is not handled in any way by the layout manager and the component can have its bounds set by an external
@@ -273,19 +274,19 @@ public final class CC {
 	 * @param value <code>true</code> means that the bounds are not changed.
 	 */
 	public function set external(value:Boolean):void {
-		_external = value;
+    value ? flags |= EXTERNAL : flags &= ~EXTERNAL;
 	}
 
-	/** Returns if the flow in the <b>cell</b> is in the horizontal dimension. Vertical if <code>false</code>. Only the first
+	/** Returns if the flow in the <b>cell</b> is in the horizontal dimension. Vertical if <code>-1</code>. Only the first
 	 * component is a cell can set the flow.
 	 * <p>
-	 * If <code>null</code> the flow direction is inherited by from the {@link net.miginfocom.layout.LC}.
+	 * If <code>0</code> the flow direction is inherited by from the {@link net.miginfocom.layout.LC}.
 	 * <p>
 	 * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
 	 * @return The current value.
 	 */
-	public function get flowX():Boolean {
-		return _flowX;
+	public function get flowX():int {
+		return (flags & HAS_FLOW_X) == 0 ? 0 : (flags & FLOW_X) == 0 ? -1 : 1;
 	}
 
 	/** Sets if the flow in the <b>cell</b> is in the horizontal dimension. Vertical if <code>false</code>. Only the first
@@ -296,8 +297,14 @@ public final class CC {
 	 * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
 	 * @param value <code>Boolean.TRUE</code> means horizontal flow in the cell.
 	 */
-	public function set flowX(value:Boolean):void {
-		_flowX = value;
+	public function set flowX(value:int):void {
+    if (value == -1) {
+      flags &= ~HAS_FLOW_X;
+    }
+    else {
+      value ? flags |= FLOW_X : flags &= ~FLOW_X;
+      flags |= HAS_FLOW_X;
+    }
 	}
 
 	/** Sets how a component that is hidden (not visible) should be treated by default.
@@ -510,7 +517,7 @@ public final class CC {
 	}
 
 	/** Tags the component with metadata. Currently only used to tag buttons with for instance "cancel" or "ok" to make them
-	 * show up in the correct order depending on platform. See {@link PlatformDefaults#setButtonOrder(String)} for information.
+	 * show up in the correct order depending on platform. See {@link PlatformDefaults#buttonOrder(String)} for information.
 	 * <p>
 	 * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
 	 * @return The current value. May be <code>null</code>.
@@ -547,11 +554,11 @@ public final class CC {
 		_wrap = value ? (_wrap == null ? DEF_GAP : _wrap) : null;
 	}
 
-	/** Returns the wrap size if it is a custom size. If wrap was set to true with {@link #setWrap(boolean)} then this method will
+	/** Returns the wrap size if it is a custom size. If wrap was set to true with {@link #wrap(Boolean)} then this method will
 	 * return <code>null</code> since that means that the gap size should be the default one as defined in the rows spec.
 	 * @return The custom gap size. NOTE! Will return <code>null</code> for both no wrap <b>and</b> default wrap.
-	 * @see #isWrap()
-	 * @see #setWrap(boolean)
+	 * @see #wrap()
+	 * @see #wrap(Boolean)
 	 * @since 2.4.2
 	 */
 	public function get wrapGapSize():BoundSize {
@@ -561,8 +568,8 @@ public final class CC {
 	/** Set the wrap size and turns wrap on if <code>!= null</code>.
 	 * @param value The custom gap size. NOTE! <code>null</code> will not turn on or off wrap, it will only set the wrap gap size to "default".
 	 * A non-null value will turn on wrap though.
-	 * @see #isWrap()
-	 * @see #setWrap(boolean)
+	 * @see #wrap()
+	 * @see #wrap(Boolean)
 	 * @since 2.4.2
 	 */
 	public function set wrapGapSize(value:BoundSize):void {
@@ -587,11 +594,11 @@ public final class CC {
 		_newline = b ? (_newline == null ? DEF_GAP : _newline) : null;
 	}
 
-	/** Returns the newline size if it is a custom size. If newline was set to true with {@link #setNewline(boolean)} then this method will
+	/** Returns the newline size if it is a custom size. If newline was set to true with {@link #newline(Boolean)} then this method will
 	 * return <code>null</code> since that means that the gap size should be the default one as defined in the rows spec.
 	 * @return The custom gap size. NOTE! Will return <code>null</code> for both no newline <b>and</b> default newline.
-	 * @see #isNewline()
-	 * @see #setNewline(boolean)
+	 * @see #newline()
+	 * @see #newline(Boolean)
 	 * @since 2.4.2
 	 */
 	public function get newlineGapSize():BoundSize {
@@ -601,8 +608,8 @@ public final class CC {
 	/** Set the newline size and turns newline on if <code>!= null</code>.
 	 * @param s The custom gap size. NOTE! <code>null</code> will not turn on or off newline, it will only set the newline gap size to "default".
 	 * A non-null value will turn on newline though.
-	 * @see #isNewline()
-	 * @see #setNewline(boolean)
+	 * @see #newline()
+	 * @see #newline(Boolean)
 	 * @since 2.4.2
 	 */
 	public function set newlineGapSize(s:BoundSize):void {
