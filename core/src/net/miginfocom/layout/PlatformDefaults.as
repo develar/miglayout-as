@@ -277,12 +277,12 @@ public final class PlatformDefaults {
     return LP_BASE;
   }
 
-  ///** What base value should be used to calculate logical pixel sizes.
-  // * @param base The new base. Default is {@link # BASE_SCALE_FACTOR}
-  // * @see # BASE_FONT_SIZE
-  // * @see # BASE_SCREEN_DPI_FACTOR
-  // * @see # BASE_REAL_PIXEL
-  // */
+  /** What base value should be used to calculate logical pixel sizes.
+   * @param base The new base. Default is {@link # BASE_SCALE_FACTOR}
+   * @see # BASE_FONT_SIZE
+   * @see # BASE_SCREEN_DPI_FACTOR
+   * @see # BASE_REAL_PIXEL
+   */
 //	public static void setLogicalPixelBase(int base)
 //	{
 //		if (LP_BASE != base) {
@@ -593,14 +593,13 @@ public final class PlatformDefaults {
   /** Returns the default gap between two components that <b>are in the same cell</b>.
    * @param comp The component that the gap is for. Never <code>null</code>.
    * @param adjacentComp The adjacent component if any. May be <code>null</code>.
-   * @param adjacentSide What side the <code>adjacentComp</code> is on. {@l ink javax.swing.SwingUtilities#TOP} or
-   * {@l ink javax.swing.SwingUtilities#LEFT} or {@l ink javax.swing.SwingUtilities#BOTTOM} or {@l ink javax.swing.SwingUtilities#RIGHT}.
+   * @param adjacentSide What side the <code>adjacentComp</code> is on. {@l ink MigConstants#TOP} or
+   * {@link MigConstants#LEFT} or {@l ink MigConstants#BOTTOM} or {@link MigConstants#RIGHT}.
    * @param tag The tag string that the component might be tagged with in the component constraints. May be <code>null</code>.
    * @param isLTR If it is left-to-right.
    * @return The default gap between two components or <code>null</code> if there should be no gap.
    */
-  internal static function getDefaultComponentGap(comp:ComponentWrapper, adjacentComp:ComponentWrapper, adjacentSide:int, tag:String,
-                                                  isLTR:Boolean):BoundSize {
+  internal static function getDefaultComponentGap(comp:ComponentWrapper, adjacentComp:ComponentWrapper, adjacentSide:int, tag:String, isLTR:Boolean):BoundSize {
     if (GAP_PROVIDER != null) {
       return GAP_PROVIDER.getDefaultGap(comp, adjacentComp, adjacentSide, tag, isLTR);
     }

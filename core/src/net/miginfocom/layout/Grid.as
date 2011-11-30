@@ -136,7 +136,7 @@ public final class Grid {
   }
 
   private function construct():void {
-		var wrap:int = lc.wrapAfter != 0 ? lc.wrapAfter : (lc.flowX ? colConstr : rowConstr).constraints.length;
+		var isWrap:int = lc.wrapAfter != 0 ? lc.wrapAfter : (lc.flowX ? colConstr : rowConstr).constraints.length;
 
 		var comps:Vector.<ComponentWrapper>= container.components;
 
@@ -212,10 +212,10 @@ public final class Grid {
       cell = null;
 
       if (rootCc.newline) {
-        this.wrap(cellXY, rootCc.newlineGapSize);
+        wrap(cellXY, rootCc.newlineGapSize);
       }
       else if (hitEndOfRow) {
-        this.wrap(cellXY, null);
+        wrap(cellXY, null);
       }
       hitEndOfRow = false;
 
@@ -225,8 +225,8 @@ public final class Grid {
       var cy:int = rootCc.cellY;
       if ((cx < 0 || cy < 0) && !rowNoGrid && rootCc.skip == 0) { // 3.7.2: If skip, don't find an empty cell first.
         while (!isCellFree(cellXY[1], cellXY[0], spannedRects)) {
-          if (Math.abs(increase(cellXY, 1)) >= wrap) {
-            this.wrap(cellXY, null);
+          if (Math.abs(increase(cellXY, 1)) >= isWrap) {
+            wrap(cellXY, null);
           }
         }
       }
@@ -246,8 +246,8 @@ public final class Grid {
 			// Skip a number of cells. Changed for 3.6.1 to take wrap into account and thus "skip" to the next and possibly more rows.
       for (var s:int = 0, skipCount:int = rootCc.skip; s < skipCount; s++) {
         do {
-          if (Math.abs(increase(cellXY, 1)) >= wrap) {
-            this.wrap(cellXY, null);
+          if (Math.abs(increase(cellXY, 1)) >= isWrap) {
+            wrap(cellXY, null);
           }
         }
         while (!isCellFree(cellXY[1], cellXY[0], spannedRects));
@@ -320,9 +320,9 @@ public final class Grid {
 
         i++;
 
-        if ((cc.wrap || (spanRestOfRow && splitLeft == 0))) {
+        if (cc.wrap || spanRestOfRow && splitLeft == 0) {
           if (cc.wrap) {
-            this.wrap(cellXY, cc.wrapGapSize);
+            wrap(cellXY, cc.wrapGapSize);
           }
           else {
             hitEndOfRow = true;
@@ -334,7 +334,7 @@ public final class Grid {
 
       if (!wrapHandled && !rowNoGrid) {
         var span:int = lc.flowX ? cell.spanx : cell.spany;
-        if (Math.abs((lc.flowX ? cellXY[0] : cellXY[1])) + span >= wrap) {
+        if (Math.abs((lc.flowX ? cellXY[0] : cellXY[1])) + span >= isWrap) {
           hitEndOfRow = true;
         }
         else {
@@ -426,7 +426,7 @@ public final class Grid {
       var lastI:int = cws.length - 1;
 			for (i = 0; i <= lastI; i++) {
 				cw = cws[i];
-				var cwBef:ComponentWrapper= i > 0 ? cws[i - 1].comp : null;
+				var cwBef:ComponentWrapper = i > 0 ? cws[i - 1].comp : null;
         var cwAft:ComponentWrapper = i < lastI ? cws[i + 1].comp : null;
 
         var tag:String = (cw.comp.constraints || DEF_CC).tag;
@@ -865,8 +865,7 @@ public final class Grid {
 
   private function getDefaultPushWeights(isRows:Boolean):Vector.<Number> {
     var groupLists:Vector.<Vector.<LinkedDimGroup>> = isRows ? rowGroupLists : colGroupLists;
-
-    var pushWeightArr:Vector.<Number> = GROW_100;   // Only create specific if any of the components have grow.
+    var pushWeightArr:Vector.<Number> = GROW_100;  // Only create specific if any of the components have grow.
     for (var i:int = 0, ix:int = 1; i < groupLists.length; i++, ix += 2) {
       var grps:Vector.<LinkedDimGroup> = groupLists[i];
       var rowPushWeight:Number = NaN;

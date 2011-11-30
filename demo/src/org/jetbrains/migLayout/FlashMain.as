@@ -21,7 +21,7 @@ public class FlashMain extends Sprite {
 
     var g:Graphics = graphics;
     //g.beginFill(0x00ff00);
-    g.drawRect(0, 0, 500, 500);
+    g.drawRect(0, 0, 400, 400);
     g.endFill();
 
     var layout:MigLayout = new MigLayout("", "[][grow][][grow]", "[][]");

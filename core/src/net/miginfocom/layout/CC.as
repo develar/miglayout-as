@@ -36,7 +36,6 @@ public final class CC {
   private var _hideMode:int = -1;
 
   private var hor:DimConstraint = new DimConstraint();
-
   private var ver:DimConstraint = new DimConstraint();
 
   private var _newline:BoundSize;
@@ -51,27 +50,20 @@ public final class CC {
 
 	private var linkTargets:Vector.<String>;
 
-	/** Empty constructor.
-	 */
-	public function CC()
-	{
-	}
-
-	internal function getLinkTargets():Vector.<String>
-	{
-		if (linkTargets == null) {
-			var targets:Vector.<String>;
-			if (_pos != null) {
+  internal function getLinkTargets():Vector.<String> {
+    if (linkTargets == null) {
+      var targets:Vector.<String>;
+      if (_pos != null) {
         targets = new Vector.<String>();
         for (var i:int = 0; i < _pos.length; i++) {
           addLinkTargetIDs(targets, _pos[i]);
         }
-			}
+      }
 
-			linkTargets = targets == null || targets.length == 0 ? EMPTY_ARR : targets;
-		}
-		return linkTargets;
-	}
+      linkTargets = targets == null || targets.length == 0 ? EMPTY_ARR : targets;
+    }
+    return linkTargets;
+  }
 
   private static function addLinkTargetIDs(targets:Vector.<String>, uv:UnitValue):void {
     var subUv:UnitValue;
@@ -551,7 +543,7 @@ public final class CC {
 	 * @param value <code>true</code> means wrap after.
 	 */
 	public function set wrap(value:Boolean):void {
-		_wrap = value ? (_wrap == null ? DEF_GAP : _wrap) : null;
+		_wrap = value ? (_wrap || DEF_GAP) : null;
 	}
 
 	/** Returns the wrap size if it is a custom size. If wrap was set to true with {@link #wrap(Boolean)} then this method will
