@@ -28,27 +28,24 @@ public class FlashMain extends Sprite {
     layout.debug = true;
     var containerWrapper:FlashContainerWrapper = new FlashContainerWrapper(this, layout);
 
-    var lblFirstName:Label = new Label();
+    var lblFirstName:Label = new Label(null, 0, 0, "First Name");
     //var lblFirstName:TestShape = new TestShape(40, 20);
     containerWrapper.add(lblFirstName, "cell 0 0");
-    lblFirstName.text = "First Name";
 
     var textField:InputText = new InputText();
     //var textField:TestShape = new TestShape(100, 20);
     containerWrapper.add(textField, "cell 1 0,growx");
 
-    var lblNewLabel_1:Label = new Label();
+    var lblNewLabel_1:Label = new Label(null, 0, 0, "Surname");
     //var lblNewLabel_1:TestShape = new TestShape(40, 20);
     containerWrapper.add(lblNewLabel_1, "cell 2 0");
-    lblNewLabel_1.text = "Surname";
 
     var textField_1:InputText = new InputText();
     //var textField_1:TestShape = new TestShape(100, 20);
     containerWrapper.add(textField_1, "cell 3 0,growx");
 
-    var lblNewLabel:Label = new Label();
+    var lblNewLabel:Label = new Label(null, 0, 0, "Address");
     //var lblNewLabel:TestShape = new TestShape(40, 20);
-    lblNewLabel.text = "Address";
     containerWrapper.add(lblNewLabel, "cell 0 1");
 
     var textField_2:InputText = new InputText();

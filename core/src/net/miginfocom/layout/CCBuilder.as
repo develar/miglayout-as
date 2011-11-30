@@ -625,7 +625,7 @@ public class CCBuilder {
     return this;
   }
 
-  /** Same functionality as {@link #setSplit(int parts)} only this method returns <code>this</code> for chaining multiple calls.
+  /** Same functionality as {@link #split(int parts)} only this method returns <code>this</code> for chaining multiple calls.
    * <p>
    * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
    * @param parts The number of parts (i.e. component slots) the cell should be divided into.
@@ -637,7 +637,7 @@ public class CCBuilder {
     return this;
   }
 
-  /** Same functionality as {@link #setSkip(int)} only this method returns <code>this</code> for chaining multiple calls.
+  /** Same functionality as {@link #skip(int)} only this method returns <code>this</code> for chaining multiple calls.
    * <p>
    * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
    * @param cells How many cells in the grid that should be skipped <b>before</b> the component that this constraint belongs to
@@ -649,11 +649,11 @@ public class CCBuilder {
     return this;
   }
 
-  /** Same functionality as {@link #setExternal(boolean true)} only this method returns <code>this</code> for chaining multiple calls.
+  /** Same functionality as {@link #external(Boolean true)} only this method returns <code>this</code> for chaining multiple calls.
    * <p>
    * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
    * @return <code>this</code> so it is possible to chain calls. E.g. <code>new ComponentConstraint().noGrid().gap().fill()</code>.
-   * @see #setExternal(boolean)
+   * @see #external(boolean)
    */
   public function external():CCBuilder {
     cc.external = true;

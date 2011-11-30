@@ -1044,15 +1044,6 @@ public final class ConstraintParser {
     return parseUnitValue(s, emptyReplacement, isHor);
   }
 
-	/** Parses a single unit value. E.g. "10px" or "5in"
-	 * @param s The string to parse. Not <code>null</code>. May look something like <code>"10px"</code> or <code>"5dlu"</code>.
-	 * @param isHor If the value is for the horizontal dimension.
-	 * @return The parsed unit value. <code>null</code> is empty string,
-	 */
-  public static function parseUnitValue2(s:String, isHor:Boolean):UnitValue {
-    return parseUnitValue(s, null, isHor);
-  }
-
 	/** Parses a single unit value.
 	 * @param s The string to parse. May be <code>null</code>. May look something like <code>"10px"</code> or <code>"5dlu"</code>.
 	 * @param emptyReplacement A replacement <code>s</code> is empty or <code>null</code>. May be <code>null</code>.
