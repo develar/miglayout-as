@@ -2,7 +2,7 @@ package org.jetbrains.migLayout.flash {
 import flash.display.DisplayObject;
 import flash.display.DisplayObjectContainer;
 import flash.display.Graphics;
-import flash.display.Sprite;
+import flash.display.Shape;
 
 import net.miginfocom.layout.CC;
 import net.miginfocom.layout.ComponentType;
@@ -24,12 +24,6 @@ public final class FlashContainerWrapper extends FlashComponentWrapper implement
 
   private const _components:Vector.<ComponentWrapper> = new Vector.<ComponentWrapper>();
   public function get components():Vector.<ComponentWrapper> {
-    //var container:DisplayObjectContainer = DisplayObjectContainer(c);
-    //const n:int = componentCount;
-    //var components:Vector.<ComponentWrapper> = new Vector.<ComponentWrapper>(n, true);
-    //for (var i:int = 0; i < n; i++) {
-    //  components[i] = new FlashComponentWrapper(container.getChildAt(i), this);
-    //}
     return _components;
   }
 
@@ -47,7 +41,23 @@ public final class FlashContainerWrapper extends FlashComponentWrapper implement
   }
 
   public function paintDebugCell(x:Number, y:Number, width:Number, height:Number, first:Boolean):void {
-    var g:Graphics = Sprite(c).graphics;
+    var container:DisplayObjectContainer = DisplayObjectContainer(c);
+    var debugCanvas:Shape;
+    if (first) {
+      debugCanvas = Shape(container.getChildByName("migLayotDebugCanvas"));
+      if (debugCanvas == null) {
+        debugCanvas = new Shape();
+        container.addChild(debugCanvas);
+      }
+      else {
+        container.setChildIndex(debugCanvas, container.numChildren - 1);
+      }
+    }
+    else {
+      debugCanvas = Shape(container.getChildAt(container.numChildren - 1));
+    }
+
+    var g:Graphics = debugCanvas.graphics;
     if (first) {
       g.clear();
       g.lineStyle(1, DB_CELL_OUTLINE);
