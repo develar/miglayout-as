@@ -270,16 +270,14 @@ public final class ConstraintParser {
   /** Parses the column or rows constraints. They normally looks something like <code>"[min:pref]rel[10px][]"</code>.
    * @param s The string to parse. Not <code>null</code>.
    * @param isCols If this for columns rather than rows.
-   * @return An array of {@link DimConstraint}s that is as manu are there exist "[...]" sections in the string that is parsed.
+   * @return An array of {@link DimConstraint}s that is as many are there exist "[...]" sections in the string that is parsed.
    */
   private static function parseAxisConstraint(s:String, isCols:Boolean):AC {
-    s = Strings.trim(s);
     // Short circuit for performance.
     if (s.length == 0) {
-      return new AC(new Vector.<DimConstraint>());
+      return new AC(new Vector.<DimConstraint>(0, true));
     }
 
-    s = s.toLowerCase();
 		var parts:Vector.<String> = getRowColAndGapsTrimmed(s);
 		var gaps:Vector.<BoundSize> = new Vector.<BoundSize>((parts.length >> 1) + 1, true);
     var i:int;
@@ -1418,10 +1416,10 @@ public final class ConstraintParser {
     var st:int = 0; // Start of "next token to add".
     for (var i:int = 0, iSz:int = s.length; i < iSz; i++) {
       var c:int = s.charCodeAt(i);
-      if (c == 91/*'['*/) {
+      if (c == 91/*[*/) {
         s0++;
       }
-      else if (c == 93/*']'*/) {
+      else if (c == 93/*]*/) {
         s1++;
       }
       else {
@@ -1429,7 +1427,7 @@ public final class ConstraintParser {
       }
 
       if (s0 != s1 && (s0 - 1) != s1) {
-        break;  // Wrong [ or ] found. Break for throw.
+        break; // Wrong [ or ] found. Break for throw.
       }
 
       retList[retListIndex++] = Strings.trim2(s, st, i);

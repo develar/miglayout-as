@@ -5,13 +5,17 @@ public final class Strings {
   }
 
   public static function trim2(s:String, startIndex:int, endIndex:int):String {
+    if (startIndex == endIndex) {
+      return "";
+    }
+
     while (startIndex < endIndex && s.charCodeAt(startIndex) <= 32) {
       startIndex++;
     }
     while (startIndex < endIndex && s.charCodeAt(endIndex - 1) <= 32) {
       endIndex--;
     }
-    return (startIndex > 0 || endIndex < s.length) ? s.substr(startIndex, endIndex) : s;
+    return (startIndex > 0 || endIndex < s.length) ? s.substring(startIndex, endIndex) : s;
   }
 
   public static function startsWith(string:String, prefix:String, offset:int = 0):Boolean {

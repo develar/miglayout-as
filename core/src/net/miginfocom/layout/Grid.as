@@ -99,10 +99,6 @@ public final class Grid {
 	 */
 	private var width:Vector.<int>, height:Vector.<int>;
 
-	/** If debug is on contains the bounds for things to paint when calling {@link ContainerWrapper#paintDebugCell(int, int, int, int)}
-	  */
-  //private ArrayList<int[]> debugRects = null; // [x, y, width, height]
-
 	/** If any of the absolute coordinates for component bounds has links the name of the target is in this Set.
 	 * Since it requires some memory and computations this is checked at the creation so that
 	 * the link information is only created if needed later.
@@ -136,7 +132,7 @@ public final class Grid {
   }
 
   private function construct():void {
-		var isWrap:int = lc.wrapAfter != 0 ? lc.wrapAfter : (lc.flowX ? colConstr : rowConstr).constraints.length;
+		const wrapCount:int = lc.wrapAfter != 0 ? lc.wrapAfter : (lc.flowX ? colConstr : rowConstr).constraints.length;
 
 		var comps:Vector.<ComponentWrapper>= container.components;
 
@@ -224,7 +220,7 @@ public final class Grid {
       var cy:int = rootCc.cellY;
       if ((cx < 0 || cy < 0) && !rowNoGrid && rootCc.skip == 0) { // 3.7.2: If skip, don't find an empty cell first.
         while (!isCellFree(cellXY[1], cellXY[0], spannedRects)) {
-          if (Math.abs(increase(cellXY, 1)) >= isWrap) {
+          if (Math.abs(increase(cellXY, 1)) >= wrapCount) {
             wrap(cellXY, null);
           }
         }
@@ -245,7 +241,7 @@ public final class Grid {
 			// Skip a number of cells. Changed for 3.6.1 to take wrap into account and thus "skip" to the next and possibly more rows.
       for (var s:int = 0, skipCount:int = rootCc.skip; s < skipCount; s++) {
         do {
-          if (Math.abs(increase(cellXY, 1)) >= isWrap) {
+          if (Math.abs(increase(cellXY, 1)) >= wrapCount) {
             wrap(cellXY, null);
           }
         }
@@ -332,8 +328,8 @@ public final class Grid {
       }
 
       if (!wrapHandled && !rowNoGrid) {
-        var span:int = lc.flowX ? cell.spanx : cell.spany;
-        if (Math.abs((lc.flowX ? cellXY[0] : cellXY[1])) + span >= isWrap) {
+        const span:int = lc.flowX ? cell.spanx : cell.spany;
+        if (Math.abs((lc.flowX ? cellXY[0] : cellXY[1])) + span >= wrapCount) {
           hitEndOfRow = true;
         }
         else {
@@ -586,12 +582,12 @@ public final class Grid {
 
   public function getWidth():Vector.<int> {
     checkSizeCalcs();
-    return width.slice();
+    return width;
   }
 
   public function getHeight():Vector.<int> {
     checkSizeCalcs();
-    return height.slice();
+    return height;
   }
 
   private function checkSizeCalcs():void {
