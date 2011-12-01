@@ -97,7 +97,7 @@ public final class Grid {
 
 	/** The in the constructor calculated min/pref/max size of the whole grid.
 	 */
-	private var width:Vector.<int>, height:Vector.<int>;
+	private var _width:Vector.<int>, _height:Vector.<int>;
 
 	/** If any of the absolute coordinates for component bounds has links the name of the target is in this Set.
 	 * Since it requires some memory and computations this is checked at the creation so that
@@ -214,7 +214,7 @@ public final class Grid {
       }
       hitEndOfRow = false;
 
-			var rowNoGrid:Boolean = lc.noGrid || (DimConstraint(LayoutUtil.getIndexSafe(specs, lc.flowX ? cellXY[1] : cellXY[0]))).noGrid;
+			var rowNoGrid:Boolean = lc.noGrid || (LayoutUtil.getIndexSafe(specs, lc.flowX ? cellXY[1] : cellXY[0])).noGrid;
 			// Move to a free y, x  if no absolute grid specified
       var cx:int = rootCc.cellX;
       var cy:int = rootCc.cellY;
@@ -580,14 +580,14 @@ public final class Grid {
     return container;
   }
 
-  public function getWidth():Vector.<int> {
+  public function get width():Vector.<int> {
     checkSizeCalcs();
-    return width;
+    return _width;
   }
 
-  public function getHeight():Vector.<int> {
+  public function get height():Vector.<int> {
     checkSizeCalcs();
-    return height;
+    return _height;
   }
 
   private function checkSizeCalcs():void {
@@ -595,8 +595,8 @@ public final class Grid {
       colFlowSpecs = calcRowsOrColsSizes(true);
       rowFlowSpecs = calcRowsOrColsSizes(false);
 
-      width = getMinPrefMaxSumSize(true);
-      height = getMinPrefMaxSumSize(false);
+      _width = getMinPrefMaxSumSize(true);
+      _height = getMinPrefMaxSumSize(false);
 
       if (linkTargetIDs == null) {
         resetLinkValues(false, true);
@@ -961,7 +961,7 @@ public final class Grid {
   }
 
   private function adjustSizeForAbsolute(isHor:Boolean):void {
-    var curSizes:Vector.<int> = isHor ? width : height;
+    var curSizes:Vector.<int> = isHor ? _width : _height;
 
     var absCell:Cell = grid[null];
     if (absCell == null || absCell.compWraps.length == 0) {
@@ -1087,8 +1087,8 @@ public final class Grid {
       var indexes:Array = isRows ? rowIndexes : colIndexes;
       var ixArr:Vector.<int> = new Vector.<int>(indexes.length, true);
       var ix:int = 0;
-      for each (i in indexes) {
-        ixArr[ix++] = i;
+      for (var adobeBurnInHell:Object in indexes) {
+        ixArr[ix++] = int(adobeBurnInHell);
       }
 
       putSizesAndIndexes(container.component, rowColSizes, ixArr, isRows);
@@ -1173,7 +1173,8 @@ public final class Grid {
     var sizeGroupMapSize:int = 0;
 		var allDCs:Vector.<DimConstraint> = new Vector.<DimConstraint>(primIndexes.length, true);
     var r:int = 0;
-		for (var cellIx:Object in primIndexes) {
+		for (var adobeBurnInHell:Object in primIndexes) {
+      var cellIx:int = int(adobeBurnInHell);
       var rowColSizes:Vector.<int> = new Vector.<int>(3, true);
       if (cellIx >= -MAX_GRID && cellIx <= MAX_GRID) {  // If not dock cell
         allDCs[r] = primDCs[cellIx >= primDCs.length ? primDCs.length - 1 : cellIx];
@@ -1973,16 +1974,17 @@ public final class Grid {
 
 		var weakCells:Vector.<WeakCell> = new Vector.<WeakCell>(grid.length, true);
     var weakCellsLength:int = 0;
-		for (var key:Object in grid) {
-			var cell:Cell= grid[key];
-			var xyInt:Number = key as Number;
-			if (xyInt == xyInt) {
-				var x:int= xyInt & 0x0000;
-				var y:int= xyInt >> 16;
+    for (var key:Object in grid) {
+      var cell:Cell = grid[key];
+      var xyInt:Number = key as Number;
+      if (xyInt == xyInt) {
+        var x:int = xyInt & 0x0000;
+        var y:int = xyInt >> 16;
 
-				for each (var cw:CompWrap in cell.compWraps)
-					weakCells[weakCellsLength++] = new WeakCell(cw.comp.component, x, y, cell.spanx, cell.spany);
-			}
+        for each (var cw:CompWrap in cell.compWraps) {
+          weakCells[weakCellsLength++] = new WeakCell(cw.comp.component, x, y, cell.spanx, cell.spany);
+        }
+      }
 		}
 
 		PARENT_GRIDPOS_MAP[parComp.component] = weakCells;

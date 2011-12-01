@@ -35,7 +35,7 @@ final internal class FlowSizeSpec {
 
       if (eagerness <= 1 && i % 2 == 0) { // (i % 2 == 0) means only odd indexes, which is only rows/col indexes and not gaps.
         var cIx:int = (i + fromIx - 1) >> 1;
-        var spec:DimConstraint = DimConstraint(LayoutUtil.getIndexSafe(specs, cIx));
+        var spec:DimConstraint = LayoutUtil.getIndexSafe(specs, cIx);
 
         var sz:BoundSize = spec.size;
         if ((sizeType == LayoutUtil.MIN && sz.min != null && sz.min.unit != UnitValue.MIN_SIZE) ||
@@ -43,7 +43,7 @@ final internal class FlowSizeSpec {
           continue;
         }
       }
-      resConstr[i] = ResizeConstraint(LayoutUtil.getIndexSafe(resConstsInclGaps, i + fromIx));
+      resConstr[i] = LayoutUtil.getIndexSafe2(resConstsInclGaps, i + fromIx);
     }
 
     var growW:Vector.<Number> = (eagerness == 1 || eagerness == 3) ? Grid.extractSubArray(specs, defGrow, fromIx, len) : null;

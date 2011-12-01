@@ -8,8 +8,8 @@ internal final class CompWrap {
 	internal var pos:Vector.<UnitValue>;
 	private var gaps:Vector.<Vector.<int>>; // [top,left(actually before),bottom,right(actually after)][min,pref,max]
 
-	internal var horSizes:Vector.<int> = new Vector.<int>(3, true);
-	internal var verSizes:Vector.<int> = new Vector.<int>(3, true);
+	internal const horSizes:Vector.<int> = new Vector.<int>(3, true);
+	internal const verSizes:Vector.<int> = new Vector.<int>(3, true);
 
   internal var x:int = LayoutUtil.NOT_SET, y:int = LayoutUtil.NOT_SET, w:int = LayoutUtil.NOT_SET, h:int = LayoutUtil.NOT_SET;
 
@@ -82,6 +82,10 @@ internal final class CompWrap {
     if (isHor) {
       x = start;
       w = size;
+      if (w < 0) {
+            var g:int;
+            g++;
+          }
     }
     else {
       y = start;

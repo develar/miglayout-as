@@ -1,6 +1,9 @@
 package org.jetbrains.migLayout.flash {
+import flash.display.DisplayObjectContainer;
+
 import net.miginfocom.layout.AbstractMigLayout;
 import net.miginfocom.layout.Grid;
+import net.miginfocom.layout.LayoutUtil;
 import net.miginfocom.layout.PlatformDefaults;
 
 public class MigLayout extends AbstractMigLayout {
@@ -15,7 +18,24 @@ public class MigLayout extends AbstractMigLayout {
   public function layoutContainer(container:FlashContainerWrapper):void {
     checkCache(container);
 
-    var b:Vector.<int> = new <int>[0, 0, container.width, container.height];
+    var w:Number;
+    var h:Number;
+    var o:DisplayObjectContainer = DisplayObjectContainer(container.component);
+    if (o.parent == o.stage) {
+      w = o.stage.stageWidth;
+      h = o.stage.stageHeight;
+    }
+    else {
+      w = LayoutUtil.getSizeSafe(grid != null ? grid.width : null, LayoutUtil.PREF);
+      h = LayoutUtil.getSizeSafe(grid != null ? grid.height : null, LayoutUtil.PREF);
+    }
+    
+    container.w = w;
+    container.h = h;
+
+    trace(w, h);
+
+    var b:Vector.<int> = new <int>[0, 0, w, h];
     if (grid.layout(b, lc.alignX, lc.alignY, _debug, true)) {
       grid = null;
       checkCache(container);
@@ -75,6 +95,13 @@ public class MigLayout extends AbstractMigLayout {
 
     dirty = false;
   }
+
+  //private function calculateSize(container:FlashContainerWrapper, sizeType:int) {
+  //  checkCache(container);
+  //  var w:Number = LayoutUtil.getSizeSafe(grid != null ? grid.width : null, sizeType);
+  //  var h:Number = LayoutUtil.getSizeSafe(grid != null ? grid.height : null, sizeType);
+  //  return new Dimension(w, h);
+  //}
 }
 }
 

@@ -12,6 +12,17 @@ import net.miginfocom.layout.ContainerWrapper;
 
 public final class FlashContainerWrapper extends FlashComponentWrapper implements ContainerWrapper {
   private static const DB_CELL_OUTLINE:uint = 0xff0000;
+  
+  internal var w:int;
+  internal var h:int;
+
+  override public function getPreferredWidth(hHint:Number):Number {
+    return w;
+  }
+
+  override public function getPreferredHeight(wHint:Number):Number {
+    return h;
+  }
 
   function FlashContainerWrapper(c:DisplayObjectContainer, layout:MigLayout) {
     super(c, null, null);
@@ -47,6 +58,7 @@ public final class FlashContainerWrapper extends FlashComponentWrapper implement
       debugCanvas = Shape(container.getChildByName("migLayotDebugCanvas"));
       if (debugCanvas == null) {
         debugCanvas = new Shape();
+        debugCanvas.name = "migLayotDebugCanvas";
         container.addChild(debugCanvas);
       }
       else {

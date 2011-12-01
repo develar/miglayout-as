@@ -29,25 +29,5 @@ internal final class ResizeConstraint {
     this.growPrio = growPrio;
     this.grow = growWeight;
   }
-
-  // ************************************************
-  // Persistence Delegate and Serializable combined.
-  // ************************************************
-
-//	private Object readResolve() throws ObjectStreamException
-//	{
-//		return LayoutUtil.getSerializedObject(this);
-//	}
-//
-//	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
-//	{
-//		LayoutUtil.setSerializedObject(this, LayoutUtil.readAsXML(in));
-//	}
-//
-//	public void writeExternal(ObjectOutput out) throws IOException
-//	{
-//		if (getClass() == ResizeConstraint.class)
-//			LayoutUtil.writeAsXML(out, this);
-//	}
 }
 }

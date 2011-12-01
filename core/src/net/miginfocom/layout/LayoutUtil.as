@@ -5,7 +5,7 @@ import flash.utils.Dictionary;
 /**
  * A utility class that has only static helper methods.
  */
-internal final class LayoutUtil {
+public final class LayoutUtil {
   /**
    * A substitute value for a really large value. Integer.MAX_VALUE is not used since that means a lot of defensive code
    * for potential overflow must exist in many places. This value is large enough for being unreasonable yet it is hard to
@@ -27,18 +27,6 @@ internal final class LayoutUtil {
 //	private static WeakHashMap<Object, Boolean> DT_MAP = null;      // The Containers that have design time. Value not used.
   private static var eSz:int = 0;
   private static var _globalDebugMillis:int = 0;
-
-  //public static final boolean HAS_BEANS = hasBeans();
-  //
-  //private static boolean hasBeans()
-  //{
-  //    try {
-  //        LayoutUtil.class.getClassLoader().loadClass("java.beans.Beans");
-  //        return true;
-  //    } catch (ClassNotFoundException e) {
-  //        return false;
-  //    }
-  //}
 
   /**
    * Returns the current version of MiG Layout.
@@ -181,23 +169,24 @@ internal final class LayoutUtil {
    * Can have length less than <code>sizes</code> in which case the last element should be used for the elements missing.
    * @param defPushWeights If there is no grow weight for a resConstr the corresponding value of this array is used.
    * These forced resConstr will be grown last though and only if needed to fill to the bounds.
-   * @param startSizeType The initial size to use. E.g. {@l ink net.miginfocom.layout.LayoutUtil#MIN}.
+   * @param startSizeType The initial size to use. E.g. {@link net.miginfocom.layout.LayoutUtil#MIN}.
    * @param bounds To use for relative sizes.
    * @return The sizes. Array length will match <code>sizes</code>.
    */
   internal static function calculateSerial(sizes:Vector.<Vector.<int>>, resConstr:Vector.<ResizeConstraint>, defPushWeights:Vector.<Number>,
                                            startSizeType:int, bounds:int):Vector.<int> {
-    var lengths:Vector.<Number> = new Vector.<Number>(sizes.length);	// heights/widths that are set
+    var lengths:Vector.<Number> = new Vector.<Number>(sizes.length, true);	// heights/widths that are set
     var usedLength:Number = 0;
 
     var i:int;
     const sizesLength:int = sizes.length;
     var r:Number;
+    var newSizeBounded:int;
     // Give all preferred size to start with
     for (i = 0; i < sizesLength; i++) {
       if (sizes[i] != null) {
         var len:Number = sizes[i][startSizeType] != NOT_SET ? sizes[i][startSizeType] : 0;
-        const newSizeBounded:int = getBrokenBoundary(len, sizes[i][MIN], sizes[i][MAX]);
+        newSizeBounded = getBrokenBoundary(len, sizes[i][MIN], sizes[i][MAX]);
         if (newSizeBounded != NOT_SET) {
           len = newSizeBounded;
         }
@@ -208,7 +197,7 @@ internal final class LayoutUtil {
     }
 
     var resC:ResizeConstraint;
-    const useLengthI:int = Math.round(usedLength);
+    const useLengthI:int = usedLength;
     if (useLengthI != bounds && resConstr != null) {
       const isGrow:Boolean = useLengthI < bounds;
 
@@ -216,8 +205,7 @@ internal final class LayoutUtil {
       var prioIntegers:Vector.<int> = new Vector.<int>(sizes.length, true);
       var prioListIndex:int = 0;
       for (i = 0; i < sizesLength; i++) {
-        resC = ResizeConstraint(getIndexSafe(resConstr, i));
-        if (resC != null) {
+        if ((resC = getIndexSafe2(resConstr, i)) != null) {
           prioIntegers[prioListIndex++] = isGrow ? resC.growPrio : resC.shrinkPrio;
         }
       }
@@ -238,9 +226,8 @@ internal final class LayoutUtil {
               continue;
             }
 
-            resC = ResizeConstraint(getIndexSafe(resConstr, i));
-            if (resC != null) {
-              if (curPrio == (/*prio*/ isGrow ? resC.growPrio : resC.shrinkPrio)) {
+            if ((resC = getIndexSafe2(resConstr, i)) != null) {
+              if (curPrio == (isGrow ? resC.growPrio : resC.shrinkPrio)) {
                 if (isGrow) {
                   r = resizeWeight[i] = (force == 0 || resC.grow == resC.grow) ? resC.grow : (defPushWeights[i < defPushWeights.length ? i : defPushWeights.length - 1]);
                 }
@@ -261,14 +248,13 @@ internal final class LayoutUtil {
               hit = false;
               var changedWeight:Number = 0;
               for (i = 0; i < sizesLength && totWeight > 0.0001; i++) {
-
                 var weight:Number = resizeWeight[i];
                 if (weight == weight) {
                   var sizeDelta:Number = toChange * weight / totWeight;
                   var newSize:Number = lengths[i] + sizeDelta;
-
                   if (sizes[i] != null) {
-                    if (/*newSizeBounded*/getBrokenBoundary(newSize, sizes[i][MIN], sizes[i][MAX]) != NOT_SET) {
+                    newSizeBounded = getBrokenBoundary(newSize, sizes[i][MIN], sizes[i][MAX]);
+                    if (newSizeBounded != NOT_SET) {
                       resizeWeight[i] = NaN;
                       hit = true;
                       changedWeight += weight;
@@ -295,7 +281,11 @@ internal final class LayoutUtil {
     return a - b;
   }
 
-  internal static function getIndexSafe(arr:Object/*Vector.<Object>*/, ix:int):Object {
+  internal static function getIndexSafe(arr:Vector.<DimConstraint>, ix:int):DimConstraint {
+    return arr != null ? arr[ix < arr.length ? ix : arr.length - 1] : null;
+  }
+
+  internal static function getIndexSafe2(arr:Vector.<ResizeConstraint>, ix:int):ResizeConstraint {
     return arr != null ? arr[ix < arr.length ? ix : arr.length - 1] : null;
   }
 
@@ -377,7 +367,6 @@ internal final class LayoutUtil {
     const sizeLength:int = sizes.length;
     var retInts:Vector.<int> = new Vector.<int>(sizeLength, true);
     var posD:Number = 0;
-
     for (var i:int = 0; i < sizeLength; i++) {
       const posI:int = int(posD + 0.5);
       posD += sizes[i];
