@@ -25,11 +25,11 @@ internal final class CompWrap {
 			var hBS:BoundSize = (callbackSz != null && callbackSz[0] != null) ? callbackSz[0] : cc.horizontal.size;
 			var vBS:BoundSize = (callbackSz != null && callbackSz[1] != null) ? callbackSz[1] : cc.vertical.size;
 
-			var wHint:int= -1, hHint:int = -1; // Added for v3.7
-			if (comp.width > 0&& comp.height > 0) {
-				hHint = comp.width;
-				wHint = comp.height;
-			}
+      var wHint:int = -1, hHint:int = -1; // Added for v3.7
+      if (comp.width > 0 && comp.height > 0) {
+        hHint = comp.width;
+        wHint = comp.height;
+      }
 
       for (i = LayoutUtil.MIN; i <= LayoutUtil.MAX; i++) {
         horSizes[i] = getSize2(hBS, i, true, hHint);

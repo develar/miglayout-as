@@ -8,6 +8,7 @@ import net.miginfocom.layout.CC;
 import net.miginfocom.layout.ComponentType;
 import net.miginfocom.layout.ComponentWrapper;
 import net.miginfocom.layout.ContainerWrapper;
+import net.miginfocom.layout.LayoutUtil;
 import net.miginfocom.layout.PlatformDefaults;
 import net.miginfocom.layout.Strings;
 
@@ -127,16 +128,7 @@ internal class FlashComponentWrapper implements ComponentWrapper {
   }
 
   public function get layoutHashCode():int {
-    var hash:int = c.width + (c.height << 5);
-    if (c.visible) {
-      hash += 1324511;
-    }
-    var id:String = linkId;
-    if (id != null) {
-      hash += Strings.hashCode(id);
-    }
-
-    return hash;
+    return LayoutUtil.calculateHash(width, height, visible, linkId);
   }
 
   public function get visualPadding():Vector.<Number> {

@@ -167,7 +167,7 @@ public interface ComponentWrapper {
   /** Returns the DPI (Dots Per Inch) of the screen the component is currently in or for the default
    * screen if the component is not visible.
    * <p>
-   * If headless mode {@link net.miginfocom.layout.PlatformDefaults#getDefaultDPI} will be returned.
+   * If headless mode {@link net.miginfocom.layout.PlatformDefaults#defaultDPI} will be returned.
    * @return The DPI.
    */
   function get horizontalScreenDPI():Number;
@@ -175,7 +175,7 @@ public interface ComponentWrapper {
   /** Returns the DPI (Dots Per Inch) of the screen the component is currently in or for the default
    * screen if the component is not visible.
    * <p>
-   * If headless mode {@link net.miginfocom.layout.PlatformDefaults#getDefaultDPI} will be returned.
+   * If headless mode {@link net.miginfocom.layout.PlatformDefaults#defaultDPI} will be returned.
    * @return The DPI.
    */
   function get verticalScreenDPI():Number;
@@ -236,7 +236,7 @@ public interface ComponentWrapper {
    * port MigLayout.
    * @param disregardScrollPane Is <code>true</code> any wrapping scroll pane should be disregarded and the type
    * of the scrolled component should be returned.
-   * @return The type of component that this wrapper is wrapping. E.g. {@link #TYPE_LABEL}.
+   * @return The type of component that this wrapper is wrapping. E.g. {@link ComponentType#TYPE_LABEL}.
    */
   function getComponentType(disregardScrollPane:Boolean):int;
 

@@ -421,111 +421,16 @@ public final class LayoutUtil {
     return (i != null && i[side] != null) ? i[side] : (getDefault ? PlatformDefaults.getPanelInsets(side) : UnitValue.ZERO);
   }
 
-  /** Writes the objet and CLOSES the stream. Uses the persistence delegate registered in this class.
-   * @param os The stream to write to. Will be closed.
-   * @param o The object to be serialized.
-   * @param listener The listener to recieve the exeptions if there are any. If <code>null</code> not used.
-   */
-  //static void writeXMLObject(OutputStream os, Object o, ExceptionListener listener)
-  //{
-  //	ClassLoader oldClassLoader = Thread.currentThread().getContextClassLoader();
-  //	Thread.currentThread().setContextClassLoader(LayoutUtil.class.getClassLoader());
-  //
-  //	XMLEncoder encoder = new XMLEncoder(os);
-  //
-  //	if (listener != null)
-  //		encoder.setExceptionListener(listener);
-  //
-  //	encoder.writeObject(o);
-  //     encoder.close();    // Must be closed to write.
-  //
-  //	Thread.currentThread().setContextClassLoader(oldClassLoader);
-  //}
+  public static function calculateHash(w:Number, h:Number, visible:Boolean, linkId:String):int {
+    var hash:int = w + (h << 5);
+    if (visible) {
+      hash += 1324511;
+    }
+    if (linkId != null) {
+      hash += Strings.hashCode(linkId);
+    }
 
-//private static ByteArrayOutputStream writeOutputStream = null;
-//	/** Writes an object to XML.
-//	 * @param out The boject out to write to. Will not be closed.
-//	 * @param o The object to write.
-//	 */
-//	public static synchronized void writeAsXML(ObjectOutput out, Object o) throws IOException
-//	{
-//		if (writeOutputStream == null)
-//			writeOutputStream = new ByteArrayOutputStream(16384);
-//
-//		writeOutputStream.reset();
-//
-//		writeXMLObject(writeOutputStream, o, new ExceptionListener() {
-//			public void exceptionThrown(Exception e) {
-//				e.printStackTrace();
-//			}});
-//
-//		byte[] buf = writeOutputStream.toByteArray();
-//
-//		out.writeInt(buf.length);
-//		out.write(buf);
-//	}
-//
-//	private static byte[] readBuf = null;
-//	/** Reads an object from <code>in</code> using the
-//	 * @param in The object input to read from.
-//	 * @return The object. Never <code>null</code>.
-//	 * @throws IOException If there was a problem saving as XML
-//	 */
-//	public static synchronized Object readAsXML(ObjectInput in) throws IOException
-//	{
-//		if (readBuf == null)
-//			readBuf = new byte[16384];
-//
-//		Thread cThread = Thread.currentThread();
-//		ClassLoader oldCL = null;
-//
-//		try {
-//			oldCL = cThread.getContextClassLoader();
-//			cThread.setContextClassLoader(LayoutUtil.class.getClassLoader());
-//		} catch(SecurityException ignored) {
-//		}
-//
-//		Object o = null;
-//		try {
-//			int length = in.readInt();
-//			if (length > readBuf.length)
-//				readBuf = new byte[length];
-//
-//			in.readFully(readBuf, 0, length);
-//
-//			o = new XMLDecoder(new ByteArrayInputStream(readBuf, 0, length)).readObject();
-//
-//		} catch(EOFException ignored) {
-//		}
-//
-//		if (oldCL != null)
-//			cThread.setContextClassLoader(oldCL);
-//
-//		return o;
-//	}
-
-//private static final IdentityHashMap<Object, Object> SER_MAP = new IdentityHashMap<Object, Object>(2);
-//
-//	/** Sets the serialized object and associates it with <code>caller</code>.
-//	 * @param caller The object created <code>o</code>
-//	 * @param o The just serialized object.
-//	 */
-//	public static void setSerializedObject(Object caller, Object o)
-//	{
-//		synchronized(SER_MAP) {
-//			SER_MAP.put(caller, o);
-//		}
-//	}
-//
-//	/** Returns the serialized object that are associated with <code>caller</code>. It also removes it from the list.
-//	 * @param caller The original creator of the object.
-//	 * @return The object.
-//	 */
-//	public static Object getSerializedObject(Object caller)
-//	{
-//		synchronized(SER_MAP) {
-//			return SER_MAP.remove(caller);
-//		}
-//	}
+    return hash;
+  }
 }
 }

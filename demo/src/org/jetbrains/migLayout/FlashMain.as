@@ -43,10 +43,7 @@ public class FlashMain extends Sprite {
 
     var textField_2:TestShape = new TestShape(100, 20);
     containerWrapper.add(textField_2, "cell 1 1 3 1,growx");
-    //var layout:MigLayout = new MigLayout("", "[][grow][][grow]", "[][]");
-    ////layout.debug = true;
-    //containerWrapper = new FlashContainerWrapper(this, layout);
-    //
+
     //var lblFirstName:Label = new Label(null, 0, 0, "First Name");
     ////var lblFirstName:TestShape = new TestShape(40, 20);
     //containerWrapper.add(lblFirstName, "cell 0 0");
