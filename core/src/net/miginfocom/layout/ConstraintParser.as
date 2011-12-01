@@ -54,7 +54,7 @@ public final class ConstraintParser {
 					ix = startsWithLenient2(part, "wrap", -1, true);
 					if (ix > -1) {
 						var num:String = Strings.trim2(part, ix, part.length);
-						lc.wrapAfter = num.length != 0 ? parseInt(num) : 0;
+						lc.wrapAfter = num.length != 0 ? int(num) : 0;
 						continue;
 					}
 
@@ -92,7 +92,7 @@ public final class ConstraintParser {
 					}
 
 					if (Strings.startsWith(part, "hidemode ")) {
-						lc.hideMode = parseInt(part.substring(9));
+						lc.hideMode = int(part.substring(9));
 						continue;
 					}
 				}
@@ -120,7 +120,7 @@ public final class ConstraintParser {
 					ix = startsWithLenient2(part, "debug", 5, true);
 					if (ix > -1) {
 						var millis:String = Strings.trim2(part, ix, part.length);
-						lc.debugMillis = millis.length > 0 ? parseInt(millis) : 1000;
+						lc.debugMillis = millis.length > 0 ? int(millis) : 1000;
 						continue;
 					}
 				}
@@ -197,9 +197,9 @@ public final class ConstraintParser {
         if (c == 112) {
           if (Strings.startsWith(part, "packalign ")) {
             packs = toTrimmedTokens(Strings.trim2(part, 10, part.length), 32);
-            lc.packWidthAlign = packs[0].length > 0 ? parseFloat(packs[0]) : 0.5;
+            lc.packWidthAlign = packs[0].length > 0 ? Number(packs[0]) : 0.5;
             if (packs.length > 1) {
-              lc.packHeightAlign = parseFloat(packs[1]);
+              lc.packHeightAlign = Number(packs[1]);
             }
             continue;
           }
@@ -348,7 +348,7 @@ public final class ConstraintParser {
 
 					ix = startsWithLenient(part, new <String>["shrinkprio", "shp"], new <int>[10, 3], true);
 					if (ix > -1) {
-						dimConstraint.shrinkPriority = parseInt(Strings.trim2(part, ix, part.length));
+						dimConstraint.shrinkPriority = int(Strings.trim2(part, ix, part.length));
 						continue;
 					}
 
@@ -362,7 +362,7 @@ public final class ConstraintParser {
 				if (c == 103) {
 					ix = startsWithLenient(part, new <String>["growpriority", "gp"], new <int>[5, 2], true);
 					if (ix > -1) {
-						dimConstraint.growPriority = parseInt(Strings.trim2(part, ix, part.length));
+						dimConstraint.growPriority = int(Strings.trim2(part, ix, part.length));
             continue;
           }
 
@@ -464,14 +464,14 @@ public final class ConstraintParser {
 					ix = startsWithLenient2(part, "skip", 4, true);
 					if (ix > -1) {
 						var num:String = Strings.trim2(part, ix, part.length);
-						cc.skip = num.length != 0 ? parseInt(num) : 1;
+						cc.skip = num.length != 0 ? int(num) : 1;
 						continue;
 					}
 
 					ix = startsWithLenient2(part, "split", 5, true);
 					if (ix > -1) {
 						var split:String = Strings.trim2(part, ix, part.length);
-            cc.split = split.length > 0 ? parseInt(split) : LayoutUtil.INF;
+            cc.split = split.length > 0 ? int(split) : LayoutUtil.INF;
 						continue;
 					}
 
@@ -495,8 +495,8 @@ public final class ConstraintParser {
 					ix = startsWithLenient2(part, "span", 4, true);
 					if (ix > -1) {
 						var spans:Vector.<String> = toTrimmedTokens(Strings.trim2(part, ix, part.length), 32);
-						cc.spanX = spans[0].length > 0 ? parseInt(spans[0]) : LayoutUtil.INF;
-						cc.spanY = spans.length > 1 ? parseInt(spans[1]) : 1;
+						cc.spanX = spans[0].length > 0 ? int(spans[0]) : LayoutUtil.INF;
+						cc.spanY = spans.length > 1 ? int(spans[1]) : 1;
 						continue;
 					}
 
@@ -527,16 +527,16 @@ public final class ConstraintParser {
 						var sp:String = Strings.trim2(part, ix, part.length);
             // To handle "gpx", "gpy", "shrinkpriorityx", shrinkpriorityy"
             if (sp.charCodeAt(0) == 120) {
-              cc.horizontal.shrinkPriority = parseInt(sp.substring(2));
+              cc.horizontal.shrinkPriority = int(sp.substring(2));
             }
             else if (sp.charCodeAt(0) == 121) {
-              cc.vertical.shrinkPriority = parseInt(sp.substring(2));
+              cc.vertical.shrinkPriority = int(sp.substring(2));
             }
             else {
               shrinks = toTrimmedTokens(sp, 32);
-              cc.horizontal.shrinkPriority = parseInt(shrinks[0]);
+              cc.horizontal.shrinkPriority = int(shrinks[0]);
               if (shrinks.length > 1) {
-                cc.vertical.shrinkPriority = parseInt(shrinks[1]);
+                cc.vertical.shrinkPriority = int(shrinks[1]);
               }
             }
             continue;
@@ -583,16 +583,16 @@ public final class ConstraintParser {
             var c0:int = gp.length > 0 ? gp.charCodeAt(0) : 32;
             // To gandle "gpx", "gpy", "growpriorityx", growpriorityy"
             if (c0 == 120) {
-              cc.horizontal.growPriority = parseInt(gp.substring(2));
+              cc.horizontal.growPriority = int(gp.substring(2));
             }
             else if (c0 == 121) {
-              cc.vertical.growPriority = parseInt(gp.substring(2));
+              cc.vertical.growPriority = int(gp.substring(2));
             }
             else {
               grows = toTrimmedTokens(gp, 32);
-              cc.horizontal.growPriority = parseInt(grows[0]);
+              cc.horizontal.growPriority = int(grows[0]);
               if (grows.length > 1) {
-                cc.vertical.growPriority = parseInt(grows[1]);
+                cc.vertical.growPriority = int(grows[1]);
               }
             }
             continue;
@@ -665,13 +665,13 @@ public final class ConstraintParser {
             if (grs.length < 2) {
               throw new ArgumentError("At least two integers must follow " + part);
             }
-            cc.cellX = parseInt(grs[0]);
-            cc.cellY = parseInt(grs[1]);
+            cc.cellX = int(grs[0]);
+            cc.cellY = int(grs[1]);
             if (grs.length > 2) {
-              cc.spanX = parseInt(grs[2]);
+              cc.spanX = int(grs[2]);
             }
             if (grs.length > 3) {
-              cc.spanY = parseInt(grs[3]);
+              cc.spanY = int(grs[3]);
             }
             continue;
           }
@@ -784,7 +784,7 @@ public final class ConstraintParser {
 					}
 
 					if (Strings.startsWith(part, "hidemode ")) {
-            cc.hideMode = parseInt(part.substring(9));
+            cc.hideMode = int(part.substring(9));
 						continue;
 					}
 				}
@@ -897,7 +897,6 @@ public final class ConstraintParser {
 	 */
   private static function parseGaps(s:String):Vector.<BoundSize> {
     var ret:Vector.<BoundSize> = new Vector.<BoundSize>(4, true);
-
     var ix:int = startsWithLenient2(s, "gaptop", -1, true);
     if (ix > -1) {
       s = Strings.trim2(s, ix, s.length);
@@ -973,11 +972,11 @@ public final class ConstraintParser {
 	}
 
   private static function parseSpan(s:String):int {
-    return s.length > 0 ? parseInt(s) : LayoutUtil.INF;
+    return s.length > 0 ? int(s) : LayoutUtil.INF;
   }
 
   private static function parseFloat2(s:String, nullVal:Number):Number {
-    return s.length > 0 ? parseFloat(s) : nullVal;
+    return s.length > 0 ? Number(s) : nullVal;
   }
 
 	/** Parses a singele "min:pref:max" value. May look something like <code>"10px:20lp:30%"</code> or <code>"pref!"</code>.
@@ -995,8 +994,7 @@ public final class ConstraintParser {
     var push:Boolean = false;
     if (Strings.endsWith(s, "push")) {
 			push = true;
-			var l:int = s.length;
-      s = s.substring(0, l - (Strings.endsWith(s, ":push") ? 5 : 4));
+      s = s.substring(0, s.length - (Strings.endsWith(s, ":push") ? 5 : 4));
       if (s.length == 0) {
         return BoundSize.create3(null, null, null, true, cs);
       }
@@ -1123,7 +1121,7 @@ public final class ConstraintParser {
     else {
       try {
         var numParts:Vector.<String> = getNumTextParts(s);
-        var value:Number = numParts[0].length > 0 ? parseFloat(numParts[0]) : 1;     // e.g. "related" has no number part..
+        var value:Number = numParts[0].length > 0 ? Number(numParts[0]) : 1;     // e.g. "related" has no number part..
 
         return UnitValue.create4(value, numParts[1], isHor, oper, cs);
       }
