@@ -1,11 +1,10 @@
 package net.miginfocom.layout {
 public class ACBuilder {
   private var constraints:Vector.<DimConstraint> = new Vector.<DimConstraint>();
-  private var ac:AC = new AC(constraints);
   private var curIx:int;
 
-  public function to():AC {
-    return ac;
+  public function to():Vector.<DimConstraint> {
+    return constraints;
   }
 
   /** Sets the total number of rows/columns to <code>size</code>. If the number of rows/columns is already more

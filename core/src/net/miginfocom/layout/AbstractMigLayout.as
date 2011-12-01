@@ -1,14 +1,10 @@
 package net.miginfocom.layout {
-import flash.utils.Dictionary;
-
 [Abstract]
 public class AbstractMigLayout {
-  //private final Map<Component, Object> scrConstrMap = new IdentityHashMap<Component, Object>(8);
-  protected const scrConstrMap:Dictionary = new Dictionary();
   private var _layoutConstraints:Object = "", _columnConstraints:Object = "", _rowConstraints:Object = "";
 
   protected var lc:LC;
-  protected var colSpecs:AC, rowSpecs:AC;
+  protected var colSpecs:Vector.<DimConstraint>, rowSpecs:Vector.<DimConstraint>;
   protected var grid:Grid;
   protected var lastModCount:int = PlatformDefaults.modCount;
 
@@ -47,7 +43,7 @@ public class AbstractMigLayout {
       colSpecs = ConstraintParser.parseColumnConstraints(String(value));
     }
     else {
-      colSpecs = AC(value);
+      colSpecs = Vector.<DimConstraint>(value);
     }
 
     _columnConstraints = value;
@@ -64,7 +60,7 @@ public class AbstractMigLayout {
       rowSpecs = ConstraintParser.parseRowConstraints(String(value));
     }
     else {
-      rowSpecs = AC(value);
+      rowSpecs = Vector.<DimConstraint>(value);
     }
 
     _rowConstraints = value;

@@ -52,7 +52,7 @@ internal final class LinkedDimGroup {
       Grid.layoutBaseline(parent, _compWraps, dc, start, size, LayoutUtil.PREF, spanCount);
     }
     else {
-      Grid.layoutSerial(parent, _compWraps, dc, start, size, isHor, spanCount, fromEnd);
+      Grid.layoutSerial(parent, _compWraps, dc, start, size, isHor, fromEnd);
     }
   }
 

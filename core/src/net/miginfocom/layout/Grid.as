@@ -83,7 +83,7 @@ public final class Grid {
 
 	/** The row and column specifications.
 	 */
-	private var rowConstr:AC, colConstr:AC;
+	private var rowConstr:Vector.<DimConstraint>, colConstr:Vector.<DimConstraint>;
 
 	/** The in the constructor calculated min/pref/max sizes of the rows and columns.
 	 */
@@ -122,7 +122,7 @@ public final class Grid {
 	 * @param colConstr The columns specifications. If more cell rows are required, the last element will be used for when there is no corresponding element in this array.
 	 * @param callbackList A list of callbacks or <code>null</code> if none. Will not be altered.
 	 */
-  public function Grid(container:ContainerWrapper, lc:LC, rowConstr:AC, colConstr:AC, callbackList:Vector.<LayoutCallback>) {
+  public function Grid(container:ContainerWrapper, lc:LC, rowConstr:Vector.<DimConstraint>, colConstr:Vector.<DimConstraint>, callbackList:Vector.<LayoutCallback>) {
     this.lc = lc;
     this.rowConstr = rowConstr;
     this.colConstr = colConstr;
@@ -132,7 +132,7 @@ public final class Grid {
   }
 
   private function construct():void {
-		const wrapCount:int = lc.wrapAfter != 0 ? lc.wrapAfter : (lc.flowX ? colConstr : rowConstr).constraints.length;
+		const wrapCount:int = lc.wrapAfter != 0 ? lc.wrapAfter : (lc.flowX ? colConstr : rowConstr).length;
 
 		var comps:Vector.<ComponentWrapper>= container.components;
 
@@ -142,7 +142,7 @@ public final class Grid {
     var cellXY:Vector.<int> = new Vector.<int>(2, true);
 		var spannedRects:Vector.<Vector.<int>> = new Vector.<Vector.<int>>();
 
-		var specs:Vector.<DimConstraint> = (lc.flowX ? rowConstr : colConstr).constraints;
+		var specs:Vector.<DimConstraint> = (lc.flowX ? rowConstr : colConstr);
 
 		var sizeGroupsX:int = 0, sizeGroupsY:int = 0;
 		var dockInsets:Vector.<int> = null;    // top, left, bottom, right insets for docks.
@@ -436,10 +436,10 @@ public final class Grid {
 
     var iSz:int;
     // Add synthetic indexes for empty rows and columns so they can get a size
-    for (i = 0, iSz = rowConstr.constraints.length; i < iSz; i++) {
+    for (i = 0, iSz = rowConstr.length; i < iSz; i++) {
       rowIndexes[i] = true;
     }
-    for (i = 0, iSz = colConstr.constraints.length; i < iSz; i++) {
+    for (i = 0, iSz = colConstr.length; i < iSz; i++) {
       colIndexes[i] = true;
     }
 
@@ -1077,7 +1077,7 @@ public final class Grid {
 
   private function layoutInOneDim(refSize:int, align:UnitValue, isRows:Boolean, defaultPushWeights:Vector.<Number>):void {
     var fromEnd:Boolean = !(isRows ? lc.topToBottom : LayoutUtil.isLeftToRight(lc, container));
-    var primDCs:Vector.<DimConstraint> = (isRows ? rowConstr : colConstr).constraints;
+    var primDCs:Vector.<DimConstraint> = (isRows ? rowConstr : colConstr);
     var fss:FlowSizeSpec = isRows ? rowFlowSpecs : colFlowSpecs;
     var rowCols:Vector.<Vector.<LinkedDimGroup>> = isRows ? rowGroupLists : colGroupLists;
 
@@ -1165,7 +1165,7 @@ public final class Grid {
       refSize = cSz.constrain(refSize, getParentSize(container, isHor), container);
     }
 
-		var primDCs:Vector.<DimConstraint> = (isHor? colConstr : rowConstr).constraints;
+		var primDCs:Vector.<DimConstraint> = isHor ? colConstr : rowConstr;
 		var primIndexes:Array = isHor ? colIndexes : rowIndexes;
 		var rowColBoundSizes:Vector.<Vector.<int>> = new Vector.<Vector.<int>>(primIndexes.length, true);
 		//HashMap<String, int[]> sizeGroupMap = new HashMap<String, int[]>(2);
@@ -1465,7 +1465,7 @@ public final class Grid {
     var fromEnd:Boolean = !(isRows ? lc.topToBottom : LayoutUtil.isLeftToRight(lc, container));
     var primIndexes:Array = isRows ? rowIndexes : colIndexes;
     var secIndexes:Array = isRows ? colIndexes : rowIndexes;
-    var primDCs:Vector.<DimConstraint> = (isRows ? rowConstr : colConstr).constraints;
+    var primDCs:Vector.<DimConstraint> = isRows ? rowConstr : colConstr;
     var groupLists:Vector.<Vector.<LinkedDimGroup>> = new Vector.<Vector.<LinkedDimGroup>>(primIndexes.length, true);
     var gIx:int = 0;
     var adobeBurnInHell:Object;
@@ -1654,7 +1654,7 @@ public final class Grid {
     }
 	}
 
-  internal static function layoutSerial(parent:ContainerWrapper, compWraps:Vector.<CompWrap>, dc:DimConstraint, start:int, size:int, isHor:Boolean, spanCount:int, fromEnd:Boolean):void {
+  internal static function layoutSerial(parent:ContainerWrapper, compWraps:Vector.<CompWrap>, dc:DimConstraint, start:int, size:int, isHor:Boolean, fromEnd:Boolean):void {
     var fss:FlowSizeSpec = mergeSizesGapsAndResConstrs(
       getComponentResizeConstraints(compWraps, isHor),
       getComponentGapPush(compWraps, isHor),

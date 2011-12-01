@@ -255,7 +255,7 @@ public final class ConstraintParser {
    * @param s The string to parse. Not <code>null</code>.
    * @return An array of {@link DimConstraint}s that is as manu are there exist "[...]" sections in the string that is parsed.
    */
-  public static function parseRowConstraints(s:String):AC {
+  public static function parseRowConstraints(s:String):Vector.<DimConstraint> {
     return parseAxisConstraint(s, false);
   }
 
@@ -263,7 +263,7 @@ public final class ConstraintParser {
    * @param s The string to parse. Not <code>null</code>.
    * @return An array of {@link DimConstraint}s that is as manu are there exist "[...]" sections in the string that is parsed.
    */
-  public static function parseColumnConstraints(s:String):AC {
+  public static function parseColumnConstraints(s:String):Vector.<DimConstraint> {
     return parseAxisConstraint(s, true);
   }
 
@@ -272,10 +272,10 @@ public final class ConstraintParser {
    * @param isCols If this for columns rather than rows.
    * @return An array of {@link DimConstraint}s that is as many are there exist "[...]" sections in the string that is parsed.
    */
-  private static function parseAxisConstraint(s:String, isCols:Boolean):AC {
+  private static function parseAxisConstraint(s:String, isCols:Boolean):Vector.<DimConstraint> {
     // Short circuit for performance.
     if (s.length == 0) {
-      return new AC(new Vector.<DimConstraint>(0, true));
+      return new Vector.<DimConstraint>(0, true);
     }
 
 		var parts:Vector.<String> = getRowColAndGapsTrimmed(s);
@@ -295,7 +295,7 @@ public final class ConstraintParser {
       constraints[i] = parseDimConstraint(parts[(i << 1) + 1], gaps[gIx], gaps[gIx + 1], isCols);
     }
 
-    return new AC(constraints);
+    return constraints;
 	}
 
 	/** Parses a single column or row constriant.
