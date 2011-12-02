@@ -179,7 +179,7 @@ public final class Grid {
       var pos:Vector.<UnitValue> = getPos(comp, rootCc);
       var cbSz:Vector.<BoundSize> = getCallbackSize(comp);
       if (pos != null || rootCc.external) {
-				cw = new CompWrap(comp, rootCc, hideMode, pos, cbSz);
+				cw = new CompWrap(comp, rootCc, hideMode, pos, cbSz, container);
 				cell = grid[null];
 				if (cell == null) {
 					grid[null] = new Cell(cw);
@@ -198,7 +198,7 @@ public final class Grid {
 				if (dockInsets == null)
 					dockInsets = new <int>[-MAX_DOCK_GRID, -MAX_DOCK_GRID, MAX_DOCK_GRID, MAX_DOCK_GRID];
 
-				addDockingCell(dockInsets, rootCc.dockSide, new CompWrap(comp, rootCc, hideMode, pos, cbSz));
+				addDockingCell(dockInsets, rootCc.dockSide, new CompWrap(comp, rootCc, hideMode, pos, cbSz, container));
 				i++;
 				continue;
 			}
@@ -299,7 +299,7 @@ public final class Grid {
           cbSz = getCallbackSize(compAdd);
         }
 
-        cw = new CompWrap(compAdd, cc, hideMode, pos, cbSz);
+        cw = new CompWrap(compAdd, cc, hideMode, pos, cbSz, container);
         cell.compWraps[cell.compWraps.length] = cw;
         cell.hasTagged ||= cc.tag != null;
         hasTagged ||= cell.hasTagged;
@@ -415,10 +415,10 @@ public final class Grid {
     }
 
 		// Calculate gaps now that the cells are filled and we know all adjacent components.
-		var ltr:Boolean= LayoutUtil.isLeftToRight(lc, container);
-		for each (cell in grid) {
-			var cws:Vector.<CompWrap> = cell.compWraps;
-      var lastI:int = cws.length - 1;
+		var ltr:Boolean = LayoutUtil.isLeftToRight(lc, container);
+    for each (cell in grid) {
+      var cws:Vector.<CompWrap> = cell.compWraps;
+      const lastI:int = cws.length - 1;
 			for (i = 0; i <= lastI; i++) {
 				cw = cws[i];
 				var cwBef:ComponentWrapper = i > 0 ? cws[i - 1].comp : null;
@@ -427,7 +427,7 @@ public final class Grid {
         var tag:String = (cw.comp.constraints || DEF_CC).tag;
 				var ccBef:CC = cwBef != null ? cwBef.constraints || DEF_CC : null;
         var ccAft:CC = cwAft != null ? cwAft.constraints || DEF_CC : null;
-        cw.calcGaps(cwBef, ccBef, cwAft, ccAft, tag, cell.flowx, ltr);
+        cw.calcGaps(cwBef, ccBef, cwAft, ccAft, tag, cell.flowx, ltr, container);
 			}
 		}
 
@@ -1116,7 +1116,7 @@ public final class Grid {
           groupSize = LayoutUtil.sum(rowColSizes, bIx2, Math.min((group.span << 1) - 1, rowColSizes.length - bIx2 - 1));
         }
 
-        group.layout(primDC, curPos, groupSize, group.span);
+        group.layout(primDC, curPos, groupSize, group.span, container);
       }
 
       curPos += (fromEnd ? -rowSize : rowSize);
@@ -1243,8 +1243,8 @@ public final class Grid {
     return fss;
 	}
 
-	private static function getParentSize(cw:ComponentWrapper, isHor:Boolean):int {
-		return cw.parent != null ? (isHor ? cw.width : cw.height) : 0;
+	private static function getParentSize(cw:ContainerWrapper, isHor:Boolean):int {
+		return cw.hasParent ? (isHor ? cw.width : cw.height) : 0;
 	}
 
   private function getMinPrefMaxSumSize(isHor:Boolean):Vector.<int> {
@@ -1470,7 +1470,6 @@ public final class Grid {
     var groupLists:Vector.<Vector.<LinkedDimGroup>> = new Vector.<Vector.<LinkedDimGroup>>(primIndexes.length, true);
     var gIx:int = 0;
     var adobeBurnInHell:Object;
-    var linkType:int;
     for (adobeBurnInHell in primIndexes) {
       var i:int = int(adobeBurnInHell);
       var dc:DimConstraint;
@@ -1498,10 +1497,7 @@ public final class Grid {
 
         var isPar:Boolean = cell.flowx == isRows;
         if ((!isPar && cell.compWraps.length > 1) || span > 1) {
-          linkType = isPar ? LinkedDimGroup.TYPE_PARALLEL : LinkedDimGroup.TYPE_SERIAL;
-          var lg:LinkedDimGroup = new LinkedDimGroup("p," + ix, span, linkType, !isRows, fromEnd);
-          lg.setCompWraps(cell.compWraps);
-          groupList[groupListLength++] = lg;
+          groupList[groupListLength++] = new LinkedDimGroup("p," + ix, span, isPar ? LinkedDimGroup.TYPE_PARALLEL : LinkedDimGroup.TYPE_SERIAL, !isRows, fromEnd, cell.compWraps);
         }
         else {
           for (var cwIx:int = 0; cwIx < cell.compWraps.length; cwIx++) {
@@ -1513,7 +1509,7 @@ public final class Grid {
             var foundList:Boolean = false;
             for (var glIx:int = 0, lastGl:int = groupList.length - 1; glIx <= lastGl; glIx++) {
               var group:LinkedDimGroup = groupList[glIx];
-              if (group.linkCtx == linkCtx || linkCtx != null && linkCtx == (group.linkCtx)) {
+              if (group.linkCtx == linkCtx) {
                 group.addCompWrap(cw);
                 foundList = true;
                 break;
@@ -1522,10 +1518,9 @@ public final class Grid {
 
             // If none found and at last add a new group.
             if (!foundList) {
-              linkType = isBaseline ? LinkedDimGroup.TYPE_BASELINE : LinkedDimGroup.TYPE_PARALLEL;
-              lg = new LinkedDimGroup(linkCtx, 1, linkType, !isRows, fromEnd);
-              lg.addCompWrap(cw);
-              groupList[groupListLength++] = lg;
+              var cws:Vector.<CompWrap> = new Vector.<CompWrap>(1);
+              cws[0] = cw;
+              groupList[groupListLength++] = new LinkedDimGroup(linkCtx, 1, isBaseline ? LinkedDimGroup.TYPE_BASELINE : LinkedDimGroup.TYPE_PARALLEL, !isRows, fromEnd, cws);
             }
           }
         }

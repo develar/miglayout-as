@@ -11,17 +11,18 @@ internal final class LinkedDimGroup {
   private var linkType:int;
   internal var isHor:Boolean, fromEnd:Boolean;
 
-  internal var _compWraps:Vector.<CompWrap> = new Vector.<CompWrap>();
+  internal var _compWraps:Vector.<CompWrap>;
 
   private var sizes:Vector.<int>;
   internal var lStart:int = 0, lSize:int = 0;  // Currently mostly for debug painting
 
-  function LinkedDimGroup(linkCtx:String, span:int, linkType:int, isHor:Boolean, fromEnd:Boolean) {
+  function LinkedDimGroup(linkCtx:String, span:int, linkType:int, isHor:Boolean, fromEnd:Boolean, compWraps:Vector.<CompWrap>) {
     this.linkCtx = linkCtx;
     this.span = span;
     this.linkType = linkType;
     this.isHor = isHor;
     this.fromEnd = fromEnd;
+    _compWraps = compWraps;
   }
 
   internal function addCompWrap(cw:CompWrap):void {
@@ -29,14 +30,7 @@ internal final class LinkedDimGroup {
     sizes = null;
   }
 
-  internal function setCompWraps(cws:Vector.<CompWrap>):void {
-    if (_compWraps != cws) {
-      _compWraps = cws;
-      sizes = null;
-    }
-  }
-
-  internal function layout(dc:DimConstraint, start:int, size:int, spanCount:int):void {
+  internal function layout(dc:DimConstraint, start:int, size:int, spanCount:int, parent:ContainerWrapper):void {
     lStart = start;
     lSize = size;
 
@@ -44,7 +38,6 @@ internal final class LinkedDimGroup {
       return;
     }
 
-    var parent:ContainerWrapper = _compWraps[0].comp.parent;
     if (linkType == TYPE_PARALLEL) {
       Grid.layoutParallel(parent, _compWraps, dc, start, size, isHor, fromEnd);
     }
@@ -75,6 +68,7 @@ internal final class LinkedDimGroup {
       }
       sizes[LayoutUtil.MAX] = LayoutUtil.INF;
     }
+
     return sizes;
   }
 }

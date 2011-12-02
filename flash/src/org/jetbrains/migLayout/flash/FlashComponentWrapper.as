@@ -115,14 +115,6 @@ internal class FlashComponentWrapper implements ComponentWrapper {
     return PlatformDefaults.defaultDPI;
   }
 
-  public function get screenWidth():Number {
-    return c.stage.width;
-  }
-
-  public function get screenHeight():Number {
-    return c.stage.height;
-  }
-
   public function get linkId():String {
     return c.name;
   }

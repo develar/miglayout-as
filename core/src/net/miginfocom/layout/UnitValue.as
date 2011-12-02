@@ -7,13 +7,13 @@ public final class UnitValue {
 		"lpx": LPX,
 		"lpy": LPY,
     "%": PERCENT,
-//		"cm": CM,
-//		"in": INCH,
+		"cm": CM,
+		"in": INCH,
     "spx": SPX,
     "spy": SPY,
     "al": ALIGN,
-//		"mm": MM,
-//		"pt": PT,
+		"mm": MM,
+		"pt": PT,
     "min": MIN_SIZE,
     "minimum": MIN_SIZE,
     "p": PREF_SIZE,
@@ -74,15 +74,15 @@ public final class UnitValue {
 
   /** A unit indicating millimeters.
    */
-//	public static const MM:int = 3;
+	public static const MM:int = 3;
 
   /** A unit indicating centimeters.
    */
-//	public static const CM:int = 4;
+	public static const CM:int = 4;
 
   /** A unit indicating inches.
    */
-//	public static const INCH:int = 5;
+	public static const INCH:int = 5;
 
   /** A unit indicating percent.
    */
@@ -90,7 +90,7 @@ public final class UnitValue {
 
   /** A unit indicating points.
    */
-//	public static const PT:int = 7;
+	public static const PT:int = 7;
 
   /** A unit indicating screen percentage width.
    */
@@ -185,35 +185,12 @@ public final class UnitValue {
   private var _subUnits:Vector.<UnitValue>;
 
   // Pixel
-  internal static function create5(value:Number):UnitValue {
+  internal static function createPixel(value:Number):UnitValue {
     var unitValue:UnitValue = new UnitValue();
     unitValue.value = value;
     unitValue._unit = PIXEL;
     return unitValue;
   }
-
-  // Pixel
-//	public function UnitValue(value:Number) // If hor/ver does not matter.
-//	{
-//		this (value, null, PIXEL, true, STATIC, null, null, value + "px");
-//	}
-
-//	public UnitValue(float value, int unit, String createString)  // If hor/ver does not matter.
-//	{
-//		this(value, null, unit, true, STATIC, null, null, createString);
-//	}
-//
-//	UnitValue(float value, String unitStr, boolean isHor, int oper, String createString)
-//	{
-//		this(value, unitStr, -1, isHor, oper, null, null, createString);
-//	}
-//
-//	UnitValue(boolean isHor, int oper, UnitValue sub1, UnitValue sub2, String createString)
-//	{
-//		this(0, "", -1, isHor, oper, sub1, sub2, createString);
-//		if (sub1 == null || sub2 == null)
-//			throw new IllegalArgumentException("Sub units is null!");
-//	}
 
   internal static function create3(isHor:Boolean, oper:int, sub1:UnitValue, sub2:UnitValue, createString:String):UnitValue {
     if (sub1 == null || sub2 == null) {
@@ -330,15 +307,16 @@ public final class UnitValue {
 				case LPY:
 					return parent.getPixelUnitFactor(_unit == LPX) * value;
 
-//				case MM:
-//				case CM:
-//				case INCH:
-//				case PT:
-//					float f = SCALE[unit - MM];
-//					Float s = isHor ? PlatformDefaults.getHorizontalScaleFactor() : PlatformDefaults.getVerticalScaleFactor();
-//					if (s != null)
-//						f *= s.floatValue();
-//					return (isHor ? parent.getHorizontalScreenDPI() : parent.getVerticalScreenDPI()) * value / f;
+				case MM:
+				case CM:
+				case INCH:
+				case PT:
+					var f:Number = SCALE[unit - MM];
+					var s:Number = isHor ? PlatformDefaults.horizontalScaleFactor : PlatformDefaults.verticalScaleFactor;
+          if (s == s) {
+            f *= s;
+          }
+					return (isHor ? parent.horizontalScreenDPI : parent.verticalScreenDPI) * value / f;
 
         case PERCENT:
           return value * refValue * 0.01;

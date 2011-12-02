@@ -144,11 +144,6 @@ public interface ComponentWrapper {
    */
   function get hasBaseline():Boolean;
 
-  /** Returns the container for this component.
-   * @return The container for this component. Will return <code>null</code> if the component has no parent.
-   */
-  function get parent():ContainerWrapper;
-
   /** Returns the pixel unit factor for the horizontal or vertical dimension.
    * <p>
    * The factor is 1 for both dimensions on the normal font in a JPanel on Windows. The factor should increase with a bigger "X".
@@ -180,22 +175,6 @@ public interface ComponentWrapper {
    */
   function get verticalScreenDPI():Number;
 
-  /** Returns the pixel size of the screen that the component is currently in or for the default
-   * screen if the component is not visible or <code>null</code>.
-   * <p>
-   * If in headless mode <code>1024</code> is returned.
-   * @return The screen size. E.g. <code>1280</code>.
-   */
-  function get screenWidth():Number;
-
-  /** Returns the pixel size of the screen that the component is currently in or for the default
-   * screen if the component is not visible or <code>null</code>.
-   * <p>
-   * If in headless mode <code>768</code> is returned.
-   * @return The screen size. E.g. <code>1024</code>.
-   */
-  function get screenHeight():Number;
-
   /** Returns a String id that can be used to reference the component in link constraints. This value should
    * return the default id for the component. The id can be set for a component in the constraints and if
    * so the value returned by this method will never be used. If there are no sensible id for the component
@@ -211,7 +190,7 @@ public interface ComponentWrapper {
    * @return A hash code that should be reasonably different for anything that might change the layout. Returns -1 if the widget is
    * disposed.
    */
-  function get layoutHashCode():int ;
+  function get layoutHashCode():int;
 
   /** Returns the padding on a component by component basis. This method can be overridden to return padding to compensate for example for
    * borders that have shadows or where the outer most pixel is not the visual "edge" to align to.

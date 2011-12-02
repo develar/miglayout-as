@@ -15,15 +15,18 @@ internal final class CompWrap {
 
 	internal var forcedPushGaps:int = 0;   // 1 == before, 2 = after. Bitwise.
 
-  function CompWrap(c:ComponentWrapper, cc:CC, eHideMode:int, pos:Vector.<UnitValue>, callbackSz:Vector.<BoundSize>) {
+  function CompWrap(c:ComponentWrapper, cc:CC, eHideMode:int, pos:Vector.<UnitValue>, callbackSz:Vector.<BoundSize>, container:ContainerWrapper) {
     this.comp = c;
     this.cc = cc;
     this.pos = pos;
+    construct(eHideMode, callbackSz, container);
+	}
 
+  private function construct(eHideMode:int, callbackSz:Vector.<BoundSize>, parent:ContainerWrapper):void {
     var i:int;
-		if (eHideMode <= 0) {
-			var hBS:BoundSize = (callbackSz != null && callbackSz[0] != null) ? callbackSz[0] : cc.horizontal.size;
-			var vBS:BoundSize = (callbackSz != null && callbackSz[1] != null) ? callbackSz[1] : cc.vertical.size;
+    if (eHideMode <= 0) {
+      var hBS:BoundSize = (callbackSz != null && callbackSz[0] != null) ? callbackSz[0] : cc.horizontal.size;
+      var vBS:BoundSize = (callbackSz != null && callbackSz[1] != null) ? callbackSz[1] : cc.vertical.size;
 
       var wHint:int = -1, hHint:int = -1; // Added for v3.7
       if (comp.width > 0 && comp.height > 0) {
@@ -32,23 +35,23 @@ internal final class CompWrap {
       }
 
       for (i = LayoutUtil.MIN; i <= LayoutUtil.MAX; i++) {
-        horSizes[i] = getSize2(hBS, i, true, hHint);
-        verSizes[i] = getSize2(vBS, i, false, wHint > 0 ? wHint : horSizes[i]);
+        horSizes[i] = getSize2(hBS, i, true, hHint, parent);
+        verSizes[i] = getSize2(vBS, i, false, wHint > 0 ? wHint : horSizes[i], parent);
       }
 
-			Grid.correctMinMax(horSizes);
+      Grid.correctMinMax(horSizes);
       Grid.correctMinMax(verSizes);
-		}
+    }
 
-		if (eHideMode > 1) {
+    if (eHideMode > 1) {
       gaps = new Vector.<Vector.<int>>(4);
       for (i = 0; i < gaps.length; i++) {
         gaps[i] = new Vector.<int>(3);
       }
     }
-	}
+  }
 
-  private function getSize2(uvs:BoundSize, sizeType:int, isHor:Boolean, sizeHint:int):int {
+  private function getSize2(uvs:BoundSize, sizeType:int, isHor:Boolean, sizeHint:int, parent:ContainerWrapper):int {
     if (uvs == null || uvs.getSize(sizeType) == null) {
       switch (sizeType) {
         case LayoutUtil.MIN:
@@ -60,32 +63,26 @@ internal final class CompWrap {
       }
     }
 
-    var par:ContainerWrapper = comp.parent;
-    return uvs.getSize(sizeType).getPixels(isHor ? par.width : par.height, par, comp);
+    return uvs.getSize(sizeType).getPixels(isHor ? parent.width : parent.height, parent, comp);
   }
 
-	internal function calcGaps(before:ComponentWrapper, befCC:CC, after:ComponentWrapper, aftCC:CC, tag:String, flowX:Boolean, isLTR:Boolean):void {
-    var par:ContainerWrapper = comp.parent;
-    var parW:int = par.width;
-    var parH:int = par.height;
+	internal function calcGaps(before:ComponentWrapper, befCC:CC, after:ComponentWrapper, aftCC:CC, tag:String, flowX:Boolean, isLTR:Boolean, parent:ContainerWrapper):void {
+    var parW:int = parent.width;
+    var parH:int = parent.height;
 
 		var befGap:BoundSize = before != null ? (flowX ? befCC.horizontal : befCC.vertical).gapAfter : null;
     var aftGap:BoundSize = after != null ? (flowX ? aftCC.horizontal : aftCC.vertical).gapBefore : null;
 
-    mergeGapSizes(cc.vertical.getComponentGaps(par, comp, befGap, (flowX ? null : before), tag, parH, 0, isLTR), false, true);
-		mergeGapSizes(cc.horizontal.getComponentGaps(par, comp, befGap, (flowX ? before : null), tag, parW, 1, isLTR), true, true);
-		mergeGapSizes(cc.vertical.getComponentGaps(par, comp, aftGap, (flowX ? null : after), tag, parH, 2, isLTR), false, false);
-		mergeGapSizes(cc.horizontal.getComponentGaps(par, comp, aftGap, (flowX ? after : null), tag, parW, 3, isLTR), true, false);
+    mergeGapSizes(cc.vertical.getComponentGaps(parent, comp, befGap, (flowX ? null : before), tag, parH, 0, isLTR), false, true);
+		mergeGapSizes(cc.horizontal.getComponentGaps(parent, comp, befGap, (flowX ? before : null), tag, parW, 1, isLTR), true, true);
+		mergeGapSizes(cc.vertical.getComponentGaps(parent, comp, aftGap, (flowX ? null : after), tag, parH, 2, isLTR), false, false);
+		mergeGapSizes(cc.horizontal.getComponentGaps(parent, comp, aftGap, (flowX ? after : null), tag, parW, 3, isLTR), true, false);
 	}
 
   internal function setDimBounds(start:int, size:int, isHor:Boolean):void {
     if (isHor) {
       x = start;
       w = size;
-      if (w < 0) {
-            var g:int;
-            g++;
-          }
     }
     else {
       y = start;

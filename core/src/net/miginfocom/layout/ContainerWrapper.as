@@ -31,5 +31,23 @@ public interface ContainerWrapper extends ComponentWrapper {
    * @param height The height to draw/fill
    */
   function paintDebugCell(x:Number, y:Number, width:Number, height:Number, first:Boolean):void;
+
+  /** Returns the pixel size of the screen that the component is currently in or for the default
+   * screen if the component is not visible or <code>null</code>.
+   * <p>
+   * If in headless mode <code>1024</code> is returned.
+   * @return The screen size. E.g. <code>1280</code>.
+   */
+  function get screenWidth():Number;
+
+  /** Returns the pixel size of the screen that the component is currently in or for the default
+   * screen if the component is not visible or <code>null</code>.
+   * <p>
+   * If in headless mode <code>768</code> is returned.
+   * @return The screen size. E.g. <code>1024</code>.
+   */
+  function get screenHeight():Number;
+
+  function get hasParent():Boolean;
 }
 }

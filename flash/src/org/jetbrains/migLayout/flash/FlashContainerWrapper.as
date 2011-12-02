@@ -91,5 +91,17 @@ public final class FlashContainerWrapper extends FlashComponentWrapper implement
   public function layoutContainer():void {
     _layout.layoutContainer(this);
   }
+
+  public function get screenWidth():Number {
+    return c.stage.stageWidth;
+  }
+
+  public function get screenHeight():Number {
+    return c.stage.stageHeight;
+  }
+
+  public function get hasParent():Boolean {
+    return c.parent != null;
+  }
 }
 }

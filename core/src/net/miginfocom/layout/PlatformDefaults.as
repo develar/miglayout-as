@@ -249,7 +249,7 @@ public final class PlatformDefaults {
    * @see # getHorizontalScaleFactor()
    * @see ComponentWrapper# getVerticalScreenDPI()
    */
-  public static function getVerticalScaleFactor():Number {
+  public static function get verticalScaleFactor():Number {
     return verScale;
   }
 
@@ -260,9 +260,9 @@ public final class PlatformDefaults {
    * @see # getHorizontalScaleFactor()
    * @see ComponentWrapper# getVerticalScreenDPI()
    */
-  public static function setVerticalScaleFactor(f:Number):void {
-    if (!LayoutUtil.equals(verScale, f)) {
-      verScale = f;
+  public static function set verticalScaleFactor(value:Number):void {
+    if (!LayoutUtil.equals(verScale, value)) {
+      verScale = value;
       MOD_COUNT++;
     }
   }
@@ -273,26 +273,26 @@ public final class PlatformDefaults {
    * @see # BASE_SCREEN_DPI_FACTOR
    * @see # BASE_REAL_PIXEL
    */
-  public static function getLogicalPixelBase():int {
+  public static function get logicalPixelBase():int {
     return LP_BASE;
   }
 
   /** What base value should be used to calculate logical pixel sizes.
-   * @param base The new base. Default is {@link # BASE_SCALE_FACTOR}
+   * @param value The new base. Default is {@link # BASE_SCALE_FACTOR}
    * @see # BASE_FONT_SIZE
    * @see # BASE_SCREEN_DPI_FACTOR
    * @see # BASE_REAL_PIXEL
    */
-//	public static void setLogicalPixelBase(int base)
-//	{
-//		if (LP_BASE != base) {
-//			if (base < BASE_FONT_SIZE || base > BASE_SCALE_FACTOR)
-//				throw new IllegalArgumentException("Unrecognized base: " + base);
-//
-//			LP_BASE = base;
-//			MOD_COUNT++;
-//		}
-//	}
+  public static function set logicalPixelBase(value:int):void {
+    if (LP_BASE != value) {
+      if (value < BASE_FONT_SIZE || value > BASE_SCALE_FACTOR) {
+        throw new ArgumentError("Unrecognized base: " + value);
+      }
+
+      LP_BASE = value;
+      MOD_COUNT++;
+    }
+  }
 
   /**
    * Sets gap value for components that are "related".
@@ -450,7 +450,7 @@ public final class PlatformDefaults {
    * <li><code>'O'</code> - A tag for the "ok" or "done" button.
    * <li><code>'U'</code> - All Uncategorized, Other, or "Unknown" buttons. Tag will be "other".
    * <li><code>'+'</code> - A glue push gap that will take as much space as it can and at least an "unrelated" gap. (Platform dependant)
-   * <li><code>'_'</code> - (underscore) An "unrelated" gap. (Platform dependant)
+   * <li><code>'_'</code> - (underscore) An "unrelated" gap. (Platform dependent)
    * </ul>
    * <p>
    * Even though the style tags are normally applied to buttons this works with all components.

@@ -179,8 +179,7 @@ public class CCBuilder {
 
   /** Shrink weight for the component horizontally.
    * <p>
-   * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
-   * @param w The new shrink weight.
+   * @param value The new shrink weight.
    * @return <code>this</code> so it is possible to chain calls. E.g. <code>new ComponentConstraint().noGrid().gap().fill()</code>.
    */
   public function shrinkX(value:Number):CCBuilder {
@@ -871,7 +870,7 @@ public class CCBuilder {
    * @see #setTag(String)
    */
   public function pad(top:int, left:int, bottom:int, right:int):CCBuilder {
-    cc.padding = new <UnitValue>[UnitValue.create5(top), UnitValue.create5(left), UnitValue.create5(bottom), UnitValue.create5(right)];
+    cc.padding = new <UnitValue>[UnitValue.createPixel(top), UnitValue.createPixel(left), UnitValue.createPixel(bottom), UnitValue.createPixel(right)];
     return this;
   }
 
