@@ -335,19 +335,19 @@ public final class UnitValue {
           if (comp == null) {
             return 0;
           }
-          return isHor ? comp.getMinimumWidth(comp.height) : comp.getMinimumHeight(comp.width);
+          return isHor ? comp.getMinimumWidth(comp.actualHeight) : comp.getMinimumHeight(comp.actualWidth);
 
         case PREF_SIZE:
           if (comp == null) {
             return 0;
           }
-          return isHor ? comp.getPreferredWidth(comp.height) : comp.getPreferredHeight(comp.width);
+          return isHor ? comp.getPreferredWidth(comp.actualHeight) : comp.getPreferredHeight(comp.actualWidth);
 
         case MAX_SIZE:
           if (comp == null) {
             return 0;
           }
-          return isHor ? comp.getMaximumWidth(comp.height) : comp.getMaximumHeight(comp.width);
+          return isHor ? comp.getMaximumWidth(comp.actualHeight) : comp.getMaximumHeight(comp.actualWidth);
 
         case BUTTON:
           return PlatformDefaults.minimumButtonWidth.getPixels(refValue, parent, comp);

@@ -1,31 +1,29 @@
 package org.jetbrains.migLayout.flash {
 import flash.display.DisplayObject;
 import flash.display.DisplayObjectContainer;
-import flash.display.Graphics;
-import flash.display.Shape;
+import flash.geom.Point;
 
 import net.miginfocom.layout.CC;
 import net.miginfocom.layout.ComponentType;
 import net.miginfocom.layout.ComponentWrapper;
 import net.miginfocom.layout.ConstraintParser;
 import net.miginfocom.layout.ContainerWrapper;
+import net.miginfocom.layout.ContainerWrappers;
 
 public final class FlashContainerWrapper extends FlashComponentWrapper implements ContainerWrapper {
-  private static const DB_CELL_OUTLINE:uint = 0xff0000;
-  
   internal var w:int;
   internal var h:int;
 
-  override public function getPreferredWidth(hHint:Number):Number {
+  override public function getPreferredWidth(hHint:int = -1):int {
     return w;
   }
 
-  override public function getPreferredHeight(wHint:Number):Number {
+  override public function getPreferredHeight(wHint:int = -1):int {
     return h;
   }
 
   function FlashContainerWrapper(c:DisplayObjectContainer, layout:MigLayout) {
-    super(c, null, null);
+    super(c, null);
     _layout = layout;
   }
 
@@ -39,7 +37,7 @@ public final class FlashContainerWrapper extends FlashComponentWrapper implement
   }
 
   public function get componentCount():int {
-    return DisplayObjectContainer(c).numChildren;
+    return _components.length;
   }
 
   private var _layout:MigLayout;
@@ -47,36 +45,12 @@ public final class FlashContainerWrapper extends FlashComponentWrapper implement
     return _layout;
   }
 
-  public function get isLeftToRight():Boolean {
+  public function get leftToRight():Boolean {
     return true;
   }
 
   public function paintDebugCell(x:Number, y:Number, width:Number, height:Number, first:Boolean):void {
-    var container:DisplayObjectContainer = DisplayObjectContainer(c);
-    var debugCanvas:Shape;
-    if (first) {
-      debugCanvas = Shape(container.getChildByName("migLayotDebugCanvas"));
-      if (debugCanvas == null) {
-        debugCanvas = new Shape();
-        debugCanvas.name = "migLayotDebugCanvas";
-        container.addChild(debugCanvas);
-      }
-      else {
-        container.setChildIndex(debugCanvas, container.numChildren - 1);
-      }
-    }
-    else {
-      debugCanvas = Shape(container.getChildAt(container.numChildren - 1));
-    }
-
-    var g:Graphics = debugCanvas.graphics;
-    if (first) {
-      g.clear();
-      g.lineStyle(1, DB_CELL_OUTLINE);
-    }
-
-    g.moveTo(x, y);
-    g.drawRect(x, y, width, height);
+    ContainerWrappers.paintDebugCell(DisplayObjectContainer(c), x,  y,  width, height, first);
   }
 
   override public function get layoutHashCode():int {
@@ -90,6 +64,14 @@ public final class FlashContainerWrapper extends FlashComponentWrapper implement
 
   public function layoutContainer():void {
     _layout.layoutContainer(this);
+  }
+
+  public function get screenLocationX():Number {
+    return c.localToGlobal(new Point(c.x, c.y)).x;
+  }
+
+  public function get screenLocationY():Number {
+    return c.localToGlobal(new Point(c.x, c.y)).y;
   }
 
   public function get screenWidth():Number {

@@ -22,7 +22,7 @@ public interface ContainerWrapper extends ComponentWrapper {
   /** Returns if this container is using left-to-right component ordering.
    * @return If this container is using left-to-right component ordering.
    */
-  function get isLeftToRight():Boolean;
+  function get leftToRight():Boolean;
 
   /** Paints a cell to indicate where it is.
    * @param x The x coordinate to start the drwaing.
@@ -47,6 +47,16 @@ public interface ContainerWrapper extends ComponentWrapper {
    * @return The screen size. E.g. <code>1024</code>.
    */
   function get screenHeight():Number;
+
+  /** Returns the screen x-coordinate for the upper left coordinate of the component layout-able bounds.
+   * @return The screen x-coordinate for the upper left coordinate of the component layout-able bounds.
+   */
+  function get screenLocationX():Number;
+
+  /** Returns the screen y-coordinate for the upper left coordinate of the component layout-able bounds.
+   * @return The screen y-coordinate for the upper left coordinate of the component layout-able bounds.
+   */
+  function get screenLocationY():Number;
 
   function get hasParent():Boolean;
 }

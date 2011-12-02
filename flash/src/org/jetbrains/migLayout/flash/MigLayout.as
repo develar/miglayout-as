@@ -33,19 +33,11 @@ public class MigLayout extends AbstractMigLayout {
     container.w = w;
     container.h = h;
 
-    trace(w, h);
-
-    var b:Vector.<int> = new <int>[0, 0, w, h];
-    if (grid.layout(b, lc.alignX, lc.alignY, _debug, true)) {
+    if (grid.layout(0, 0, w, h,  lc.alignX, lc.alignY, _debug, true)) {
       grid = null;
       checkCache(container);
-      grid.layout(b, lc.alignX, lc.alignY, _debug, false);
+      grid.layout(0, 0, w, h, lc.alignX, lc.alignY, _debug, false);
     }
-  }
-
-  private var _debug:Boolean;
-  public function set debug(value:Boolean):void {
-    _debug = true;
   }
 
   /** Check if something has changed and if so recreate it to the cached objects.
@@ -56,7 +48,7 @@ public class MigLayout extends AbstractMigLayout {
       return;
     }
 
-    if (dirty) {
+    if (invalid) {
       grid = null;
     }
 
@@ -78,13 +70,13 @@ public class MigLayout extends AbstractMigLayout {
       lastHash = hash;
     }
 
-    if (lastInvalidW != container.width || lastInvalidH != container.height) {
+    if (lastInvalidW != container.actualWidth || lastInvalidH != container.actualHeight) {
       if (grid != null) {
         grid.invalidateContainerSize();
       }
 
-      lastInvalidW = container.width;
-      lastInvalidH = container.height;
+      lastInvalidW = container.actualWidth;
+      lastInvalidH = container.actualHeight;
     }
 
     //setDebug(par, getDebugMillis() > 0);
@@ -93,7 +85,7 @@ public class MigLayout extends AbstractMigLayout {
       grid = new Grid(container, lc, rowSpecs, colSpecs, null);
     }
 
-    dirty = false;
+    invalid = false;
   }
 
   //private function calculateSize(container:FlashContainerWrapper, sizeType:int) {

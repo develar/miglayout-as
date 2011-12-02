@@ -40,22 +40,12 @@ public interface ComponentWrapper {
   /** Returns the current width for this component.
    * @return The current width for this component.
    */
-  function get width():Number;
+  function get actualWidth():int;
 
   /** Returns the current height for this component.
    * @return The current height for this component.
    */
-  function get height():Number;
-
-  /** Returns the screen x-coordinate for the upper left coordinate of the component layout-able bounds.
-   * @return The screen x-coordinate for the upper left coordinate of the component layout-able bounds.
-   */
-  function get screenLocationX():Number;
-
-  /** Returns the screen y-coordinate for the upper left coordinate of the component layout-able bounds.
-   * @return The screen y-coordinate for the upper left coordinate of the component layout-able bounds.
-   */
-  function get screenLocationY():Number;
+  function get actualHeight():int;
 
   /** Returns the minimum width of the component.
    * @param hHint The Size hint for the other dimension. An implementation can use this value or the
@@ -65,7 +55,7 @@ public interface ComponentWrapper {
    * @since 3.5. Added the hint as a parameter knowing that a correction and recompilation is necessary for
    * any implementing classes. This change was worth it though.
    */
-  function getMinimumWidth(hHint:int):Number;
+  function getMinimumWidth(hHint:int = -1):int ;
 
   /** Returns the minimum height of the component.
    * @param wHint The Size hint for the other dimension. An implementation can use this value or the
@@ -75,7 +65,7 @@ public interface ComponentWrapper {
    * @since 3.5. Added the hint as a parameter knowing that a correction and recompilation is necessary for
    * any implementing classes. This change was worth it though.
    */
-  function getMinimumHeight(wHint:Number):Number;
+  function getMinimumHeight(wHint:int = -1):int ;
 
   /** Returns the preferred width of the component.
    * @param hHint The Size hint for the other dimension. An implementation can use this value or the
@@ -85,7 +75,7 @@ public interface ComponentWrapper {
    * @since 3.5. Added the hint as a parameter knowing that a correction and recompilation is necessary for
    * any implementing classes. This change was worth it though.
    */
-  function getPreferredWidth(hHint:Number):Number;
+  function getPreferredWidth(hHint:int = -1):int ;
 
   /** Returns the preferred height of the component.
    * @param wHint The Size hint for the other dimension. An implementation can use this value or the
@@ -95,7 +85,7 @@ public interface ComponentWrapper {
    * @since 3.5. Added the hint as a parameter knowing that a correction and recompilation is necessary for
    * any implementing classes. This change was worth it though.
    */
-  function getPreferredHeight(wHint:Number):Number;
+  function getPreferredHeight(wHint:int = -1):int ;
 
   /** Returns the maximum width of the component.
    * @param hHint The Size hint for the other dimension. An implementation can use this value or the
@@ -105,7 +95,7 @@ public interface ComponentWrapper {
    * @since 3.5. Added the hint as a parameter knowing that a correction and recompilation is necessary for
    * any implementing classes. This change was worth it though.
    */
-  function getMaximumWidth(hHint:Number):Number;
+  function getMaximumWidth(hHint:int = -1):int ;
 
   /** Returns the maximum height of the component.
    * @param wHint The Size hint for the other dimension. An implementation can use this value or the
@@ -115,7 +105,7 @@ public interface ComponentWrapper {
    * @since 3.5. Added the hint as a parameter knowing that a correction and recompilation is necessary for
    * any implementing classes. This change was worth it though.
    */
-  function getMaximumHeight(wHint:Number):Number;
+  function getMaximumHeight(wHint:int = -1):int ;
 
   /** Sets the component's bounds.
    * @param x The x coordinate.
@@ -123,7 +113,7 @@ public interface ComponentWrapper {
    * @param width The width.
    * @param height The height.
    */
-  function setBounds(x:Number, y:Number, width:Number, height:Number):void ;
+  function setBounds(x:Number, y:Number, width:int, height:int):void;
 
   /** Returns if the component's visibility is set to <code>true</code>. This should not return if the component is
    * actually visible, but if the visibility is set to true or not.
@@ -136,7 +126,7 @@ public interface ComponentWrapper {
    * @param height The height to calculate for if other than the current. If <code>-1</code> the current size should be used.
    * @return The baseline from the top or -1 if not applicable.
    */
-  function getBaseline(width:Number, height:Number):Number;
+  function getBaseline(width:int, height:int):int;
 
   /** Returns if the component has a baseline and if it can be retrieved. Should for instance return
    * <code>false</code> for Swing before mustang.

@@ -58,7 +58,8 @@ internal final class LinkedDimGroup {
       for (var sType:int = LayoutUtil.MIN; sType <= LayoutUtil.PREF; sType++) {
         if (linkType == TYPE_PARALLEL) {
           sizes[sType] = Grid.getTotalSizeParallel(_compWraps, sType, isHor);
-        } else if (linkType == TYPE_BASELINE) {
+        }
+        else if (linkType == TYPE_BASELINE) {
           var aboveBelow:Vector.<int> = Grid.getBaselineAboveBelow(_compWraps, sType, false);
           sizes[sType] = aboveBelow[0] + aboveBelow[1];
         }

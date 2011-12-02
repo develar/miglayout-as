@@ -1,6 +1,5 @@
 package org.jetbrains.migLayout.flash {
 import flash.display.DisplayObject;
-import flash.geom.Point;
 
 import net.miginfocom.layout.CC;
 import net.miginfocom.layout.ComponentType;
@@ -33,47 +32,39 @@ internal class FlashComponentWrapper implements ComponentWrapper {
     return c.y;
   }
 
-  public function get width():Number {
+  public function get actualWidth():int {
     return c.width;
   }
 
-  public function get height():Number {
+  public function get actualHeight():int {
     return c.height;
   }
 
-  public function get screenLocationX():Number {
-    return c.localToGlobal(new Point(c.x, c.y)).x;
-  }
-
-  public function get screenLocationY():Number {
-    return c.localToGlobal(new Point(c.x, c.y)).y;
-  }
-
-  public function getMinimumWidth(hHint:int):Number {
+  public function getMinimumWidth(hHint:int = -1):int {
     return 0;
   }
 
-  public function getMinimumHeight(wHint:Number):Number {
+  public function getMinimumHeight(wHint:int = -1):int {
     return 0;
   }
 
-  public function getPreferredWidth(hHint:Number):Number {
+  public function getPreferredWidth(hHint:int = -1):int {
     return c.width;
   }
 
-  public function getPreferredHeight(wHint:Number):Number {
+  public function getPreferredHeight(wHint:int = -1):int {
     return c.height;
   }
 
-  public function getMaximumWidth(hHint:Number):Number {
+  public function getMaximumWidth(hHint:int = -1):int {
     return 32767;
   }
 
-  public function getMaximumHeight(wHint:Number):Number {
+  public function getMaximumHeight(wHint:int = -1):int {
     return 32767;
   }
 
-  public function setBounds(x:Number, y:Number, width:Number, height:Number):void {
+  public function setBounds(x:Number, y:Number, width:int, height:int):void {
     c.x = x;
     c.y = y;
     c.width = width;
@@ -84,7 +75,7 @@ internal class FlashComponentWrapper implements ComponentWrapper {
     return c.visible;
   }
 
-  public function getBaseline(width:Number, height:Number):Number {
+  public function getBaseline(width:int, height:int):int {
     return -1;
   }
 
@@ -109,7 +100,7 @@ internal class FlashComponentWrapper implements ComponentWrapper {
   }
 
   public function get layoutHashCode():int {
-    return LayoutUtil.calculateHash(width, height, visible, linkId);
+    return LayoutUtil.calculateHash(actualWidth, actualHeight, visible, linkId);
   }
 
   public function get visualPadding():Vector.<Number> {

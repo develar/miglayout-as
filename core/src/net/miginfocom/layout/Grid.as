@@ -163,7 +163,7 @@ public final class Grid {
 
       var hideMode:int = comp.visible ? -1 : rootCc.hideMode != -1 ? rootCc.hideMode : lc.hideMode;
       if (hideMode == 3) { // To work with situations where there are components that does not have a layout manager, or not this one.
-        setLinkedBounds(comp, rootCc, comp.x, comp.y, comp.width, comp.height, rootCc.external);
+        setLinkedBounds(comp, rootCc, comp.x, comp.y, comp.actualWidth, comp.actualHeight, rootCc.external);
         i++;
         continue;   // The "external" component should not be handled further.
       }
@@ -188,7 +188,7 @@ public final class Grid {
 				}
 
 				if (!rootCc.boundsInGrid || rootCc.external) {
-					setLinkedBounds(comp, rootCc, comp.x, comp.y, comp.width, comp.height, rootCc.external);
+					setLinkedBounds(comp, rootCc, comp.x, comp.y, comp.actualWidth, comp.actualHeight, rootCc.external);
 					i++;
 					continue;
 				}
@@ -472,7 +472,10 @@ public final class Grid {
 	}
 
 	/** Does the actual layout. Uses many values calculated in the constructor.
-	 * @param bounds The bounds to layout against. Normally that of the parent. [x, y, width, height].
+	 * @param x
+	 * @param y
+	 * @param w
+	 * @param h
 	 * @param alignX The alignment for the x-axis.
 	 * @param alignY The alignment for the y-axis.
 	 * @param debug If debug information should be saved in {link #debugRects}.
@@ -480,13 +483,13 @@ public final class Grid {
 	 * of a component.
 	 * @return If the layout has probably changed the preferred size and there is need for a new layout (normally only SWT).
 	 */
-	public function layout(bounds:Vector.<int>, alignX:UnitValue, alignY:UnitValue, debug:Boolean, checkPrefChange:Boolean):Boolean {
+	public function layout(x:int, y:int, w:int, h:int, alignX:UnitValue, alignY:UnitValue, debug:Boolean, checkPrefChange:Boolean):Boolean {
 		checkSizeCalcs();
 
 		resetLinkValues(true, true);
 
-		layoutInOneDim(bounds[2], alignX, false, pushXs);
-		layoutInOneDim(bounds[3], alignY, true, pushYs);
+		layoutInOneDim(w, alignX, false, pushXs);
+		layoutInOneDim(h, alignY, true, pushYs);
 
 		//HashMap<String, Integer> endGrpXMap = null, endGrpYMap = null;
 		var endGrpXMap:Dictionary = null, endGrpYMap:Dictionary = null;
@@ -509,7 +512,7 @@ public final class Grid {
 						for (i = 0, iSz = compWraps.length; i < iSz; i++) {
 							cw = compWraps[i];
 							if (j == 0) {
-								doAgain ||= doAbsoluteCorrections(cw, bounds);
+								doAgain ||= doAbsoluteCorrections(cw, w, h);
                 if (!doAgain) { // If we are going to do this again, do not bother this time around
                   if (cw.cc.horizontal.endGroup != null) {
                     endGrpXMap = addToEndGroup(endGrpXMap, cw.cc.horizontal.endGroup, cw.x + cw.w);
@@ -534,8 +537,8 @@ public final class Grid {
                   cw.h = endGrpYMap[cw.cc.vertical.endGroup] - cw.y;
                 }
 
-                cw.x += bounds[0];
-                cw.y += bounds[1];
+                cw.x += x;
+                cw.y += y;
                 layoutAgain ||= cw.transferBounds(checkPrefChange && !layoutAgain);
 
                 if (callbackList != null) {
@@ -566,7 +569,7 @@ public final class Grid {
           var hGrp:LinkedDimGroup = getGroupContaining(colGroupLists, cw);
           var vGrp:LinkedDimGroup = getGroupContaining(rowGroupLists, cw);
           if (hGrp != null && vGrp != null) {
-            container.paintDebugCell(hGrp.lStart + bounds[0] - (hGrp.fromEnd ? hGrp.lSize : 0), vGrp.lStart + bounds[1] - (vGrp.fromEnd ? vGrp.lSize : 0), hGrp.lSize, vGrp.lSize, first);
+            container.paintDebugCell(hGrp.lStart + x - (hGrp.fromEnd ? hGrp.lSize : 0), vGrp.lStart + y - (vGrp.fromEnd ? vGrp.lSize : 0), hGrp.lSize, vGrp.lSize, first);
             first = false;
           }
         }
@@ -605,7 +608,8 @@ public final class Grid {
         // This call makes some components flicker on SWT. They get their bounds changed twice since
         // the change might affect the absolute size adjustment below. There's no way around this that
         // I know of.
-        layout(new Vector.<int>(4, true), null, null, false, false);
+        // develar: commented, don't know if we need it
+        //layout(new Vector.<int>(4, true), null, null, false, false);
         resetLinkValues(false, false);
       }
 
@@ -907,8 +911,8 @@ public final class Grid {
 
     var defIns:Boolean = !hasDocks();
 
-    var parW:int = parentSize ? lc.width.constrain(container.width, getParentSize(container, true), container) : 0;
-    var parH:int = parentSize ? lc.height.constrain(container.height, getParentSize(container, false), container) : 0;
+    var parW:int = parentSize ? lc.width.constrain(container.actualWidth, getParentSize(container, true), container) : 0;
+    var parH:int = parentSize ? lc.height.constrain(container.actualHeight, getParentSize(container, false), container) : 0;
 
     var insX:int = LayoutUtil.getInsets(lc, 0, defIns).getPixels(0, container, null);
     var insY:int = LayoutUtil.getInsets(lc, 1, defIns).getPixels(0, container, null);
@@ -940,14 +944,14 @@ public final class Grid {
     return null;
   }
 
-  private function doAbsoluteCorrections(cw:CompWrap, bounds:Vector.<int>):Boolean {
+  private function doAbsoluteCorrections(cw:CompWrap, w:int, h:int):Boolean {
     var changed:Boolean = false;
-    var stSz:Vector.<int> = getAbsoluteDimBounds(cw, bounds[2], true);
+    var stSz:Vector.<int> = getAbsoluteDimBounds(cw, w, true);
     if (stSz != null) {
       cw.setDimBounds(stSz[0], stSz[1], true);
     }
 
-    stSz = getAbsoluteDimBounds(cw, bounds[3], false);
+    stSz = getAbsoluteDimBounds(cw, h, false);
     if (stSz != null) {
       cw.setDimBounds(stSz[0], stSz[1], false);
     }
@@ -1008,10 +1012,10 @@ public final class Grid {
   private function getAbsoluteDimBounds(cw:CompWrap, refSize:int, isHor:Boolean):Vector.<int> {
     if (cw.cc.external) {
       if (isHor) {
-        return new <int>[cw.comp.x, cw.comp.width];
+        return new <int>[cw.comp.x, cw.comp.actualWidth];
       }
       else {
-        return new <int>[cw.comp.y, cw.comp.height];
+        return new <int>[cw.comp.y, cw.comp.actualHeight];
       }
     }
 
@@ -1158,7 +1162,7 @@ public final class Grid {
 	private function calcRowsOrColsSizes(isHor:Boolean):FlowSizeSpec {
     var groupsLists:Vector.<Vector.<LinkedDimGroup>> = isHor ? colGroupLists : rowGroupLists;
     var defPush:Vector.<Number> = isHor ? pushXs : pushYs;
-    var refSize:int = isHor ? container.width : container.height;
+    var refSize:int = isHor ? container.actualWidth : container.actualHeight;
 
     var cSz:BoundSize = isHor ? lc.width : lc.height;
     if (!cSz.isUnset) {
@@ -1244,7 +1248,7 @@ public final class Grid {
 	}
 
 	private static function getParentSize(cw:ContainerWrapper, isHor:Boolean):int {
-		return cw.hasParent ? (isHor ? cw.width : cw.height) : 0;
+		return cw.hasParent ? (isHor ? cw.actualWidth : cw.actualHeight) : 0;
 	}
 
   private function getMinPrefMaxSumSize(isHor:Boolean):Vector.<int> {

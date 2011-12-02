@@ -355,7 +355,7 @@ public final class LayoutUtil {
       return lc.leftToRight == 1;
     }
 
-    return container == null || container.isLeftToRight;
+    return container == null || container.leftToRight;
   }
 
   /**

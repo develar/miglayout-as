@@ -8,12 +8,17 @@ public class AbstractMigLayout {
   protected var grid:Grid;
   protected var lastModCount:int = PlatformDefaults.modCount;
 
-  protected var dirty:Boolean = true;
+  protected var invalid:Boolean = true;
 
   public function AbstractMigLayout(layoutConstraints:String, colConstraints:String, rowConstraints:String) {
     this.layoutConstraints = layoutConstraints;
     this.columnConstraints = colConstraints;
     this.rowConstraints = rowConstraints;
+  }
+
+  protected var _debug:Boolean;
+  public function set debug(value:Boolean):void {
+    _debug = true;
   }
 
   public function get layoutConstraints():Object {
@@ -30,7 +35,7 @@ public class AbstractMigLayout {
     }
 
     _layoutConstraints = value;
-    dirty = true;
+    invalid = true;
   }
 
   public function get columnConstraints():Object {
@@ -47,7 +52,7 @@ public class AbstractMigLayout {
     }
 
     _columnConstraints = value;
-    dirty = true;
+    invalid = true;
   }
 
   public function get rowConstraints():Object {
@@ -64,7 +69,7 @@ public class AbstractMigLayout {
     }
 
     _rowConstraints = value;
-    dirty = true;
+    invalid = true;
   }
 }
 }

@@ -29,9 +29,9 @@ internal final class CompWrap {
       var vBS:BoundSize = (callbackSz != null && callbackSz[1] != null) ? callbackSz[1] : cc.vertical.size;
 
       var wHint:int = -1, hHint:int = -1; // Added for v3.7
-      if (comp.width > 0 && comp.height > 0) {
-        hHint = comp.width;
-        wHint = comp.height;
+      if (comp.actualWidth > 0 && comp.actualHeight > 0) {
+        hHint = comp.actualWidth;
+        wHint = comp.actualHeight;
       }
 
       for (i = LayoutUtil.MIN; i <= LayoutUtil.MAX; i++) {
@@ -63,12 +63,12 @@ internal final class CompWrap {
       }
     }
 
-    return uvs.getSize(sizeType).getPixels(isHor ? parent.width : parent.height, parent, comp);
+    return uvs.getSize(sizeType).getPixels(isHor ? parent.actualWidth : parent.actualHeight, parent, comp);
   }
 
 	internal function calcGaps(before:ComponentWrapper, befCC:CC, after:ComponentWrapper, aftCC:CC, tag:String, flowX:Boolean, isLTR:Boolean, parent:ContainerWrapper):void {
-    var parW:int = parent.width;
-    var parH:int = parent.height;
+    var parW:int = parent.actualWidth;
+    var parH:int = parent.actualHeight;
 
 		var befGap:BoundSize = before != null ? (flowX ? befCC.horizontal : befCC.vertical).gapAfter : null;
     var aftGap:BoundSize = after != null ? (flowX ? aftCC.horizontal : aftCC.vertical).gapBefore : null;
