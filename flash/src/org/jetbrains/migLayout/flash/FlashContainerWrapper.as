@@ -84,7 +84,7 @@ public final class FlashContainerWrapper extends FlashComponentWrapper implement
   }
 
   public function add(component:DisplayObject, constraints:Object = null):void {
-    _components[_components.length] = new FlashComponentWrapper(component, this, constraints == null || constraints is String ? ConstraintParser.parseComponentConstraint(ConstraintParser.prepare(String(constraints))) : CC(constraints));
+    _components[_components.length] = new FlashComponentWrapper(component, constraints == null || constraints is String ? ConstraintParser.parseComponentConstraint(ConstraintParser.prepare(String(constraints))) : CC(constraints));
     DisplayObjectContainer(c).addChild(component);
   }
 

@@ -1,24 +1,18 @@
 package org.jetbrains.migLayout.flash {
 import flash.display.DisplayObject;
-import flash.display.DisplayObjectContainer;
 import flash.geom.Point;
 
 import net.miginfocom.layout.CC;
-
 import net.miginfocom.layout.ComponentType;
 import net.miginfocom.layout.ComponentWrapper;
-import net.miginfocom.layout.ContainerWrapper;
 import net.miginfocom.layout.LayoutUtil;
 import net.miginfocom.layout.PlatformDefaults;
-import net.miginfocom.layout.Strings;
 
 internal class FlashComponentWrapper implements ComponentWrapper {
   protected var c:DisplayObject;
-  private var parentWrapper:FlashContainerWrapper;
 
-  function FlashComponentWrapper(c:DisplayObject, parentWrapper:FlashContainerWrapper, constraints:CC) {
+  function FlashComponentWrapper(c:DisplayObject, constraints:CC) {
     this.c = c;
-    this.parentWrapper = parentWrapper;
     _constraints = constraints;
   }
 
@@ -96,11 +90,6 @@ internal class FlashComponentWrapper implements ComponentWrapper {
 
   public function get hasBaseline():Boolean {
     return false;
-  }
-
-  public function get parent():ContainerWrapper {
-    var p:DisplayObjectContainer = c.parent;
-    return p == null ? null : parentWrapper;
   }
 
   public function getPixelUnitFactor(isHor:Boolean):Number {
