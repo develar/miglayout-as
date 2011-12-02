@@ -191,12 +191,12 @@ internal final class CompWrap {
 
   internal function isBaselineAlign(defValue:Boolean):Boolean {
     var g:Number = cc.vertical.grow;
-    if (g == g && g != 0) {
+    if (g == g && g != 0 || !comp.hasBaseline) {
       return false;
     }
 
-    var al:UnitValue = cc.vertical.align;
-    return (al != null ? al == UnitValue.BASELINE_IDENTITY : defValue) && comp.hasBaseline;
+    var align:UnitValue = cc.vertical.align;
+    return (align != null ? align == UnitValue.BASELINE_IDENTITY : defValue);
   }
 
   internal function getBaseline(sizeType:int):int {

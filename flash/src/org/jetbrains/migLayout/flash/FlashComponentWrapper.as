@@ -100,7 +100,7 @@ internal class FlashComponentWrapper implements ComponentWrapper {
   }
 
   public function get layoutHashCode():int {
-    return LayoutUtil.calculateHash(actualWidth, actualHeight, visible, linkId);
+    return LayoutUtil.calculateHash(this);
   }
 
   public function get visualPadding():Vector.<Number> {

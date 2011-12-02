@@ -421,13 +421,16 @@ public final class LayoutUtil {
     return (i != null && i[side] != null) ? i[side] : (getDefault ? PlatformDefaults.getPanelInsets(side) : UnitValue.ZERO);
   }
 
-  public static function calculateHash(w:Number, h:Number, visible:Boolean, linkId:String):int {
-    var hash:int = w + (h << 5);
-    if (visible) {
+  public static function calculateHash(cw:ComponentWrapper):int {
+    var hash:int = cw.getMaximumWidth() + (cw.getMaximumHeight() << 5);
+    hash += (cw.getPreferredWidth() << 10) + (cw.getPreferredHeight() << 15);
+    hash += (cw.getMinimumWidth() << 20) + (cw.getMinimumHeight() << 25);
+
+    if (cw.visible) {
       hash += 1324511;
     }
-    if (linkId != null) {
-      hash += Strings.hashCode(linkId);
+    if (cw.linkId != null) {
+      hash += Strings.hashCode(cw.linkId);
     }
 
     return hash;
