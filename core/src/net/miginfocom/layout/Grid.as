@@ -493,7 +493,7 @@ public final class Grid {
 
 		//HashMap<String, Integer> endGrpXMap = null, endGrpYMap = null;
 		var endGrpXMap:Dictionary = null, endGrpYMap:Dictionary = null;
-		var compCount:int = container.componentCount;
+		const compCount:int = container.componentCount;
 		// Transfer the calculated bound from the ComponentWrappers to the actual Components.
 		var layoutAgain:Boolean = false;
     var cw:CompWrap;
@@ -502,7 +502,7 @@ public final class Grid {
     var cell:Cell;
     var compWraps:Vector.<CompWrap>;
 		if (compCount > 0) {
-			for (var j:int = 0; j < (linkTargetIDs != null ? 2: 1); j++) {   // First do the calculations (maybe more than once) then set the bounds when done
+			for (var j:int = 0; j < (linkTargetIDs != null ? 2 : 1); j++) {   // First do the calculations (maybe more than once) then set the bounds when done
 				var doAgain:Boolean;
 				var count:int = 0;
 				do {

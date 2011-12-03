@@ -106,15 +106,8 @@ internal final class CompWrap {
   internal function transferBounds(checkPrefChange:Boolean):Boolean {
     comp.setBounds(x, y, w, h);
 
-    if (checkPrefChange && w != horSizes[LayoutUtil.PREF]) {
-      if (cc.vertical.size.preferred == null) {
-        if (comp.getPreferredHeight(-1) != verSizes[LayoutUtil.PREF]) {
-          return true;
-        }
-      }
-    }
-    return false;
-	}
+    return checkPrefChange && w != horSizes[LayoutUtil.PREF] && cc.vertical.size.preferred == null && comp.getPreferredHeight(-1) != verSizes[LayoutUtil.PREF];
+  }
 
 	internal function setSizes(sizes:Vector.<int>, isHor:Boolean):void {
     if (sizes == null) {
