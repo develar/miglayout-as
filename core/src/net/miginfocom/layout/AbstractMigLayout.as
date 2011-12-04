@@ -1,6 +1,8 @@
 package net.miginfocom.layout {
 [Abstract]
 public class AbstractMigLayout {
+  protected static const INVALID:uint = 1 << 0;
+
   private var _layoutConstraints:Object = "", _columnConstraints:Object = "", _rowConstraints:Object = "";
 
   protected var lc:LC;
@@ -8,7 +10,7 @@ public class AbstractMigLayout {
   protected var grid:Grid;
   protected var lastModCount:int = PlatformDefaults.modCount;
 
-  protected var invalid:Boolean = true;
+  protected var flags:uint;
 
   public function AbstractMigLayout(layoutConstraints:String, colConstraints:String, rowConstraints:String) {
     this.layoutConstraints = layoutConstraints;
@@ -35,7 +37,7 @@ public class AbstractMigLayout {
     }
 
     _layoutConstraints = value;
-    invalid = true;
+    flags |= INVALID;
   }
 
   public function get columnConstraints():Object {
@@ -52,7 +54,7 @@ public class AbstractMigLayout {
     }
 
     _columnConstraints = value;
-    invalid = true;
+    flags |= INVALID;
   }
 
   public function get rowConstraints():Object {
@@ -69,7 +71,7 @@ public class AbstractMigLayout {
     }
 
     _rowConstraints = value;
-    invalid = true;
+    flags |= INVALID;
   }
 }
 }
