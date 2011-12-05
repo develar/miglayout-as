@@ -54,6 +54,7 @@
     <orderEntry type="library" name="Maven: org.flyti:plexus:swc:1.4" level="project" />
     <orderEntry type="module" module-name="collections" />
     <orderEntry type="module" module-name="foundation" />
+    <orderEntry type="module" module-name="cocoa" />
   </component>
 </module>
 

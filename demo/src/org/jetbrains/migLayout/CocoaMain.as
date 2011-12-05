@@ -8,6 +8,7 @@ import cocoa.plaf.aqua.AquaLookAndFeel;
 import flash.display.StageAlign;
 import flash.display.StageScaleMode;
 
+[ResourceBundle("Dialog")]
 public class CocoaMain extends Container {
   public function CocoaMain() {
     var layout:MigLayout = new MigLayout("", "[][grow][][grow]", "[][]");
