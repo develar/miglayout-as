@@ -12,7 +12,7 @@ public class CocoaMain extends Container {
   public function CocoaMain() {
     var layout:MigLayout = new MigLayout("", "[][grow][][grow]", "[][]");
     super(createComponents(), layout);
-    init(new AquaLookAndFeel(), null);
+    initRoot(new AquaLookAndFeel());
     validate();
   }
 

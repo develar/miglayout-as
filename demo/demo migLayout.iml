@@ -11,7 +11,7 @@
         <option name="USE_CUSTOM_CONFIG_FILE_FOR_TESTS" value="false" />
         <option name="CUSTOM_CONFIG_FILE_FOR_TESTS" value="" />
         <option name="APPLICATION_ENTRY_POINT" value="" />
-        <option name="MAIN_CLASS" value="src.org.jetbrains.migLayout.FlashMain" />
+        <option name="MAIN_CLASS" value="org.jetbrains.migLayout.CocoaMain" />
         <option name="OUTPUT_FILE_NAME" value="demo-4.0.1-SNAPSHOT.swf" />
         <option name="USE_FACET_COMPILE_OUTPUT_PATH" value="true" />
         <option name="FACET_COMPILE_OUTPUT_PATH" value="$MODULE_DIR$/target" />
@@ -50,7 +50,6 @@
     <orderEntry type="library" name="Maven: com.adobe.flex.framework:spark:swc:4.5.2.21576" level="project" />
     <orderEntry type="library" name="Maven: com.adobe.flex.framework:framework:rb.swc:4.5.2.21576" level="project" />
     <orderEntry type="library" name="Maven: com.adobe.flex.framework:spark:rb.swc:4.5.2.21576" level="project" />
-    <orderEntry type="library" name="Maven: flashx:textLayout:swc:2.0.189-de1" level="project" />
     <orderEntry type="library" name="Maven: org.osflash:as3-signals:swc:0.8.1" level="project" />
     <orderEntry type="library" name="Maven: org.flyti:plexus:swc:1.4" level="project" />
     <orderEntry type="module" module-name="collections" />

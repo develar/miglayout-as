@@ -48,7 +48,7 @@ public class MigLayout extends AbstractMigLayout {
       return;
     }
 
-    if (invalid) {
+    if ((flags & INVALID) != 0) {
       grid = null;
     }
 
@@ -85,7 +85,7 @@ public class MigLayout extends AbstractMigLayout {
       grid = new Grid(container, lc, rowSpecs, colSpecs, null);
     }
 
-    invalid = false;
+    flags &= ~INVALID;
   }
 
   //private function calculateSize(container:FlashContainerWrapper, sizeType:int) {
