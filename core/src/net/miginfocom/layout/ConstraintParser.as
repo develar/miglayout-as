@@ -414,21 +414,19 @@ public final class ConstraintParser {
 	 * @param s The string to parse. Should not be <code>null</code> and <b>must be lower case and trimmed</b>.
 	 * @return The parsed constraint. Never <code>null</code>.
 	 */
-	public static function parseComponentConstraint(s:String):CC
-	{
-		var cc:CC = new CC();
-
+  public static function parseComponentConstraint(s:String):CC {
+    var cc:CC = new CC();
     if (s.length == 0) {
       return cc;
     }
 
-		var parts:Vector.<String> = toTrimmedTokens(s, 44);
+    var parts:Vector.<String> = toTrimmedTokens(s, 44);
     var shrinks:Vector.<String>;
     var sg:String;
     var grows:Vector.<String>;
     var tokens:Vector.<String>;
-		for (var i:int = 0; i < parts.length; i++) {
-			var part:String = parts[i];
+    for (var i:int = 0; i < parts.length; i++) {
+      var part:String = parts[i];
         if (part.length == 0) {
           continue;
         }
