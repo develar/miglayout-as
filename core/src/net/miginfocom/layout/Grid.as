@@ -147,7 +147,7 @@ public final class Grid {
 		var sizeGroupsX:int = 0, sizeGroupsY:int = 0;
 		var dockInsets:Vector.<int> = null;    // top, left, bottom, right insets for docks.
 
-		LinkHandler.clearTemporaryBounds(container.layout);
+		LinkHandler.clearTemporaryBounds(container.getLayout());
     var i:int;
     var cw:CompWrap;
     var cell:Cell;
@@ -689,7 +689,7 @@ public final class Grid {
       id = id.substring(grIx + 1);
     }
 
-    var lay:Object = container.layout;
+    var lay:Object = container.getLayout();
     var changed:Boolean = false;
     if (external || (linkTargetIDs != null && id in linkTargetIDs)) {
       changed = LinkHandler.setBounds2(lay, id, x, y, w, h, !external, false);
@@ -898,13 +898,13 @@ public final class Grid {
 
     for (var key:String in linkTargetIDs) {
       if (linkTargetIDs[key]) {
-        LinkHandler.clearBounds(container.layout, key);
+        LinkHandler.clearBounds(container.getLayout(), key);
       }
     }
   }
 
   private function resetLinkValues(parentSize:Boolean, compLinks:Boolean):void {
-    var lay:Object = container.layout;
+    var lay:Object = container.getLayout();
     if (compLinks) {
       LinkHandler.clearTemporaryBounds(lay);
     }

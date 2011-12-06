@@ -41,7 +41,7 @@ public final class FlashContainerWrapper extends FlashComponentWrapper implement
   }
 
   private var _layout:MigLayout;
-  public function get layout():Object {
+  public function getLayout():Object {
     return _layout;
   }
 

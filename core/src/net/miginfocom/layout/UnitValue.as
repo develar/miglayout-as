@@ -327,8 +327,8 @@ public final class UnitValue {
           return parent.screenHeight * value * 0.01;
 
         case ALIGN:
-          var st:Number = LinkHandler.getValue(parent.layout, "visual", isHor ? LinkHandler.X : LinkHandler.Y);
-          var sz:Number = LinkHandler.getValue(parent.layout, "visual", isHor ? LinkHandler.WIDTH : LinkHandler.HEIGHT);
+          var st:Number = LinkHandler.getValue(parent.getLayout(), "visual", isHor ? LinkHandler.X : LinkHandler.Y);
+          var sz:Number = LinkHandler.getValue(parent.getLayout(), "visual", isHor ? LinkHandler.WIDTH : LinkHandler.HEIGHT);
           return st != st || sz != sz ? 0 : value * (Math.max(0, sz) - refValue) + st;
 
         case MIN_SIZE:
@@ -360,7 +360,7 @@ public final class UnitValue {
 				case LINK_Y2:
 				case LINK_XPOS:
 				case LINK_YPOS:
-					var v:Number = LinkHandler.getValue(parent.layout, linkId, _unit - (_unit >= LINK_XPOS ? LINK_XPOS : LINK_X));
+					var v:Number = LinkHandler.getValue(parent.getLayout(), linkId, _unit - (_unit >= LINK_XPOS ? LINK_XPOS : LINK_X));
           if (v != v) {
             return 0;
           }

@@ -17,7 +17,7 @@ public interface ContainerWrapper extends ComponentWrapper {
    * container itself.
    * @return The layout handler instance. Never <code>null</code>.
    */
-  function get layout():Object;
+  function getLayout():Object;
 
   /** Returns if this container is using left-to-right component ordering.
    * @return If this container is using left-to-right component ordering.

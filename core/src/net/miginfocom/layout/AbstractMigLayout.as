@@ -50,7 +50,7 @@ public class AbstractMigLayout {
       colSpecs = ConstraintParser.parseColumnConstraints(String(value));
     }
     else {
-      colSpecs = Vector.<DimConstraint>(value);
+      colSpecs = value as Vector.<DimConstraint>;
     }
 
     _columnConstraints = value;
@@ -67,7 +67,7 @@ public class AbstractMigLayout {
       rowSpecs = ConstraintParser.parseRowConstraints(String(value));
     }
     else {
-      rowSpecs = Vector.<DimConstraint>(value);
+      rowSpecs = value as Vector.<DimConstraint>;
     }
 
     _rowConstraints = value;

@@ -74,7 +74,7 @@ public final class LC {
    * If <code>&gt; 0</code> the debug decorations will be repainted every <code>millis</code>. No debug information if <code>&lt;= 0</code> (default).
    * @return The current debug repaint interval.
    */
-  public function get getDebugMillis():int {
+  public function get debugMillis():int {
     return _debugMillis;
   }
 
