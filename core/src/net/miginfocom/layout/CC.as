@@ -155,10 +155,10 @@ public final class CC {
 	 * Note that {@link #boundsInGrid(Boolean)} changes the interpretation of thisproperty slightly.
 	 * <p>
 	 * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
-	 * @param pos <code>UnitValue[] {x, y, x2, y2}</code>. Must be <code>null</code> or of length 4. Elements can be <code>null</code>.
+	 * @param values <code>UnitValue[] {x, y, x2, y2}</code>. Must be <code>null</code> or of length 4. Elements can be <code>null</code>.
 	 */
-	public function set pos(pos:Vector.<UnitValue>):void {
-		this._pos = pos != null ? pos.slice() : null;
+	public function set pos(value:Vector.<UnitValue>):void {
+		_pos = value != null ? value.slice() : null;
 		linkTargets = null;
 	}
 
