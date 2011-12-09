@@ -12,7 +12,7 @@ public class AbstractMigLayout {
 
   protected var flags:uint;
 
-  public function AbstractMigLayout(layoutConstraints:String, colConstraints:String, rowConstraints:String) {
+  public function AbstractMigLayout(layoutConstraints:Object, colConstraints:Object, rowConstraints:Object) {
     this.layoutConstraints = layoutConstraints;
     this.columnConstraints = colConstraints;
     this.rowConstraints = rowConstraints;
@@ -29,7 +29,7 @@ public class AbstractMigLayout {
 
   public function set layoutConstraints(value:Object):void {
     if (value == null || value is String) {
-      value = ConstraintParser.prepare(String(value));
+      value = ConstraintParser.prepare(value as String);
       lc = ConstraintParser.parseLayoutConstraint(String(value));
     }
     else {
@@ -46,7 +46,7 @@ public class AbstractMigLayout {
 
   public function set columnConstraints(value:Object):void {
     if (value == null || value is String) {
-      value = ConstraintParser.prepare(String(value));
+      value = ConstraintParser.prepare(value as String);
       colSpecs = ConstraintParser.parseColumnConstraints(String(value));
     }
     else {
@@ -63,7 +63,7 @@ public class AbstractMigLayout {
 
   public function set rowConstraints(value:Object):void {
     if (value == null || value is String) {
-      value = ConstraintParser.prepare(String(value));
+      value = ConstraintParser.prepare(value as String);
       rowSpecs = ConstraintParser.parseRowConstraints(String(value));
     }
     else {
