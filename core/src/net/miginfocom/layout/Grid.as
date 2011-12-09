@@ -58,6 +58,7 @@ public final class Grid {
 	/** Used for components that doesn't have a CC set. Not that it's really really important that the CC is never changed in this Grid class.
 	 */
 	private static const DEF_CC:CC = new CC();
+	private static const DEF_DIM_C:DimConstraint = new DimConstraint();
 
 	/** The constraints. Never <code>null</code>.
 	 */
@@ -1182,7 +1183,7 @@ public final class Grid {
       var cellIx:int = int(adobeBurnInHell);
       var rowColSizes:Vector.<int> = new Vector.<int>(3, true);
       if (cellIx >= -MAX_GRID && cellIx <= MAX_GRID) {  // If not dock cell
-        allDCs[r] = primDCs[cellIx >= primDCs.length ? primDCs.length - 1 : cellIx];
+        allDCs[r] = primDCs == null || primDCs.length == 0 ? DEF_DIM_C : primDCs[cellIx >= primDCs.length ? primDCs.length - 1 : cellIx];
       }
       else {
         allDCs[r] = DOCK_DIM_CONSTRAINT;
@@ -1479,7 +1480,7 @@ public final class Grid {
       var i:int = int(adobeBurnInHell);
       var dc:DimConstraint;
       if (i >= -MAX_GRID && i <= MAX_GRID) {  // If not dock cell
-        dc = primDCs[i >= primDCs.length ? primDCs.length - 1 : i];
+        dc = primDCs == null || primDCs.length == 0 ? DEF_DIM_C : primDCs[i >= primDCs.length ? primDCs.length - 1 : i];
       }
       else {
         dc = DOCK_DIM_CONSTRAINT;
