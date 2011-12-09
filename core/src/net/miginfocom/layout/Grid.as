@@ -132,9 +132,9 @@ public final class Grid {
   }
 
   private function construct():void {
-		const wrapCount:int = lc.wrapAfter != 0 ? lc.wrapAfter : (lc.flowX ? colConstr : rowConstr).length;
+		const wrapCount:int = lc.wrapAfter != 0 ? lc.wrapAfter : (lc.flowX ? colConstr == null ? 0 : colConstr.length : rowConstr == null ? 0 : rowConstr.length);
 
-		var comps:Vector.<ComponentWrapper>= container.components;
+		var comps:Vector.<ComponentWrapper> = container.components;
 
     var hasTagged:Boolean = false;  // So we do not have to sort if it will not do any good
     var hasPushX:Boolean = false, hasPushY:Boolean = false;
@@ -142,7 +142,7 @@ public final class Grid {
     var cellXY:Vector.<int> = new Vector.<int>(2, true);
 		var spannedRects:Vector.<Vector.<int>> = new Vector.<Vector.<int>>();
 
-		var specs:Vector.<DimConstraint> = (lc.flowX ? rowConstr : colConstr);
+		var specs:Vector.<DimConstraint> = lc.flowX ? rowConstr : colConstr;
 
 		var sizeGroupsX:int = 0, sizeGroupsY:int = 0;
 		var dockInsets:Vector.<int> = null;    // top, left, bottom, right insets for docks.
@@ -151,7 +151,7 @@ public final class Grid {
     var i:int;
     var cw:CompWrap;
     var cell:Cell;
-    
+
     var sizeGroupMapX:Dictionary;
     var sizeGroupMapY:Dictionary;
 
@@ -195,10 +195,11 @@ public final class Grid {
 			}
 
 			if (rootCc.dockSide != -1) {
-				if (dockInsets == null)
-					dockInsets = new <int>[-MAX_DOCK_GRID, -MAX_DOCK_GRID, MAX_DOCK_GRID, MAX_DOCK_GRID];
+        if (dockInsets == null) {
+          dockInsets = new <int>[-MAX_DOCK_GRID, -MAX_DOCK_GRID, MAX_DOCK_GRID, MAX_DOCK_GRID];
+        }
 
-				addDockingCell(dockInsets, rootCc.dockSide, new CompWrap(comp, rootCc, hideMode, pos, cbSz, container));
+        addDockingCell(dockInsets, rootCc.dockSide, new CompWrap(comp, rootCc, hideMode, pos, cbSz, container));
 				i++;
 				continue;
 			}
@@ -214,7 +215,7 @@ public final class Grid {
       }
       hitEndOfRow = false;
 
-			var rowNoGrid:Boolean = lc.noGrid || (LayoutUtil.getIndexSafe(specs, lc.flowX ? cellXY[1] : cellXY[0])).noGrid;
+			var rowNoGrid:Boolean = lc.noGrid || (specs != null && specs.length > 0 && (LayoutUtil.getIndexSafe(specs, lc.flowX ? cellXY[1] : cellXY[0])).noGrid);
 			// Move to a free y, x  if no absolute grid specified
       var cx:int = rootCc.cellX;
       var cy:int = rootCc.cellY;
@@ -436,10 +437,10 @@ public final class Grid {
 
     var iSz:int;
     // Add synthetic indexes for empty rows and columns so they can get a size
-    for (i = 0, iSz = rowConstr.length; i < iSz; i++) {
+    for (i = 0, iSz = rowConstr == null ? 1 : rowConstr.length; i < iSz; i++) {
       rowIndexes[i] = true;
     }
-    for (i = 0, iSz = colConstr.length; i < iSz; i++) {
+    for (i = 0, iSz = colConstr == null ? 1 : colConstr.length; i < iSz; i++) {
       colIndexes[i] = true;
     }
 
@@ -1081,7 +1082,7 @@ public final class Grid {
 
   private function layoutInOneDim(refSize:int, align:UnitValue, isRows:Boolean, defaultPushWeights:Vector.<Number>):void {
     var fromEnd:Boolean = !(isRows ? lc.topToBottom : LayoutUtil.isLeftToRight(lc, container));
-    var primDCs:Vector.<DimConstraint> = (isRows ? rowConstr : colConstr);
+    var primDCs:Vector.<DimConstraint> = isRows ? rowConstr : colConstr;
     var fss:FlowSizeSpec = isRows ? rowFlowSpecs : colFlowSpecs;
     var rowCols:Vector.<Vector.<LinkedDimGroup>> = isRows ? rowGroupLists : colGroupLists;
 

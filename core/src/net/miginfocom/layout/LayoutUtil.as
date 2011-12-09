@@ -282,7 +282,7 @@ public final class LayoutUtil {
   }
 
   internal static function getIndexSafe(arr:Vector.<DimConstraint>, ix:int):DimConstraint {
-    return arr != null ? arr[ix < arr.length ? ix : arr.length - 1] : null;
+    return arr[ix < arr.length ? ix : arr.length - 1];
   }
 
   internal static function getIndexSafe2(arr:Vector.<ResizeConstraint>, ix:int):ResizeConstraint {

@@ -35,9 +35,7 @@ final internal class FlowSizeSpec {
 
       if (eagerness <= 1 && i % 2 == 0) { // (i % 2 == 0) means only odd indexes, which is only rows/col indexes and not gaps.
         var cIx:int = (i + fromIx - 1) >> 1;
-        var spec:DimConstraint = LayoutUtil.getIndexSafe(specs, cIx);
-
-        var sz:BoundSize = spec.size;
+        var sz:BoundSize = specs == null || specs.length == 0 ? BoundSize.NULL_SIZE : LayoutUtil.getIndexSafe(specs, cIx).size;
         if ((sizeType == LayoutUtil.MIN && sz.min != null && sz.min.unit != UnitValue.MIN_SIZE) ||
             (sizeType == LayoutUtil.PREF && sz.preferred != null && sz.preferred.unit != UnitValue.PREF_SIZE)) {
           continue;

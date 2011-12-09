@@ -275,7 +275,7 @@ public final class ConstraintParser {
   private static function parseAxisConstraint(s:String, isCols:Boolean):Vector.<DimConstraint> {
     // Short circuit for performance.
     if (s.length == 0) {
-      return new Vector.<DimConstraint>(0, true);
+      return null;
     }
 
 		var parts:Vector.<String> = getRowColAndGapsTrimmed(s);
@@ -307,16 +307,15 @@ public final class ConstraintParser {
 	 * @return A single constraint. Never <code>null</code>.
 	 * @throws ArgumentError if the constaint was not valid.
 	 */
-	private static function parseDimConstraint(s:String, gapBefore:BoundSize, gapAfter:BoundSize, isCols:Boolean):DimConstraint
-	{
-		var dimConstraint:DimConstraint = new DimConstraint();
+  private static function parseDimConstraint(s:String, gapBefore:BoundSize, gapAfter:BoundSize, isCols:Boolean):DimConstraint {
+    var dimConstraint:DimConstraint = new DimConstraint();
 
-		// Default values.
-		dimConstraint.gapBefore = gapBefore;
-		dimConstraint.gapAfter = gapAfter;
+    // Default values.
+    dimConstraint.gapBefore = gapBefore;
+    dimConstraint.gapAfter = gapAfter;
 
-		var parts:Vector.<String> = toTrimmedTokens(s, 44);
-		for (var i:int = 0; i < parts.length; i++) {
+    var parts:Vector.<String> = toTrimmedTokens(s, 44);
+    for (var i:int = 0; i < parts.length; i++) {
 			var part:String = parts[i];
 			try {
         if (part.length == 0) {
