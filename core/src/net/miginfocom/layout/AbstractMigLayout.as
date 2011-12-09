@@ -3,8 +3,6 @@ package net.miginfocom.layout {
 public class AbstractMigLayout {
   protected static const INVALID:uint = 1 << 0;
 
-  private var _layoutConstraints:Object = "", _columnConstraints:Object = "", _rowConstraints:Object = "";
-
   protected var lc:LC;
   protected var colSpecs:Vector.<DimConstraint>, rowSpecs:Vector.<DimConstraint>;
   protected var grid:Grid;
@@ -12,7 +10,7 @@ public class AbstractMigLayout {
 
   protected var flags:uint;
 
-  public function AbstractMigLayout(layoutConstraints:Object, colConstraints:Object, rowConstraints:Object) {
+  public function AbstractMigLayout(layoutConstraints:String = null, colConstraints:String = null, rowConstraints:String = null) {
     this.layoutConstraints = layoutConstraints;
     this.columnConstraints = colConstraints;
     this.rowConstraints = rowConstraints;
@@ -23,54 +21,18 @@ public class AbstractMigLayout {
     _debug = true;
   }
 
-  public function get layoutConstraints():Object {
-    return _layoutConstraints;
-  }
-
-  public function set layoutConstraints(value:Object):void {
-    if (value == null || value is String) {
-      value = ConstraintParser.prepare(value as String);
-      lc = ConstraintParser.parseLayoutConstraint(String(value));
-    }
-    else {
-      lc = LC(value);
-    }
-
-    _layoutConstraints = value;
+  public function set layoutConstraints(value:String):void {
+    lc = ConstraintParser.parseLayoutConstraint(ConstraintParser.prepare(value));
     flags |= INVALID;
   }
 
-  public function get columnConstraints():Object {
-    return _columnConstraints;
-  }
-
-  public function set columnConstraints(value:Object):void {
-    if (value == null || value is String) {
-      value = ConstraintParser.prepare(value as String);
-      colSpecs = ConstraintParser.parseColumnConstraints(String(value));
-    }
-    else {
-      colSpecs = value as Vector.<DimConstraint>;
-    }
-
-    _columnConstraints = value;
+  public function set columnConstraints(value:String):void {
+    colSpecs = ConstraintParser.parseColumnConstraints(ConstraintParser.prepare(value));
     flags |= INVALID;
   }
 
-  public function get rowConstraints():Object {
-    return _rowConstraints;
-  }
-
-  public function set rowConstraints(value:Object):void {
-    if (value == null || value is String) {
-      value = ConstraintParser.prepare(value as String);
-      rowSpecs = ConstraintParser.parseRowConstraints(String(value));
-    }
-    else {
-      rowSpecs = value as Vector.<DimConstraint>;
-    }
-
-    _rowConstraints = value;
+  public function set rowConstraints(value:String):void {
+    rowSpecs = ConstraintParser.parseRowConstraints(ConstraintParser.prepare(value));
     flags |= INVALID;
   }
 }
