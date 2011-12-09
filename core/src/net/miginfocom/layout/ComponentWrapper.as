@@ -121,6 +121,9 @@ public interface ComponentWrapper {
    */
   function get visible():Boolean;
 
+  // Burn in Hell, Adobe. We need to fix compiler.
+  function set visible(value:Boolean):void;
+
   /** Returns the baseline for the component given the suggested height.
    * @param width The width to calculate for if other than the current. If <code>-1</code> the current size should be used.
    * @param height The height to calculate for if other than the current. If <code>-1</code> the current size should be used.

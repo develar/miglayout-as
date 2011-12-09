@@ -1,5 +1,6 @@
 package org.jetbrains.migLayout.flash {
 import flash.display.DisplayObject;
+import flash.errors.IllegalOperationError;
 
 import net.miginfocom.layout.CC;
 import net.miginfocom.layout.ComponentType;
@@ -112,6 +113,10 @@ internal class FlashComponentWrapper implements ComponentWrapper {
 
   public function getComponentType(disregardScrollPane:Boolean):int {
     return ComponentType.TYPE_UNKNOWN;
+  }
+
+  public function set visible(value:Boolean):void {
+    throw new IllegalOperationError("Burn in Hell, Adobe");
   }
 }
 }
