@@ -156,8 +156,7 @@ public final class Grid {
     var sizeGroupMapX:Dictionary;
     var sizeGroupMapY:Dictionary;
 
-    for (i = 0; i < comps.length;) {
-      var comp:ComponentWrapper = comps[i];
+    for each (var comp:ComponentWrapper in comps) {
 			var rootCc:CC = comp.constraints || DEF_CC;
 
 			addLinkIDs(rootCc);
