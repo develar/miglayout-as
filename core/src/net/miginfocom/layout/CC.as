@@ -209,7 +209,7 @@ public final class CC {
 	 * @return The current value.
 	 */
 	public function get cellY():int {
-		return _cellX < 0? -1: _cellY;
+		return _cellX < 0 ? -1 : _cellY;
 	}
 
 	/** Set an absolute cell x-position in the grid. If &gt;= 0 this point points to the absolute cell that this constaint's component should occupy.

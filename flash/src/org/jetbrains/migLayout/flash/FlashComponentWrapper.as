@@ -65,11 +65,11 @@ internal class FlashComponentWrapper implements ComponentWrapper {
     return 32767;
   }
 
-  public function setBounds(x:Number, y:Number, width:int, height:int):void {
+  public function setBounds(x:Number, y:Number, w:int, h:int):void {
     c.x = x;
     c.y = y;
-    c.width = width;
-    c.height = height;
+    c.width = w;
+    c.height = h;
   }
 
   public function get visible():Boolean {

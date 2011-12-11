@@ -1114,7 +1114,7 @@ public final class Grid {
 
       curPos += (fromEnd ? -rowColSizes[bIx] : rowColSizes[bIx]);
 
-      var primDC:DimConstraint = scIx >= 0 ? primDCs[scIx >= primDCs.length ? primDCs.length - 1 : scIx] : DOCK_DIM_CONSTRAINT;
+      var primDC:DimConstraint = scIx >= 0 ? primDCs == null || primDCs.length == 0 ? DEF_DIM_C : primDCs[scIx >= primDCs.length ? primDCs.length - 1 : scIx] : DOCK_DIM_CONSTRAINT;
       var rowSize:int = rowColSizes[bIx2];
       for each (var group:LinkedDimGroup in linkedGroups) {
         var groupSize:int = rowSize;

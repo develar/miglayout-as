@@ -110,10 +110,10 @@ public interface ComponentWrapper {
   /** Sets the component's bounds.
    * @param x The x coordinate.
    * @param y The y coordinate.
-   * @param width The width.
-   * @param height The height.
+   * @param w The width.
+   * @param h The height.
    */
-  function setBounds(x:Number, y:Number, width:int, height:int):void;
+  function setBounds(x:Number, y:Number, w:int, h:int):void;
 
   /** Returns if the component's visibility is set to <code>true</code>. This should not return if the component is
    * actually visible, but if the visibility is set to true or not.
