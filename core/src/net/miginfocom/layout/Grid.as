@@ -123,7 +123,7 @@ public final class Grid {
 	 * @param colConstr The columns specifications. If more cell rows are required, the last element will be used for when there is no corresponding element in this array.
 	 * @param callbackList A list of callbacks or <code>null</code> if none. Will not be altered.
 	 */
-  public function Grid(container:ContainerWrapper, lc:LC, rowConstr:Vector.<DimConstraint>, colConstr:Vector.<DimConstraint>, callbackList:Vector.<LayoutCallback>) {
+  public function Grid(container:ContainerWrapper, lc:LC, rowConstr:Vector.<DimConstraint>, colConstr:Vector.<DimConstraint>, callbackList:Vector.<LayoutCallback> = null) {
     this.lc = lc;
     this.rowConstr = rowConstr;
     this.colConstr = colConstr;

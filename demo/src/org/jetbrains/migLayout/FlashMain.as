@@ -1,7 +1,4 @@
 package org.jetbrains.migLayout {
-import com.bit101.components.InputText;
-import com.bit101.components.Label;
-
 import flash.display.Sprite;
 import flash.display.StageAlign;
 import flash.display.StageScaleMode;
@@ -23,7 +20,6 @@ public class FlashMain extends Sprite {
     stage.align = StageAlign.TOP_LEFT;
 
     var layout:MigLayout = new MigLayout("", "[][grow][][grow]", "[][]");
-    layout.debug = true;
     containerWrapper = new FlashContainerWrapper(this, layout);
 
     var lblFirstName:TestShape = new TestShape(40, 20);

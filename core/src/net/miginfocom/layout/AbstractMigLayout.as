@@ -16,11 +16,6 @@ public class AbstractMigLayout {
     this.rowConstraints = rowConstraints;
   }
 
-  protected var _debug:Boolean;
-  public function set debug(value:Boolean):void {
-    _debug = true;
-  }
-
   public function set layoutConstraints(value:String):void {
     lc = ConstraintParser.parseLayoutConstraint(ConstraintParser.prepare(value));
     flags |= INVALID;
