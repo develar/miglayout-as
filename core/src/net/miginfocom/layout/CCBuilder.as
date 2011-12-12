@@ -1,5 +1,8 @@
 package net.miginfocom.layout {
 public class CCBuilder {
+  // copied from ResizeConstraint due to flex compiler bug: public function growX(value:Number = ResizeConstraint.WEIGHT_100):CCBuilder [core (core)] Parameter initializer unknown or is not a compile-time constant.)
+  private static const WEIGHT_100:Number = 100;
+
   internal const cc:CC = new CC();
 
   public function to():CC {
@@ -132,7 +135,7 @@ public class CCBuilder {
    * @return <code>this</code> so it is possible to chain calls. E.g. <code>new ComponentConstraint().noGrid().gap().fill()</code>.
    * @see #growX(float)
    */
-  public function growX(value:Number = ResizeConstraint.WEIGHT_100):CCBuilder {
+  public function growX(value:Number = WEIGHT_100):CCBuilder {
     cc.horizontal.grow = value;
     return this;
   }
@@ -140,7 +143,7 @@ public class CCBuilder {
   /** grow weight for the component horizontally and optionally vertically.
    * @since 3.7.2
    */
-  public function grow(x:Number = ResizeConstraint.WEIGHT_100, y:Number = ResizeConstraint.WEIGHT_100):CCBuilder {
+  public function grow(x:Number = WEIGHT_100, y:Number = WEIGHT_100):CCBuilder {
     growX(x);
     growY(y);
     return this;
@@ -350,8 +353,8 @@ public class CCBuilder {
    * @return <code>this</code> so it is possible to chain calls. E.g. <code>new ComponentConstraint().noGrid().gap().fill()</code>.
    * @see #growY(Float)
    */
-  public function growY(v:Number = ResizeConstraint.WEIGHT_100):CCBuilder {
-    cc.vertical.grow = ResizeConstraint.WEIGHT_100;
+  public function growY(v:Number = WEIGHT_100):CCBuilder {
+    cc.vertical.grow = v;
     return this;
   }
 
@@ -404,12 +407,12 @@ public class CCBuilder {
     return this;
   }
 
-  /** Same functionality as {@link #setTag(String tag)} only this method returns <code>this</code> for chaining multiple calls.
+  /** Same functionality as {@link #tag(String tag)} only this method returns <code>this</code> for chaining multiple calls.
    * <p>
    * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
    * @param tag The new tag. May be <code>null</code>.
    * @return <code>this</code> so it is possible to chain calls. E.g. <code>new LayoutConstraint().noGrid().gap().fill()</code>.
-   * @see #setTag(String)
+   * @see #tag(String)
    */
   public function tag(tag:String):CCBuilder {
     cc.tag = tag;
@@ -572,12 +575,12 @@ public class CCBuilder {
     return this;
   }
 
-  /** Same functionality as {@link #setSpanX(int)} only this method returns <code>this</code> for chaining multiple calls.
+  /** Same functionality as {@link #spanX(int)} only this method returns <code>this</code> for chaining multiple calls.
    * <p>
    * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
    * @param cells The number of cells to span (i.e. merge).
    * @return <code>this</code> so it is possible to chain calls. E.g. <code>new LayoutConstraint().noGrid().gap().fill()</code>.
-   * @see #setSpanY(int)
+   * @see #spanY(int)
    */
   public function spanX(cells:int = 2097051):CCBuilder {
     cc.spanX = cells;
@@ -591,35 +594,35 @@ public class CCBuilder {
    * @param weightX The weight used in the push.
    * @param weightY The weight used in the push.
    * @return <code>this</code> so it is possible to chain calls. E.g. <code>new LayoutConstraint().noGrid().gap().fill()</code>.
-   * @see #setPushY(Float)
-   * @see #setPushX(Float)
+   * @see #pushY(Float)
+   * @see #pushX(Float)
    * @see #pushY()
    * @see #pushX()
    */
-  public function push(weightX:Number = ResizeConstraint.WEIGHT_100, weightY:Number = ResizeConstraint.WEIGHT_100):CCBuilder {
+  public function push(weightX:Number = WEIGHT_100, weightY:Number = WEIGHT_100):CCBuilder {
     return pushX(weightX).pushY(weightY);
   }
 
-  /** Same functionality as {@link #setPushY(Float weight)} only this method returns <code>this</code> for chaining multiple calls.
+  /** Same functionality as {@link #pushY(Number weight)} only this method returns <code>this</code> for chaining multiple calls.
    * <p>
    * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
    * @param weight The weight used in the push.
    * @return <code>this</code> so it is possible to chain calls. E.g. <code>new LayoutConstraint().noGrid().gap().fill()</code>.
    * @see #setPushY(Float)
    */
-  public function pushY(weight:Number = ResizeConstraint.WEIGHT_100):CCBuilder {
+  public function pushY(weight:Number = WEIGHT_100):CCBuilder {
     cc.pushY = weight;
     return this;
   }
 
-  /** Same functionality as {@link #setPushX(Float weight)} only this method returns <code>this</code> for chaining multiple calls.
+  /** Same functionality as {@link #pushX(Number weight)} only this method returns <code>this</code> for chaining multiple calls.
    * <p>
    * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
    * @param weight The weight used in the push.
    * @return <code>this</code> so it is possible to chain calls. E.g. <code>new LayoutConstraint().noGrid().gap().fill()</code>.
    * @see #setPushY(Float)
    */
-  public function pushX(weight:Number = ResizeConstraint.WEIGHT_100):CCBuilder {
+  public function pushX(weight:Number = WEIGHT_100):CCBuilder {
     cc.pushX = weight;
     return this;
   }
@@ -629,7 +632,7 @@ public class CCBuilder {
    * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
    * @param parts The number of parts (i.e. component slots) the cell should be divided into.
    * @return <code>this</code> so it is possible to chain calls. E.g. <code>new ComponentConstraint().noGrid().gap().fill()</code>.
-   * @see #setSplit(int)
+   * @see #split(int)
    */
   public function split(parts:int = 2097051):CCBuilder {
     cc.split = parts;
@@ -641,7 +644,7 @@ public class CCBuilder {
    * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
    * @param cells How many cells in the grid that should be skipped <b>before</b> the component that this constraint belongs to
    * @return <code>this</code> so it is possible to chain calls. E.g. <code>new ComponentConstraint().noGrid().gap().fill()</code>.
-   * @see #setSkip(int)
+   * @see #skip(int)
    */
   public function skip(cells:int = 1):CCBuilder {
     cc.skip = cells;
@@ -659,7 +662,7 @@ public class CCBuilder {
     return this;
   }
 
-  /** Same functionality as {@link #setFlowX(Boolean .TRUE)} only this method returns <code>this</code> for chaining multiple calls.
+  /** Same functionality as {@link #flowX(Boolean .TRUE)} only this method returns <code>this</code> for chaining multiple calls.
    * <p>
    * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
    * @return <code>this</code> so it is possible to chain calls. E.g. <code>new ComponentConstraint().noGrid().gap().fill()</code>.
@@ -670,7 +673,7 @@ public class CCBuilder {
     return this;
   }
 
-  /** Same functionality as {@link #setFlowX(Boolean .FALSE)} only this method returns <code>this</code> for chaining multiple calls.
+  /** Same functionality as {@link #flowX(Boolean .FALSE)} only this method returns <code>this</code> for chaining multiple calls.
    * <p>
    * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
    * @return <code>this</code> so it is possible to chain calls. E.g. <code>new ComponentConstraint().noGrid().gap().fill()</code>.
@@ -681,7 +684,7 @@ public class CCBuilder {
     return this;
   }
   
-  /** Same functionality as {@link #setNewlineGapSize(BoundSize)} only this method returns <code>this</code> for chaining multiple calls.
+  /** Same functionality as {@link #newlineGapSize(BoundSize)} only this method returns <code>this</code> for chaining multiple calls.
    * <p>
    * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
    * @param gapSize The gap size that will override the gap size in the row/colum constraints if <code>!= null</code>. E.g. "5px" or "unrel".
@@ -701,7 +704,7 @@ public class CCBuilder {
     return this;
   }
 
-  /** Same functionality as {@link #setWrapGapSize(BoundSize)} only this method returns <code>this</code> for chaining multiple calls.
+  /** Same functionality as {@link #wrapGapSize(BoundSize)} only this method returns <code>this</code> for chaining multiple calls.
    * <p>
    * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
    * @param gapSize The gap size that will override the gap size in the row/colum constraints if <code>!= null</code>. E.g. "5px" or "unrel".
@@ -867,7 +870,7 @@ public class CCBuilder {
    * @param bottom The top padding that will be added to the y2 coordinate at the last stage in the layout.
    * @param right The top padding that will be added to the x2 coordinate at the last stage in the layout.
    * @return <code>this</code> so it is possible to chain calls. E.g. <code>new ComponentConstraint().noGrid().gap().fill()</code>.
-   * @see #setTag(String)
+   * @see #tag(String)
    */
   public function pad(top:int, left:int, bottom:int, right:int):CCBuilder {
     cc.padding = new <UnitValue>[UnitValue.createPixel(top), UnitValue.createPixel(left), UnitValue.createPixel(bottom), UnitValue.createPixel(right)];
@@ -879,7 +882,7 @@ public class CCBuilder {
    * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
    * @param pad The string to parse. E.g. "10 10 10 10" or "20". If less than 4 groups the last will be used for the missing.
    * @return <code>this</code> so it is possible to chain calls. E.g. <code>new ComponentConstraint().noGrid().gap().fill()</code>.
-   * @see #setTag(String)
+   * @see #tag(String)
    */
   public function pad2(pad:String):CCBuilder {
     cc.padding = pad != null ? ConstraintParser.parseInsets(pad, false) : null;
