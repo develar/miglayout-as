@@ -181,11 +181,12 @@ public final class Grid {
       if (pos != null || rootCc.external) {
 				cw = new CompWrap(comp, rootCc, hideMode, pos, cbSz, container);
 				cell = grid[null];
-				if (cell == null) {
-					grid[null] = new Cell(cw);
-				} else {
-					cell.compWraps[cell.compWraps.length] = cw;
-				}
+        if (cell == null) {
+          grid[null] = new Cell(cw);
+        }
+        else {
+          cell.compWraps[cell.compWraps.length] = cw;
+        }
 
 				if (!rootCc.boundsInGrid || rootCc.external) {
 					setLinkedBounds(comp, rootCc, comp.x, comp.y, comp.actualWidth, comp.actualHeight, rootCc.external);
