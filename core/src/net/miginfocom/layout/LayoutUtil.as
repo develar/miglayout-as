@@ -381,10 +381,9 @@ public final class LayoutUtil {
    * @param o2 The second object. May be <code>null</code>.
    * @return Returns <code>true</code> if <code>o1</code> and <code>o2</code> are equal (using .equals()) or both are <code>null</code>.
    */
-  internal static function equals(o1:Number, o2:Number):Boolean
-	{
-		return (o1 != o1 && o2 != o2) || o1 == o2;
-	}
+  internal static function equals(o1:Number, o2:Number):Boolean {
+    return (o1 != o1 && o2 != o2) || o1 == o2;
+  }
 
 //	static int getBaselineCorrect(Component comp)
 //	{
@@ -417,8 +416,8 @@ public final class LayoutUtil {
    * @return The inset for the side. Never <code>null</code>.
    */
   internal static function getInsets(lc:LC, side:int, getDefault:Boolean):UnitValue {
-    var i:Vector.<UnitValue> = lc.insets;
-    return (i != null && i[side] != null) ? i[side] : (getDefault ? PlatformDefaults.getPanelInsets(side) : UnitValue.ZERO);
+    var i:UnitValue = lc.getInset(side);
+    return i != null ? i : getDefault ? PlatformDefaults.getPanelInsets(side) : UnitValue.ZERO;
   }
 
   public static function calculateHash(cw:ComponentWrapper):int {

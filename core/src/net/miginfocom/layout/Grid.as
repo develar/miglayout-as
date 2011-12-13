@@ -58,6 +58,7 @@ public final class Grid {
 	/** Used for components that doesn't have a CC set. Not that it's really really important that the CC is never changed in this Grid class.
 	 */
 	private static const DEF_CC:CC = new CC();
+  private static var DEF_LC:LC;
 	private static const DEF_DIM_C:DimConstraint = new DimConstraint();
 
 	/** The constraints. Never <code>null</code>.
@@ -119,14 +120,22 @@ public final class Grid {
 	/** Constructor.
 	 * @param container The container that will be laid out.
 	 * @param lc The form flow constraints.
-	 * @param rowConstr The rows specifications. If more cell rows are required, the last element will be used for when there is no corresponding element in this array.
-	 * @param colConstr The columns specifications. If more cell rows are required, the last element will be used for when there is no corresponding element in this array.
+	 * @param rowConstraints The rows specifications. If more cell rows are required, the last element will be used for when there is no corresponding element in this array.
+	 * @param columnConstraints The columns specifications. If more cell rows are required, the last element will be used for when there is no corresponding element in this array.
 	 * @param callbackList A list of callbacks or <code>null</code> if none. Will not be altered.
 	 */
-  public function Grid(container:ContainerWrapper, lc:LC, rowConstr:Vector.<DimConstraint>, colConstr:Vector.<DimConstraint>, callbackList:Vector.<LayoutCallback> = null) {
-    this.lc = lc;
-    this.rowConstr = rowConstr;
-    this.colConstr = colConstr;
+  public function Grid(container:ContainerWrapper, lc:LC, rowConstraints:Vector.<DimConstraint> = null, columnConstraints:Vector.<DimConstraint> = null, callbackList:Vector.<LayoutCallback> = null) {
+    if (lc == null) {
+      if (DEF_LC == null) {
+        DEF_LC = new LC();
+      }
+      this.lc = DEF_LC;
+    }
+    else {
+      this.lc = lc;
+    }
+    this.rowConstr = rowConstraints;
+    this.colConstr = columnConstraints;
     this.container = container;
     this.callbackList = callbackList;
     construct();
@@ -156,7 +165,9 @@ public final class Grid {
     var sizeGroupMapX:Dictionary;
     var sizeGroupMapY:Dictionary;
 
-    for each (var comp:ComponentWrapper in comps) {
+    i = 0;
+    while (i < comps.length) {
+      var comp:ComponentWrapper = comps[i];
 			var rootCc:CC = comp.constraints || DEF_CC;
 
 			addLinkIDs(rootCc);
@@ -474,24 +485,22 @@ public final class Grid {
 	}
 
 	/** Does the actual layout. Uses many values calculated in the constructor.
-	 * @param x
-	 * @param y
-	 * @param w
-	 * @param h
-	 * @param alignX The alignment for the x-axis.
-	 * @param alignY The alignment for the y-axis.
+	 * @param x The bounds to layout against. [x, y, width, height].
+	 * @param y The bounds to layout against. [x, y, width, height].
+	 * @param w The bounds to layout against. [x, y, width, height].
+	 * @param h The bounds to layout against. [x, y, width, height].
 	 * @param debug If debug information should be saved in {link #debugRects}.
 	 * @param checkPrefChange If a check should be done to see if the setting of any new bounds changes the preferred size
 	 * of a component.
 	 * @return If the layout has probably changed the preferred size and there is need for a new layout (normally only SWT).
 	 */
-	public function layout(x:int, y:int, w:int, h:int, alignX:UnitValue, alignY:UnitValue, debug:Boolean, checkPrefChange:Boolean):Boolean {
+	public function layout(x:int, y:int, w:int, h:int, debug:Boolean, checkPrefChange:Boolean):Boolean {
 		checkSizeCalcs();
 
 		resetLinkValues(true, true);
 
-		layoutInOneDim(w, alignX, false, pushXs);
-		layoutInOneDim(h, alignY, true, pushYs);
+		layoutInOneDim(w, lc.alignX, false, pushXs);
+		layoutInOneDim(h, lc.alignY, true, pushYs);
 
 		//HashMap<String, Integer> endGrpXMap = null, endGrpYMap = null;
 		var endGrpXMap:Dictionary = null, endGrpYMap:Dictionary = null;

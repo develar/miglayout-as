@@ -38,36 +38,14 @@ public final class LC {
    * in the parent. <code>null</code> is default and that means top/left alignment. The relative distances between the components will not be affected
    * by this property.
    */
-  private var _alignX:UnitValue;
-
-  public function get alignX():UnitValue {
-    return _alignX;
-  }
-
-  /**
-   * @param value The new alignment. Use {@link ConstraintParser# parseAlignKeywords(String, boolean)} to create the {@link UnitValue}. May be <code>null</code>.
-   */
-  public function set alignX(value:UnitValue):void {
-    _alignX = value;
-  }
+  public var alignX:UnitValue;
 
   /**
    * If the laid out components' bounds in total is less than the final size of the container these align values will be used to align the components
    * in the parent. <code>null</code> is default and that means top/left alignment. The relative distances between the components will not be affected
    * by this property.
    */
-  private var _alignY:UnitValue;
-
-  public function get alignY():UnitValue {
-    return _alignY;
-  }
-
-  /**
-   * @param value The new alignment. Use {@link ConstraintParser# parseAlignKeywords(String, boolean)} to create the {@link UnitValue}. May be <code>null</code>.
-   */
-  public function set alignY(value:UnitValue):void {
-    _alignY = value;
-  }
+  public var alignY:UnitValue;
 
   private var _debugMillis:int = 0;
   /**
@@ -124,31 +102,13 @@ public final class LC {
    * If non-<code>null</code> (<code>null</code> is default) these value will be used as the default gaps between the columns in the grid.
    * The default grid gap between columns in the grid. <code>null</code> if the platform default is used.
    */
-  private var _gridGapX:BoundSize;
-  public function get gridGapX():BoundSize {
-    return _gridGapX;
-  }
+  public var gridGapX:BoundSize;
 
-  public function set gridGapX(value:BoundSize):void {
-    _gridGapX = value;
-  }
-
-  private var _gridGapY:BoundSize;
   /**
    * If non-<code>null</code> (<code>null</code> is default) these value will be used as the default gaps between the rows in the grid.
    * @return The default grid gap between rows in the grid. <code>null</code> if the platform default is used.
    */
-  public function get gridGapY():BoundSize {
-    return _gridGapY;
-  }
-
-  /**
-   * If non-<code>null</code> (<code>null</code> is default) these value will be used as the default gaps between the rows in the grid.
-   * @param value The default grid gap between rows in the grid. If <code>null</code> the platform default is used.
-   */
-  public function set gridGapY(value:BoundSize):void {
-    _gridGapY = value;
-  }
+  public var gridGapY:BoundSize;
 
   /**
    * How a component that is hidden (not visible) should be treated by default.
@@ -171,19 +131,23 @@ public final class LC {
     _hideMode = mode;
   }
 
-  /**
-   * The insets for the layed out panel. The insets will be an empty space around the components in the panel. <code>null</code> values
-   * means that the default panel insets for the platform is used. See {@l ink PlatformDefaults#setDialogInsets(net.miginfocom.layout.UnitValue, net.miginfocom.layout.UnitValue, net.miginfocom.layout.UnitValue, net.miginfocom.layout.UnitValue)}.
-   * @return The insets. Of length 4 (top, left, bottom, right) or <code>null</code>. The elements (1 to 4) may be <code>null</code>. The array is a copy and can be used freely.
-   * @ see net.miginfocom.layout.ConstraintParser#parseInsets(String, boolean)
-   */
-  private var _insets:Vector.<UnitValue>; // Never null elememts but if unset array is null
-  public function get insets():Vector.<UnitValue> {
-    return _insets != null ? new <UnitValue>[_insets[0], _insets[1], _insets[2], _insets[3]] : null;
+  ///**
+  // * The insets for the layed out panel. The insets will be an empty space around the components in the panel. <code>null</code> values
+  // * means that the default panel insets for the platform is used. See {@l ink PlatformDefaults#setDialogInsets(net.miginfocom.layout.UnitValue, net.miginfocom.layout.UnitValue, net.miginfocom.layout.UnitValue, net.miginfocom.layout.UnitValue)}.
+  // * @return The insets. Of length 4 (top, left, bottom, right) or <code>null</code>. The elements (1 to 4) may be <code>null</code>. The array is a copy and can be used freely.
+  // * @ see net.miginfocom.layout.ConstraintParser#parseInsets(String, boolean)
+  // */
+  private var _insets:Vector.<UnitValue>; // Never null elements but if unset array is null
+  //public function get insets():Vector.<UnitValue> {
+  //  return _insets != null ? new <UnitValue>[_insets[0], _insets[1], _insets[2], _insets[3]] : null;
+  //}
+
+  internal function getInset(side:int):UnitValue {
+    return _insets == null ? null : _insets[side];
   }
 
   public function set insets(value:Vector.<UnitValue>):void {
-    _insets = value != null ? new <UnitValue>[value[0], value[1], value[2], value[3]] : null;
+    _insets = value;
   }
 
   /** If the layout should be forced to be left-to-right or right-to-left. A value of <code>null</code> is default and

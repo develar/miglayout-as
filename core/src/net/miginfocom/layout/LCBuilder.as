@@ -196,12 +196,12 @@ public final class LCBuilder {
    * @param allSides The unit value to set for all sides. May be <code>null</code> which means that the default panel insets
    * for the platform is used.
    * @return <code>this</code> so it is possible to chain calls. E.g. <code>new LayoutConstraint().noGrid().gap().fill()</code>.
-   * @see #setInsets(UnitValue[])
+   * @see #insets(UnitValue[])
    */
   public function insetsAll(allSides:String):LCBuilder {
     var insH:UnitValue = ConstraintParser.parseUnitValue(allSides, null, true);
     var insV:UnitValue = ConstraintParser.parseUnitValue(allSides, null, false);
-    lc.insets = new <UnitValue>[insV, insH, insV, insH]; // No setter to avoid copy again
+    lc.insets = new <UnitValue>[insV, insH, insV, insH];
     return this;
   }
 

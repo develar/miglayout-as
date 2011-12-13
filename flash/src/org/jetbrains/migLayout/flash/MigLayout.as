@@ -33,10 +33,10 @@ public class MigLayout extends AbstractMigLayout {
     container.w = w;
     container.h = h;
 
-    if (grid.layout(0, 0, w, h,  lc.alignX, lc.alignY, lc.debugMillis > 0, true)) {
+    if (grid.layout(0, 0, w, h, lc != null && lc.debugMillis > 0, true)) {
       grid = null;
       checkCache(container);
-      grid.layout(0, 0, w, h, lc.alignX, lc.alignY, lc.debugMillis > 0, false);
+      grid.layout(0, 0, w, h, lc != null && lc.debugMillis > 0, false);
     }
   }
 

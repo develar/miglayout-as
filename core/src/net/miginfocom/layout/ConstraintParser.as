@@ -11,11 +11,11 @@ public final class ConstraintParser {
    * @return The parsed constraint. Never <code>null</code>.
    */
   public static function parseLayoutConstraint(s:String):LC {
-		var lc:LC = new LC();
-		if (s.length == 0) {
-			return lc;
+		if ((s = prepare(s)) == null) {
+			return null;
     }
 
+    var lc:LC = new LC();
 		var parts:Vector.<String> = toTrimmedTokens(s, 44 /*','*/);
     var i:int;
     var part:String;
@@ -273,8 +273,7 @@ public final class ConstraintParser {
    * @return An array of {@link DimConstraint}s that is as many are there exist "[...]" sections in the string that is parsed.
    */
   private static function parseAxisConstraint(s:String, isCols:Boolean):Vector.<DimConstraint> {
-    // Short circuit for performance.
-    if (s.length == 0) {
+    if ((s = prepare(s)) == null) {
       return null;
     }
 
@@ -1448,16 +1447,21 @@ public final class ConstraintParser {
     return retList;
   }
 
-  /** Makes <code>null</code> "", trimms and converts to lower case.
+  /** Trims and converts to lower case.
    * @param s The string
-   * @return Not null.
    */
-  public static function prepare(s:String):String {
+  private static function prepare(s:String):String {
     if (s == null) {
-      return "";
+      return null;
     }
     else {
-      return s.length == 0 ? s : Strings.trim(s).toLowerCase();
+      if (s.length == 0) {
+        return null;
+      }
+      else {
+        s = Strings.trim(s);
+        return s.length == 0 ? null : s.toLowerCase();
+      }
     }
   }
 }
