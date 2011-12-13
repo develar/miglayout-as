@@ -298,19 +298,15 @@ public class ACBuilder {
    * @param indexes The index(es) (0-based) of the columns/rows that should be affected by this constraint.
    * @return <code>this</code> so it is possible to chain calls. E.g. <code>new AxisConstraint().noGrid().gap().fill()</code>.
    */
-  public function grow(w:Number = NaN, ...indexes):ACBuilder {
-    if (w != w) {
-      w = 1;
-    }
+  public function grow(w:Number = 1, ...indexes):ACBuilder {
     if (indexes.length == 0) {
       indexes[0] = curIx;
     }
 
-    var gw:Number = w;
     for (var i:int = indexes.length - 1; i >= 0; i--) {
       var ix:int = indexes[i];
       makeSize(ix);
-      constraints[ix].grow = gw;
+      constraints[ix].grow = w;
     }
     return this;
   }
@@ -376,19 +372,15 @@ public class ACBuilder {
    * @return <code>this</code> so it is possible to chain calls. E.g. <code>new AxisConstraint().noGrid().gap().fill()</code>.
    * @since 3.7.2
    */
-  public function shrink(w:Number = NaN, ...indexes):ACBuilder {
-    if (w != w) {
-      w = 100;
-    }
+  public function shrink(w:Number = 100, ...indexes):ACBuilder {
     if (indexes.length == 0) {
       indexes[0] = curIx;
     }
 
-    var sw:Number = w;
     for (var i:int = indexes.length - 1; i >= 0; i--) {
       var ix:int = indexes[i];
       makeSize(ix);
-      constraints[ix].shrink = sw;
+      constraints[ix].shrink = w;
     }
     return this;
   }
