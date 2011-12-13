@@ -229,10 +229,10 @@ public final class DimConstraint {
    * @param value The new size. May be <code>null</code>.
    */
   public function set size(value:BoundSize):void {
-    if (_size != null) {
-      _size.checkNotLinked();
+    if (value != null) {
+      value.checkNotLinked();
     }
-    _size = size;
+    _size = value;
   }
 
   /** Returns the size group that this entity should be in for the dimension that this object is describing.
@@ -255,7 +255,7 @@ public final class DimConstraint {
    * smallest for max.
    * <p>
    * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
-   * @param s The new size group. <code>null</code> disables size grouping.
+   * @param value The new size group. <code>null</code> disables size grouping.
    */
   public function set sizeGroup(value:String):void {
     _sizeGroup = value;
@@ -303,7 +303,7 @@ public final class DimConstraint {
    * this constraint represents (width for column and height for a row).
    * <p>
    * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
-   * @param b <code>true</code> means that components should grow.
+   * @param value <code>true</code> means that components should grow.
    */
   public function set fill(value:Boolean):void {
     _fill = value;

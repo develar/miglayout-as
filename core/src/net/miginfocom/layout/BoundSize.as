@@ -8,8 +8,8 @@ package net.miginfocom.layout {
  * You can create a BoundSize from a String with the use of {@link ConstraintParser#parseBoundSize(String, boolean, boolean)}
  */
 public final class BoundSize {
-  public static const NULL_SIZE:BoundSize = create2(null, null);
-  public static const ZERO_PIXEL:BoundSize = create2(UnitValue.ZERO, "0px");
+  public static const NULL_SIZE:BoundSize = createSame(null, null);
+  public static const ZERO_PIXEL:BoundSize = createSame(UnitValue.ZERO, "0px");
 
   private var _min:UnitValue;
   private var _pref:UnitValue;
@@ -25,7 +25,7 @@ public final class BoundSize {
 //		this(minMaxPref, minMaxPref, minMaxPref, createString);
 //	}
 
-  private static function create2(minMaxPref:UnitValue, createString:String):BoundSize {
+  public static function createSame(minMaxPref:UnitValue, createString:String = null):BoundSize {
     return create(minMaxPref, minMaxPref, minMaxPref, createString);
   }
 
