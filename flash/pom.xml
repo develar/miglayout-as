@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.jetbrains.migLayout</groupId>
     <artifactId>migLayoutAggregator</artifactId>
-    <version>4.0.1-SNAPSHOT</version>
+    <version>4.3-SNAPSHOT</version>
   </parent>
 
   <artifactId>flash</artifactId>
@@ -15,7 +15,7 @@
       <groupId>org.jetbrains.migLayout</groupId>
       <artifactId>core</artifactId>
       <type>swc</type>
-      <version>4.0.1-SNAPSHOT</version>
+      <version>4.3-SNAPSHOT</version>
     </dependency>
   </dependencies>
 </project>

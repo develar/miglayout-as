@@ -33,7 +33,7 @@ public final class LayoutUtil {
    * @return The current version of MiG Layout. E.g. "3.6.3" or "4.0"
    */
   public static function get version():String {
-    return "4.0.1";
+    return "4.3";
   }
 
   /**
