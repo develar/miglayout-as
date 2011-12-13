@@ -131,27 +131,16 @@ public final class LC {
     _hideMode = mode;
   }
 
-  ///**
-  // * The insets for the layed out panel. The insets will be an empty space around the components in the panel. <code>null</code> values
-  // * means that the default panel insets for the platform is used. See {@l ink PlatformDefaults#setDialogInsets(net.miginfocom.layout.UnitValue, net.miginfocom.layout.UnitValue, net.miginfocom.layout.UnitValue, net.miginfocom.layout.UnitValue)}.
-  // * @return The insets. Of length 4 (top, left, bottom, right) or <code>null</code>. The elements (1 to 4) may be <code>null</code>. The array is a copy and can be used freely.
-  // * @ see net.miginfocom.layout.ConstraintParser#parseInsets(String, boolean)
-  // */
-  private var _insets:Vector.<UnitValue>; // Never null elements but if unset array is null
-  //public function get insets():Vector.<UnitValue> {
-  //  return _insets != null ? new <UnitValue>[_insets[0], _insets[1], _insets[2], _insets[3]] : null;
-  //}
-
-  internal function getInset(side:int):UnitValue {
-    return _insets == null ? null : _insets[side];
-  }
-
-  public function set insets(value:Vector.<UnitValue>):void {
-    _insets = value;
-  }
+  /**
+  * The insets for the layed out panel. The insets will be an empty space around the components in the panel. <code>null</code> values
+  * means that the default panel insets for the platform is used. See {@link PlatformDefaults#setDialogInsets(net.miginfocom.layout.UnitValue, net.miginfocom.layout.UnitValue, net.miginfocom.layout.UnitValue, net.miginfocom.layout.UnitValue)}.
+  * Of length 4 (top, left, bottom, right) or <code>null</code>. The elements (1 to 4) may be <code>null</code>.
+  * @see net.miginfocom.layout.ConstraintParser#parseInsets(String, boolean)
+  */
+  public var insets:Vector.<UnitValue>;
 
   /** If the layout should be forced to be left-to-right or right-to-left. A value of <code>null</code> is default and
-   * means that this will be picked up from the {@link java.util.Locale} that the container being layed out is reporting.
+     * means that this will be picked up from the {@link java.util.Locale} that the container being layed out is reporting.
    * @return <code>Boolean.TRUE</code> if force left-to-right. <code>Boolean.FALSE</code> if force tight-to-left. <code>null</code>
    * for the default "let the current Locale decide".
    */

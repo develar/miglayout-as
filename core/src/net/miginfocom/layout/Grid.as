@@ -352,7 +352,7 @@ public final class Grid {
     }
 
 		// If there were size groups, calculate the largest values in the groups (for min/pref/max) and enforce them on the rest in the group.
-		if (sizeGroupsX > 0|| sizeGroupsY > 0) {
+		if (sizeGroupsX > 0 || sizeGroupsY > 0) {
 			sizeGroupMapX = sizeGroupsX > 0 ? new Dictionary() : null;
 			sizeGroupMapY = sizeGroupsY > 0 ? new Dictionary() : null;
 			var sizeGroupCWs:Vector.<CompWrap> = new Vector.<CompWrap>(Math.max(sizeGroupsX, sizeGroupsY), true);

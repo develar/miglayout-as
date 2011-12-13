@@ -16,12 +16,19 @@ public class AbstractMigLayout {
     this.rowConstraints = rowConstraints;
   }
 
+  public function setLayoutConstraints(value:LC):void {
+    lc = value;
+    flags |= INVALID;
+  }
+
   public function setColumnConstraints(value:Vector.<DimConstraint>):void {
     colSpecs = value;
+    flags |= INVALID;
   }
 
   public function setRowConstraints(value:Vector.<DimConstraint>):void {
     rowSpecs = value;
+    flags |= INVALID;
   }
 
   public function set layoutConstraints(value:String):void {

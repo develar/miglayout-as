@@ -162,7 +162,7 @@ public final class UnitValue {
 
   private static const IDENTITY:int = -1;
 
-  internal static const ZERO:UnitValue = create2(0, PIXEL, true, "0px");
+  public static const ZERO:UnitValue = create2(0, PIXEL, true, "0px");
   internal static const TOP:UnitValue = create2(0, PERCENT, false, "top");
   internal static const LEADING:UnitValue = create2(0, PERCENT, true, "leading");
   internal static const LEFT:UnitValue = create2(0, PERCENT, true, "left");

@@ -412,12 +412,12 @@ public final class LayoutUtil {
 
   /** Returns the inset for the side.
    * @param side top == 0, left == 1, bottom = 2, right = 3.
-   * @param getDefault If <code>true</code> the default insets will get retrieved if <code>lc</code> has none set.
+   * @param useDefault If <code>true</code> the default insets will get retrieved if <code>lc</code> has none set.
    * @return The inset for the side. Never <code>null</code>.
    */
-  internal static function getInsets(lc:LC, side:int, getDefault:Boolean):UnitValue {
-    var i:UnitValue = lc.getInset(side);
-    return i != null ? i : getDefault ? PlatformDefaults.getPanelInsets(side) : UnitValue.ZERO;
+  internal static function getInsets(lc:LC, side:int, useDefault:Boolean):UnitValue {
+    var i:UnitValue;
+    return lc.insets != null && (i = lc.insets[side]) != null ? i : useDefault ? PlatformDefaults.getPanelInsets(side) : UnitValue.ZERO;
   }
 
   public static function calculateHash(cw:ComponentWrapper):int {

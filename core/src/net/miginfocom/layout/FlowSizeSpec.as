@@ -3,8 +3,7 @@ final internal class FlowSizeSpec {
   internal var sizes:Vector.<Vector.<int>>;  // [row/col index][min, pref, max]
   internal var resConstsInclGaps:Vector.<ResizeConstraint>;  // [row/col index]
 
-  function FlowSizeSpec(sizes:Vector.<Vector.<int>>, resConstsInclGaps:Vector.<ResizeConstraint>)
-  {
+  function FlowSizeSpec(sizes:Vector.<Vector.<int>>, resConstsInclGaps:Vector.<ResizeConstraint>) {
     this.sizes = sizes;
     this.resConstsInclGaps = resConstsInclGaps;
   }

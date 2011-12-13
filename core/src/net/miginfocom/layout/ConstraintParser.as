@@ -862,7 +862,7 @@ public final class ConstraintParser {
     var j:int;
     if (s.length == 0 || s == "dialog" || s == "panel") {
       if (!acceptPanel) {
-        throw new ArgumentError("Insets now allowed: " + s + "\n");
+        throw new ArgumentError("Insets not allowed: " + s + "\n");
       }
 
       var isPanel:Boolean = s.charCodeAt(0) == 112; // p
