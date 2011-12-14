@@ -7,8 +7,8 @@
     <version>27</version>
   </parent>
 
-  <groupId>org.jetbrains.migLayout</groupId>
-  <artifactId>migLayoutAggregator</artifactId>
+  <groupId>org.jetbrains.miglayout</groupId>
+  <artifactId>miglayout-as-parent</artifactId>
   <version>4.3-SNAPSHOT</version>
   <packaging>pom</packaging>
 
