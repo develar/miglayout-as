@@ -28,11 +28,6 @@ public final class DimConstraint {
 
   private var _noGrid:Boolean;
 
-  /** Empty constructor.
-   */
-  public function DimConstraint() {
-  }
-
   /** Returns the grow priority. Relative priority is used for determining which entities gets the extra space first.
    * <p>
    * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
@@ -231,8 +226,11 @@ public final class DimConstraint {
   public function set size(value:BoundSize):void {
     if (value != null) {
       value.checkNotLinked();
+      _size = value;
     }
-    _size = value;
+    else {
+      _size = BoundSize.NULL_SIZE;
+    }
   }
 
   /** Returns the size group that this entity should be in for the dimension that this object is describing.

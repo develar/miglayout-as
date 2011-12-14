@@ -8,7 +8,7 @@ package net.miginfocom.layout {
  * You can create a BoundSize from a String with the use of {@link ConstraintParser#parseBoundSize(String, boolean, boolean)}
  */
 public final class BoundSize {
-  public static const NULL_SIZE:BoundSize = createSame(null, null);
+  public static const NULL_SIZE:BoundSize = createSame(null);
   public static const ZERO_PIXEL:BoundSize = createSame(UnitValue.ZERO, "0px");
 
   private var _min:UnitValue;
@@ -16,6 +16,13 @@ public final class BoundSize {
   private var _max:UnitValue;
   private var _gapPush:Boolean;
 
+  public function BoundSize(min:UnitValue, pref:UnitValue, max:UnitValue) {
+    _min = min;
+    _pref = pref;
+    _max = max;
+  }
+
+  //noinspection JSUnusedLocalSymbols
   /** Constructor that use the same value for min/preferred/max size.
    * @param minMaxPref The value to use for min/preferred/max size.
    * @param createString The string used to create the BoundsSize.
@@ -26,7 +33,7 @@ public final class BoundSize {
 //	}
 
   public static function createSame(minMaxPref:UnitValue, createString:String = null):BoundSize {
-    return create(minMaxPref, minMaxPref, minMaxPref, createString);
+    return new BoundSize(minMaxPref, minMaxPref, minMaxPref);
   }
 
   //noinspection JSUnusedLocalSymbols
@@ -43,16 +50,14 @@ public final class BoundSize {
 //	}
   //noinspection JSUnusedLocalSymbols
   internal static function create(min:UnitValue, preferred:UnitValue, max:UnitValue, createString:String):BoundSize {
-    var boundSize:BoundSize = new BoundSize();
-    boundSize._min = min;
-    boundSize._pref = preferred;
-    boundSize._max = max;
+    var boundSize:BoundSize = new BoundSize(min, preferred, max);
 //    LayoutUtil.putCCString(boundSize, createString);
     return boundSize;
   }
 
+  //noinspection JSUnusedLocalSymbols
   internal static function create3(min:UnitValue, preferred:UnitValue, max:UnitValue, gapPush:Boolean, createString:String):BoundSize {
-    var boundSize:BoundSize = create(min, preferred, max, createString);
+    var boundSize:BoundSize = new BoundSize(min, preferred, max);
     boundSize._gapPush = gapPush;
     return boundSize;
   }

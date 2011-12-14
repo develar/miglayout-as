@@ -1214,15 +1214,18 @@ public final class Grid {
           var unit:int = uv.unit;
           if (unit == UnitValue.PREF_SIZE) {
             rowColSize = groupSizes[LayoutUtil.PREF];
-          } else if (unit == UnitValue.MIN_SIZE) {
+          }
+          else if (unit == UnitValue.MIN_SIZE) {
             rowColSize = groupSizes[LayoutUtil.MIN];
-          } else if (unit == UnitValue.MAX_SIZE) {
+          }
+          else if (unit == UnitValue.MAX_SIZE) {
             rowColSize = groupSizes[LayoutUtil.MAX];
           }
           else {
             rowColSize = uv.getPixels(refSize, container, null);
           }
-				} else if (cellIx >= -MAX_GRID && cellIx <= MAX_GRID && rowColSize == 0) {
+				}
+        else if (cellIx >= -MAX_GRID && cellIx <= MAX_GRID && rowColSize == 0) {
 					rowColSize = LayoutUtil.isDesignTime(container) ? LayoutUtil.designTimeEmptySize : 0;    // Empty rows with no size set gets XX pixels if design time
 				}
 
