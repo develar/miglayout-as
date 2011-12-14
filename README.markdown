@@ -21,3 +21,7 @@ Original license (java): BSD. ActionScript port (this project): Apache License v
 * Grid.layout() method — remove alignX and alignY paramaters, because LC has full information about it.
 
 API Creation of Constraints is ported too, but is not tested and is not recommended to use. String creation of the constraints is short to type and easy to read.
+
+## FAQ
+### Why Flex layout is not suitable?
+http://www.javalobby.org/articles/miglayout/
