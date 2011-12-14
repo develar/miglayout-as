@@ -395,7 +395,9 @@ public final class ConstraintParser {
 		return dimConstraint;
 	}
 
-	/** Parses all component constraints and stores the parsed values in the transient (cache) member varables.
+  // todo Why are we need this method?
+  //noinspection JSUnusedGlobalSymbols
+  /** Parses all component constraints and stores the parsed values in the transient (cache) member varables.
 	 * @param constrMap The constraints as <code>String</code>s. Strings <b>must be lower case and trimmed</b>
 	 * @return The parsed constraints. Never <code>null</code>.
 	 */
@@ -418,437 +420,432 @@ public final class ConstraintParser {
       return cc;
     }
 
-    var parts:Vector.<String> = toTrimmedTokens(s, 44);
-    var shrinks:Vector.<String>;
     var sg:String;
-    var grows:Vector.<String>;
     var tokens:Vector.<String>;
-    for (var i:int = 0; i < parts.length; i++) {
-      var part:String = parts[i];
-        if (part.length == 0) {
+    for each (var part:String in toTrimmedTokens(s, 44)) {
+      if (part.length == 0) {
+        continue;
+      }
+
+      var ix:int = -1;
+      var c:int = part.charCodeAt(0);
+
+      if (c == 110) {
+        if (part == "north") {
+          cc.dockSide = 0;
           continue;
         }
 
-				var ix:int = -1;
-				var c:int = part.charCodeAt(0);
+        if (part == "newline") {
+          cc.newline = true;
+          continue;
+        }
 
-				if (c == 110) {
-					if (part == "north") {
-						cc.dockSide = 0;
-						continue;
-					}
+        if (Strings.startsWith(part, "newline ")) {
+          cc.newlineGapSize = parseBoundSize(Strings.trim2(part, 7, part.length), true, true);
+          continue;
+        }
+      }
 
-					if (part == "newline") {
-						cc.newline = true;
-						continue;
-					}
+      if (c == 102 && (part == "flowy" || part == "flowx")) {
+        cc.flowX = part.charCodeAt(4) == 120 ? 1 : -1;
+        continue;
+      }
 
-					if (Strings.startsWith(part, "newline ")) {
-						cc.newlineGapSize = parseBoundSize(Strings.trim2(part, 7, part.length), true, true);
-						continue;
-					}
-				}
+      if (c == 115) {
+        ix = startsWithLenient2(part, "skip", 4, true);
+        if (ix > -1) {
+          var num:String = Strings.trim2(part, ix, part.length);
+          cc.skip = num.length != 0 ? int(num) : 1;
+          continue;
+        }
 
-				if (c == 102 && (part == "flowy" || part == "flowx")) {
-          cc.flowX = part.charCodeAt(4) == 120 ? 1 : -1;
-					continue;
-				}
+        ix = startsWithLenient2(part, "split", 5, true);
+        if (ix > -1) {
+          var split:String = Strings.trim2(part, ix, part.length);
+          cc.split = split.length > 0 ? int(split) : LayoutUtil.INF;
+          continue;
+        }
 
-				if (c == 115) {
-					ix = startsWithLenient2(part, "skip", 4, true);
-					if (ix > -1) {
-						var num:String = Strings.trim2(part, ix, part.length);
-						cc.skip = num.length != 0 ? int(num) : 1;
-						continue;
-					}
+        if (part == "south") {
+          cc.dockSide = 2;
+          continue;
+        }
 
-					ix = startsWithLenient2(part, "split", 5, true);
-					if (ix > -1) {
-						var split:String = Strings.trim2(part, ix, part.length);
-            cc.split = split.length > 0 ? int(split) : LayoutUtil.INF;
-						continue;
-					}
+        ix = startsWithLenient(part, new <String>["spany", "sy"], new <int>[5, 2], true);
+        if (ix > -1) {
+          cc.spanY = parseSpan(Strings.trim2(part, ix, part.length));
+          continue;
+        }
 
-					if (part == "south") {
-						cc.dockSide = 2;
-						continue;
-					}
+        ix = startsWithLenient(part, new <String>["spanx", "sx"], new <int>[5, 2], true);
+        if (ix > -1) {
+          cc.spanX = parseSpan(Strings.trim2(part, ix, part.length));
+          continue;
+        }
 
-					ix = startsWithLenient(part, new <String>["spany","sy"], new <int>[5, 2], true);
-					if (ix > -1) {
-						cc.spanY = parseSpan(Strings.trim2(part, ix, part.length));
-						continue;
-					}
+        ix = startsWithLenient2(part, "span", 4, true);
+        if (ix > -1) {
+          var spans:Vector.<String> = toTrimmedTokens(Strings.trim2(part, ix, part.length), 32);
+          cc.spanX = spans[0].length > 0 ? int(spans[0]) : LayoutUtil.INF;
+          cc.spanY = spans.length > 1 ? int(spans[1]) : 1;
+          continue;
+        }
 
-					ix = startsWithLenient(part, new <String>["spanx","sx"], new <int>[5, 2], true);
-					if (ix > -1) {
-						cc.spanX = parseSpan(Strings.trim2(part, ix, part.length));
-						continue;
-					}
+        ix = startsWithLenient2(part, "shrinkx", 7, true);
+        if (ix > -1) {
+          cc.horizontal.shrink = parseFloat2(Strings.trim2(part, ix, part.length), ResizeConstraint.WEIGHT_100);
+          continue;
+        }
 
-					ix = startsWithLenient2(part, "span", 4, true);
-					if (ix > -1) {
-						var spans:Vector.<String> = toTrimmedTokens(Strings.trim2(part, ix, part.length), 32);
-						cc.spanX = spans[0].length > 0 ? int(spans[0]) : LayoutUtil.INF;
-						cc.spanY = spans.length > 1 ? int(spans[1]) : 1;
-						continue;
-					}
+        ix = startsWithLenient2(part, "shrinky", 7, true);
+        if (ix > -1) {
+          cc.vertical.shrink = parseFloat2(Strings.trim2(part, ix, part.length), ResizeConstraint.WEIGHT_100);
+          continue;
+        }
 
-					ix = startsWithLenient2(part, "shrinkx", 7, true);
-					if (ix > -1) {
-						cc.horizontal.shrink = parseFloat2(Strings.trim2(part, ix, part.length), ResizeConstraint.WEIGHT_100);
-						continue;
-					}
-
-					ix = startsWithLenient2(part, "shrinky", 7, true);
-					if (ix > -1) {
+        ix = startsWithLenient2(part, "shrink", 6, false);
+        if (ix > -1) {
+          tokens = toTrimmedTokens(Strings.trim2(part, ix, part.length), 32);
+          cc.horizontal.shrink = parseFloat2(Strings.trim2(part, ix, part.length), ResizeConstraint.WEIGHT_100);
+          if (tokens.length > 1) {
             cc.vertical.shrink = parseFloat2(Strings.trim2(part, ix, part.length), ResizeConstraint.WEIGHT_100);
-						continue;
-					}
+          }
+          continue;
+        }
 
-          ix = startsWithLenient2(part, "shrink", 6, false);
-          if (ix > -1) {
-            shrinks = toTrimmedTokens(Strings.trim2(part, ix, part.length), 32);
-            cc.horizontal.shrink = parseFloat2(Strings.trim2(part, ix, part.length), ResizeConstraint.WEIGHT_100);
-            if (shrinks.length > 1) {
-              cc.vertical.shrink = parseFloat2(Strings.trim2(part, ix, part.length), ResizeConstraint.WEIGHT_100);
+        ix = startsWithLenient(part, new <String>["shrinkprio", "shp"], new <int>[10, 3], true);
+        if (ix > -1) {
+          var sp:String = Strings.trim2(part, ix, part.length);
+          // To handle "gpx", "gpy", "shrinkpriorityx", shrinkpriorityy"
+          if (sp.charCodeAt(0) == 120) {
+            cc.horizontal.shrinkPriority = int(sp.substring(2));
+          }
+          else if (sp.charCodeAt(0) == 121) {
+            cc.vertical.shrinkPriority = int(sp.substring(2));
+          }
+          else {
+            tokens = toTrimmedTokens(sp, 32);
+            cc.horizontal.shrinkPriority = int(tokens[0]);
+            if (tokens.length > 1) {
+              cc.vertical.shrinkPriority = int(tokens[1]);
             }
-            continue;
+          }
+          continue;
+        }
+
+        ix = startsWithLenient(part, new <String>["sizegroupx", "sizegroupy", "sgx", "sgy"], new <int>[9, 9, 2, 2], true);
+        if (ix > -1) {
+          sg = Strings.trim2(part, ix, part.length);
+          var lc:int = part.charCodeAt(ix - 1);
+          if (lc != 121) {
+            cc.horizontal.sizeGroup = sg;
+          }
+          if (lc != 120) {
+            cc.vertical.sizeGroup = sg;
+          }
+          continue;
+        }
+      }
+
+      if (c == 103) {
+        ix = startsWithLenient2(part, "growx", 5, true);
+        if (ix > -1) {
+          cc.horizontal.grow = parseFloat2(Strings.trim2(part, ix, part.length), ResizeConstraint.WEIGHT_100);
+          continue;
+        }
+
+        ix = startsWithLenient2(part, "growy", 5, true);
+        if (ix > -1) {
+          cc.vertical.grow = parseFloat2(Strings.trim2(part, ix, part.length), ResizeConstraint.WEIGHT_100);
+          continue;
+        }
+
+        ix = startsWithLenient2(part, "grow", 4, false);
+        if (ix > -1) {
+          tokens = toTrimmedTokens(Strings.trim2(part, ix, part.length), 32);
+          cc.horizontal.grow = parseFloat2(tokens[0], ResizeConstraint.WEIGHT_100);
+          cc.vertical.grow = parseFloat2(tokens.length > 1 ? tokens[1] : "", ResizeConstraint.WEIGHT_100);
+          continue;
+        }
+
+        ix = startsWithLenient(part, new <String>["growprio", "gp"], new <int>[8, 2], true);
+        if (ix > -1) {
+          var gp:String = Strings.trim2(part, ix, part.length);
+          var c0:int = gp.length > 0 ? gp.charCodeAt(0) : 32;
+          // To gandle "gpx", "gpy", "growpriorityx", growpriorityy"
+          if (c0 == 120) {
+            cc.horizontal.growPriority = int(gp.substring(2));
+          }
+          else if (c0 == 121) {
+            cc.vertical.growPriority = int(gp.substring(2));
+          }
+          else {
+            tokens = toTrimmedTokens(gp, 32);
+            cc.horizontal.growPriority = int(tokens[0]);
+            if (tokens.length > 1) {
+              cc.vertical.growPriority = int(tokens[1]);
+            }
+          }
+          continue;
+        }
+
+        if (Strings.startsWith(part, "gap")) {
+          var gaps:Vector.<BoundSize> = parseGaps(part); // Changes order!!
+          if (gaps[0] != null) {
+            cc.vertical.gapBefore = gaps[0];
+          }
+          if (gaps[1] != null) {
+            cc.horizontal.gapBefore = gaps[1];
+          }
+          if (gaps[2] != null) {
+            cc.vertical.gapAfter = gaps[2];
+          }
+          if (gaps[3] != null) {
+            cc.horizontal.gapAfter = gaps[3];
+          }
+          continue;
+        }
+      }
+
+      if (c == 97) {
+        ix = startsWithLenient(part, new <String>["aligny", "ay"], new <int>[6, 2], true);
+        if (ix > -1) {
+          cc.vertical.align = parseUnitValueOrAlign(Strings.trim2(part, ix, part.length), false, null);
+          continue;
+        }
+
+        ix = startsWithLenient(part, new <String>["alignx", "ax"], new <int>[6, 2], true);
+        if (ix > -1) {
+          cc.horizontal.align = parseUnitValueOrAlign(Strings.trim2(part, ix, part.length), true, null);
+          continue;
+        }
+
+        ix = startsWithLenient2(part, "align", 2, true);
+        if (ix > -1) {
+          tokens = toTrimmedTokens(Strings.trim2(part, ix, part.length), 32);
+          cc.horizontal.align = parseUnitValueOrAlign(tokens[0], true, null);
+          if (tokens.length > 1) {
+            cc.vertical.align = parseUnitValueOrAlign(tokens[1], false, null);
+          }
+          continue;
+        }
+      }
+
+      if ((c == 120 || c == 121) && part.length > 2) {
+        var c2:int = part.charCodeAt(1);
+        if (c2 == 32 || (c2 == 50 && part.charCodeAt(2) == 32)) {
+          if (cc.pos == null) {
+            cc.pos = new Vector.<UnitValue>(4, true);
+          }
+          else if (!cc.boundsInGrid) {
+            throw new ArgumentError("Cannot combine 'position' with 'x/y/x2/y2' keywords.");
           }
 
-          ix = startsWithLenient(part, new <String>["shrinkprio", "shp"], new <int>[10, 3], true);
-					if (ix > -1) {
-						var sp:String = Strings.trim2(part, ix, part.length);
-            // To handle "gpx", "gpy", "shrinkpriorityx", shrinkpriorityy"
-            if (sp.charCodeAt(0) == 120) {
-              cc.horizontal.shrinkPriority = int(sp.substring(2));
-            }
-            else if (sp.charCodeAt(0) == 121) {
-              cc.vertical.shrinkPriority = int(sp.substring(2));
-            }
-            else {
-              shrinks = toTrimmedTokens(sp, 32);
-              cc.horizontal.shrinkPriority = int(shrinks[0]);
-              if (shrinks.length > 1) {
-                cc.vertical.shrinkPriority = int(shrinks[1]);
-              }
-            }
-            continue;
+          var pos:Vector.<UnitValue> = cc.pos;
+          pos[(c == 120 ? 0 : 1) + (c2 == 50 ? 2 : 0)] = parseUnitValue(Strings.trim2(part, ix, part.length), null, c == 120);
+          cc.pos = pos;
+          cc.boundsInGrid = true;
+          continue;
+        }
+      }
+
+      if (c == 99) {
+        ix = startsWithLenient2(part, "cell", 4, true);
+        if (ix > -1) {
+          tokens = toTrimmedTokens(Strings.trim2(part, ix, part.length), 32);
+          if (tokens.length < 2) {
+            throw new ArgumentError("At least two integers must follow " + part);
+          }
+          cc.cellX = int(tokens[0]);
+          cc.cellY = int(tokens[1]);
+          if (tokens.length > 2) {
+            cc.spanX = int(tokens[2]);
+          }
+          if (tokens.length > 3) {
+            cc.spanY = int(tokens[3]);
+          }
+          continue;
+        }
+      }
+
+      if (c == 112) {
+        ix = startsWithLenient2(part, "pos", 3, true);
+        if (ix > -1) {
+          if (cc.pos != null && cc.boundsInGrid) {
+            throw new ArgumentError("Can not combine 'pos' with 'x/y/x2/y2' keywords.");
           }
 
-          ix = startsWithLenient(part, new <String>["sizegroupx", "sizegroupy", "sgx", "sgy"], new <int>[9, 9, 2, 2], true);
-          if (ix > -1) {
-            sg = Strings.trim2(part, ix, part.length);
-            var lc:int = part.charCodeAt(ix - 1);
-            if (lc != 121) {
-              cc.horizontal.sizeGroup = sg;
-            }
-            if (lc != 120) {
-              cc.vertical.sizeGroup = sg;
-            }
-            continue;
-          }
-				}
-
-				if (c == 103) {
-					ix = startsWithLenient2(part, "growx", 5, true);
-					if (ix > -1) {
-            cc.horizontal.grow = parseFloat2(Strings.trim2(part, ix, part.length), ResizeConstraint.WEIGHT_100);
-						continue;
-					}
-
-					ix = startsWithLenient2(part, "growy", 5, true);
-					if (ix > -1) {
-            cc.vertical.grow = parseFloat2(Strings.trim2(part, ix, part.length), ResizeConstraint.WEIGHT_100);
-						continue;
-					}
-
-					ix = startsWithLenient2(part, "grow", 4, false);
-					if (ix > -1) {
-						grows = toTrimmedTokens(Strings.trim2(part, ix, part.length), 32);
-            cc.horizontal.grow = parseFloat2(grows[0], ResizeConstraint.WEIGHT_100);
-            cc.vertical.grow = parseFloat2(grows.length > 1 ? grows[1] : "", ResizeConstraint.WEIGHT_100);
-						continue;
-					}
-
-          ix = startsWithLenient(part, new <String>["growprio", "gp"], new <int>[8, 2], true);
-          if (ix > -1) {
-            var gp:String = Strings.trim2(part, ix, part.length);
-            var c0:int = gp.length > 0 ? gp.charCodeAt(0) : 32;
-            // To gandle "gpx", "gpy", "growpriorityx", growpriorityy"
-            if (c0 == 120) {
-              cc.horizontal.growPriority = int(gp.substring(2));
-            }
-            else if (c0 == 121) {
-              cc.vertical.growPriority = int(gp.substring(2));
-            }
-            else {
-              grows = toTrimmedTokens(gp, 32);
-              cc.horizontal.growPriority = int(grows[0]);
-              if (grows.length > 1) {
-                cc.vertical.growPriority = int(grows[1]);
-              }
-            }
-            continue;
+          tokens = toTrimmedTokens(Strings.trim2(part, ix, part.length), 32);
+          var bounds:Vector.<UnitValue> = new Vector.<UnitValue>(4, true);
+          for (var j:int = 0; j < tokens.length; j++) {
+            bounds[j] = parseUnitValue(tokens[j], null, j % 2 == 0);
           }
 
-          if (Strings.startsWith(part, "gap")) {
-            var gaps:Vector.<BoundSize> = parseGaps(part); // Changes order!!
-            if (gaps[0] != null) {
-              cc.vertical.gapBefore = gaps[0];
-            }
-            if (gaps[1] != null) {
-              cc.horizontal.gapBefore = gaps[1];
-            }
-            if (gaps[2] != null) {
-              cc.vertical.gapAfter = gaps[2];
-            }
-            if (gaps[3] != null) {
-              cc.horizontal.gapAfter = gaps[3];
-            }
+          if (bounds[0] == null && bounds[2] == null || bounds[1] == null && bounds[3] == null) {
+            throw new ArgumentError("Both x and x2 or y and y2 can not be null!");
+          }
+
+          cc.pos = bounds;
+          cc.boundsInGrid = false;
+          continue;
+        }
+
+        ix = startsWithLenient2(part, "pad", 3, true);
+        if (ix > -1) {
+          var p:Vector.<UnitValue> = parseInsets(Strings.trim2(part, ix, part.length), false);
+          cc.padding = new <UnitValue>[
+            p[0],
+            p.length > 1 ? p[1] : null,
+            p.length > 2 ? p[2] : null,
+            p.length > 3 ? p[3] : null];
+          continue;
+        }
+
+        ix = startsWithLenient2(part, "pushx", 5, true);
+        if (ix > -1) {
+          cc.pushX = parseFloat2(Strings.trim2(part, ix, part.length), ResizeConstraint.WEIGHT_100);
+          continue;
+        }
+
+        ix = startsWithLenient2(part, "pushy", 5, true);
+        if (ix > -1) {
+          cc.pushY = parseFloat2(Strings.trim2(part, ix, part.length), ResizeConstraint.WEIGHT_100);
+          continue;
+        }
+
+        ix = startsWithLenient2(part, "push", 4, false);
+        if (ix > -1) {
+          tokens = toTrimmedTokens(Strings.trim2(part, ix, part.length), 32);
+          cc.pushX = parseFloat2(tokens[0], ResizeConstraint.WEIGHT_100);
+          cc.pushY = parseFloat2(tokens.length > 1 ? tokens[1] : "", ResizeConstraint.WEIGHT_100);
+          continue;
+        }
+      }
+
+      if (c == 116) {
+        ix = startsWithLenient2(part, "tag", 3, true);
+        if (ix > -1) {
+          cc.tag = Strings.trim2(part, ix, part.length);
+          continue;
+        }
+      }
+
+      if (c == 119 || c == 104) {
+        if (part == "wrap") {
+          cc.wrap = true;
+          continue;
+        }
+
+        if (Strings.startsWith(part, "wrap ")) {
+          cc.wrapGapSize = parseBoundSize(Strings.trim2(part, 5, part.length), true, true);
+          continue;
+        }
+
+        var isHor:Boolean = c == 119;
+        if (isHor && (Strings.startsWith(part, "w ") || Strings.startsWith(part, "width "))) {
+          cc.horizontal.size = parseBoundSize(Strings.trim2(part, part.charAt(1) == ' ' ? 2 : 6, part.length), false, true);
+          continue;
+        }
+
+        if (!isHor && (Strings.startsWith(part, "h ") || Strings.startsWith(part, "height "))) {
+          cc.vertical.size = parseBoundSize(Strings.trim2(part, part.charAt(1) == ' ' ? 2 : 7, part.length), false, false);
+          continue;
+        }
+
+        if (Strings.startsWith(part, "wmin ") || Strings.startsWith(part, "wmax ") || Strings.startsWith(part, "hmin ") || Strings.startsWith(part, "hmax ")) {
+          var uvStr:String = Strings.trim2(part, 5, part.length);
+          if (uvStr.length > 0) {
+            var uv:UnitValue = parseUnitValue(uvStr, null, isHor);
+            var isMin:Boolean = part.charCodeAt(3) == 110;
+            var dc:DimConstraint = (isHor ? cc.horizontal : cc.vertical);
+            dc.size = BoundSize.create(
+              isMin ? uv : dc.size.min,
+              dc.size.preferred,
+              isMin ? (dc.size.max) : uv,
+              uvStr
+            );
             continue;
           }
         }
 
-				if (c == 97) {
-					ix = startsWithLenient(part, new <String>["aligny", "ay"], new <int>[6, 2], true);
-					if (ix > -1) {
-            cc.vertical.align = parseUnitValueOrAlign(Strings.trim2(part, ix, part.length), false, null);
-						continue;
-					}
-
-          ix = startsWithLenient(part, new <String>["alignx", "ax"], new <int>[6, 2], true);
-          if (ix > -1) {
-            cc.horizontal.align = parseUnitValueOrAlign(Strings.trim2(part, ix, part.length), true, null);
-            continue;
-          }
-
-          ix = startsWithLenient2(part, "align", 2, true);
-          if (ix > -1) {
-            var gapsA:Vector.<String> = toTrimmedTokens(Strings.trim2(part, ix, part.length), 32);
-            cc.horizontal.align = parseUnitValueOrAlign(gapsA[0], true, null);
-            if (gaps.length > 1) {
-              cc.vertical.align = parseUnitValueOrAlign(gapsA[1], false, null);
-            }
-            continue;
-          }
-        }
-
-				if ((c == 120 || c == 121) && part.length > 2) {
-          var c2:int = part.charCodeAt(1);
-          if (c2 == 32 || (c2 == 50 && part.charCodeAt(2) == 32)) {
-            if (cc.pos == null) {
-              cc.pos = new Vector.<UnitValue>(4, true);
-            }
-            else if (!cc.boundsInGrid) {
-              throw new ArgumentError("Cannot combine 'position' with 'x/y/x2/y2' keywords.");
-            }
-
-						var pos:Vector.<UnitValue> = cc.pos;
-						pos[(c == 120 ? 0 : 1) + (c2 == 50 ? 2 : 0)] = parseUnitValue(Strings.trim2(part, ix, part.length), null, c == 120);
-						cc.pos = pos;
-						cc.boundsInGrid = true;
-						continue;
-					}
-				}
-
-				if (c == 99) {
-					ix = startsWithLenient2(part, "cell", 4, true);
-					if (ix > -1) {
-            var grs:Vector.<String> = toTrimmedTokens(Strings.trim2(part, ix, part.length), 32);
-            if (grs.length < 2) {
-              throw new ArgumentError("At least two integers must follow " + part);
-            }
-            cc.cellX = int(grs[0]);
-            cc.cellY = int(grs[1]);
-            if (grs.length > 2) {
-              cc.spanX = int(grs[2]);
-            }
-            if (grs.length > 3) {
-              cc.spanY = int(grs[3]);
-            }
-            continue;
-          }
-        }
-
-				if (c == 112) {
-					ix = startsWithLenient2(part, "pos", 3, true);
-					if (ix > -1) {
-            if (cc.pos != null && cc.boundsInGrid) {
-              throw new ArgumentError("Can not combine 'pos' with 'x/y/x2/y2' keywords.");
-            }
-
-						tokens = toTrimmedTokens(Strings.trim2(part, ix, part.length), 32);
-            var bounds:Vector.<UnitValue> = new Vector.<UnitValue>(4, true);
-            for (var j:int = 0; j < tokens.length; j++) {
-              bounds[j] = parseUnitValue(tokens[j], null, j % 2 == 0);
-            }
-
-            if (bounds[0] == null && bounds[2] == null || bounds[1] == null && bounds[3] == null) {
-              throw new ArgumentError("Both x and x2 or y and y2 can not be null!");
-            }
-
-            cc.pos = bounds;
-						cc.boundsInGrid = false;
-						continue;
-					}
-
-          ix = startsWithLenient2(part, "pad", 3, true);
-          if (ix > -1) {
-            var p:Vector.<UnitValue> = parseInsets(Strings.trim2(part, ix, part.length), false);
-            cc.padding = new <UnitValue>[
-              p[0],
-              p.length > 1 ? p[1] : null,
-              p.length > 2 ? p[2] : null,
-              p.length > 3 ? p[3] : null];
-            continue;
-          }
-
-					ix = startsWithLenient2(part, "pushx", 5, true);
-					if (ix > -1) {
-						cc.pushX = parseFloat2(Strings.trim2(part, ix, part.length), ResizeConstraint.WEIGHT_100);
-						continue;
-					}
-
-					ix = startsWithLenient2(part, "pushy", 5, true);
-					if (ix > -1) {
-						cc.pushY = parseFloat2(Strings.trim2(part, ix, part.length), ResizeConstraint.WEIGHT_100);
-						continue;
-					}
-
-					ix = startsWithLenient2(part, "push", 4, false);
-					if (ix > -1) {
-						tokens = toTrimmedTokens(Strings.trim2(part, ix, part.length), 32);
-            cc.pushX = parseFloat2(tokens[0], ResizeConstraint.WEIGHT_100);
-            cc.pushY = parseFloat2(tokens.length > 1 ? tokens[1] : "", ResizeConstraint.WEIGHT_100);
-						continue;
-					}
-				}
-
-				if (c == 116) {
-					ix = startsWithLenient2(part, "tag", 3, true);
-					if (ix > -1) {
-						cc.tag = Strings.trim2(part, ix, part.length);
-						continue;
-					}
-				}
-
-				if (c == 119 || c == 104) {
-					if (part == "wrap") {
-						cc.wrap = true;
-						continue;
-					}
-
-					if (Strings.startsWith(part, "wrap ")) {
-						cc.wrapGapSize = parseBoundSize(Strings.trim2(part, 5, part.length), true, true);
-						continue;
-					}
-
-					var isHor:Boolean = c == 119;
-					if (isHor && (Strings.startsWith(part, "w ") || Strings.startsWith(part, "width "))) {
-						cc.horizontal.size = parseBoundSize(Strings.trim2(part, part.charAt(1) == ' ' ? 2 : 6, part.length), false, true);
-						continue;
-					}
-
-					if (!isHor && (Strings.startsWith(part, "h ") || Strings.startsWith(part, "height "))) {
-						cc.vertical.size = parseBoundSize(Strings.trim2(part, part.charAt(1) == ' ' ? 2 : 7, part.length), false, false);
-						continue;
-					}
-
-					if (Strings.startsWith(part, "wmin ") || Strings.startsWith(part, "wmax ") || Strings.startsWith(part, "hmin ") || Strings.startsWith(part, "hmax ")) {
-						var uvStr:String = Strings.trim2(part, 5, part.length);
-						if (uvStr.length > 0) {
-							var uv:UnitValue = parseUnitValue(uvStr, null, isHor);
-							var isMin:Boolean = part.charCodeAt(3) == 110;
-              var dc:DimConstraint = (isHor ? cc.horizontal : cc.vertical);
-              dc.size = BoundSize.create(
-                isMin ? uv : dc.size.min,
-                dc.size.preferred,
-                isMin ? (dc.size.max) : uv,
-                uvStr
-              );
-              continue;
-						}
-					}
-
-					if (part == "west") {
-						cc.dockSide = 1;
+        if (part == "west") {
+          cc.dockSide = 1;
 //						cc.getVertical().setGrow(ResizeConstraint.WEIGHT_100);
-						continue;
-					}
+          continue;
+        }
 
-					if (Strings.startsWith(part, "hidemode ")) {
-            cc.hideMode = int(part.substring(9));
-						continue;
-					}
-				}
+        if (Strings.startsWith(part, "hidemode ")) {
+          cc.hideMode = int(part.substring(9));
+          continue;
+        }
+      }
 
-				if (c == 105 && Strings.startsWith(part, "id ")) {
-          cc.id = Strings.trim2(part, 3, part.length);
-          var dIx:int = cc.id.indexOf('.');
-          if (dIx == 0 || dIx == cc.id.length - 1) {
-            throw new ArgumentError("Dot must not be first or last!");
+      if (c == 105 && Strings.startsWith(part, "id ")) {
+        cc.id = Strings.trim2(part, 3, part.length);
+        var dIx:int = cc.id.indexOf('.');
+        if (dIx == 0 || dIx == cc.id.length - 1) {
+          throw new ArgumentError("Dot must not be first or last!");
+        }
+
+        continue;
+      }
+
+      if (c == 101) {
+        if (part == "east") {
+          cc.dockSide = 3;
+//						cc.getVertical().setGrow(ResizeConstraint.WEIGHT_100);
+          continue;
+        }
+
+        if (part == "external") {
+          cc.external = true;
+          continue;
+        }
+
+        ix = startsWithLenient(part, new <String>["endgroupx", "endgroupy", "egx", "egy"], new <int>[-1, -1, -1, -1], true);
+        if (ix > -1) {
+          (part.charCodeAt(ix - 1) == 120 ? cc.horizontal : cc.vertical).endGroup = Strings.trim2(part, ix, part.length);
+          continue;
+        }
+      }
+
+      if (c == 100) {
+        const dockMode:* = dockNameToId[part];
+        if (dockMode != undefined) {
+          if (dockMode == -1) {
+            cc.horizontal.grow = 100;
+            cc.vertical.grow = 100;
+            cc.pushX = 100;
+            cc.pushY = 100;
+          }
+          else {
+            cc.dockSide = dockMode;
           }
 
           continue;
         }
+      }
 
-        if (c == 101) {
-          if (part == "east") {
-            cc.dockSide = 3;
-//						cc.getVertical().setGrow(ResizeConstraint.WEIGHT_100);
-            continue;
-          }
+      var horAlign:UnitValue = parseAlignKeywords(part, true);
+      if (horAlign != null) {
+        cc.horizontal.align = horAlign;
+        continue;
+      }
 
-          if (part == "external") {
-            cc.external = true;
-            continue;
-          }
+      var verAlign:UnitValue = parseAlignKeywords(part, false);
+      if (verAlign != null) {
+        cc.vertical.align = verAlign;
+        continue;
+      }
 
-					ix = startsWithLenient(part, new <String>["endgroupx", "endgroupy", "egx", "egy"], new <int>[-1, -1, -1, -1], true);
-					if (ix > -1) {
-            (part.charCodeAt(ix - 1) == 120 ? cc.horizontal : cc.vertical).endGroup = Strings.trim2(part, ix, part.length);
-						continue;
-					}
-				}
-
-				if (c == 100) {
-          const dockMode:* = dockNameToId[part];
-          if (dockMode != undefined) {
-            if (dockMode == -1) {
-              cc.horizontal.grow = 100;
-              cc.vertical.grow = 100;
-              cc.pushX = 100;
-              cc.pushY = 100;
-            }
-            else {
-              cc.dockSide = dockMode;
-            }
-
-            continue;
-          }
-				}
-
-				var horAlign:UnitValue = parseAlignKeywords(part, true);
-				if (horAlign != null) {
-					cc.horizontal.align = horAlign;
-					continue;
-				}
-
-				var verAlign:UnitValue = parseAlignKeywords(part, false);
-				if (verAlign != null) {
-					cc.vertical.align = verAlign;
-					continue;
-				}
-
-        throw new ArgumentError("Unknown keyword.");
-		}
+      throw new ArgumentError("Unknown keyword.");
+    }
 
 //		cc = (CC) serializeTest(cc);
+    return cc;
+  }
 
-		return cc;
-	}
-  
   private static const dockNameToId:Object = {"dock north": 0, "dock west": 1, "dock south": 2, "dock east": 3, "dock center": -1};
 
   /** Parses insets which consists of 1-4 <code>UnitValue</code>s.
