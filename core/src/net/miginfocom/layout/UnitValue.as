@@ -1,5 +1,5 @@
 package net.miginfocom.layout {
-import avmplus.getQualifiedClassName;
+import flash.utils.getQualifiedClassName;
 
 public final class UnitValue {
   private static const UNIT_MAP:Object/*<String, int>*/ = {
