@@ -873,7 +873,7 @@ public class CCBuilder {
    * @see #tag(String)
    */
   public function pad(top:int, left:int, bottom:int, right:int):CCBuilder {
-    cc.padding = new <UnitValue>[new UnitValue(top, UnitValue.PIXEL), new UnitValue(left, UnitValue.PIXEL), new UnitValue(bottom, UnitValue.PIXEL), new UnitValue(right, UnitValue.PIXEL)];
+    cc.padding = new <UnitValue>[new UnitValue(top), new UnitValue(left), new UnitValue(bottom), new UnitValue(right)];
     return this;
   }
 

@@ -183,7 +183,7 @@ public final class UnitValue {
   private var isHor:Boolean;
   private var _subUnits:Vector.<UnitValue>;
 
-  public function UnitValue(value:Number, unit:int, unitStr:String = null, isHor:Boolean = true) {
+  public function UnitValue(value:Number, unit:int = PIXEL, unitStr:String = null, isHor:Boolean = true) {
     this.value = value;
     this.isHor = isHor;
     _unit = unitStr != null ? parseUnitString() : unit;
