@@ -2,6 +2,21 @@ package net.miginfocom.layout {
 /** A class that wraps a container that contains components.
  */
 public interface ContainerWrapper extends ComponentWrapper {
+  /** Returns the pixel unit factor for the horizontal or vertical dimension.
+   * <p>
+   * The factor is 1 for both dimensions on the normal font in a JPanel on Windows. The factor should increase with a bigger "X".
+   * <p>
+   * This is the Swing version:
+   * <pre>
+   * Rectangle2D r = fm.getStringBounds("X", parent.getGraphics());
+   * wFactor = r.getWidth() / 6;
+   * hFactor = r.getHeight() / 13.27734375f;
+   * </pre>
+   * @param isHor If it is the horizontal factor that should be returned.
+   * @return The factor.
+   */
+  function getPixelUnitFactor(isHor:Boolean):Number;
+
   /** Returns the components of the container that wrapper is wrapping.
    * @return The components of the container that wrapper is wrapping. Never <code>null</code>.
    */

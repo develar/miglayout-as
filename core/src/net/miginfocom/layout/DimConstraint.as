@@ -368,7 +368,6 @@ public final class DimConstraint {
   internal function getComponentGaps(parent:ContainerWrapper, comp:ComponentWrapper, adjGap:BoundSize, adjacentComp:ComponentWrapper,
                                      tag:String, refSize:int, adjacentSide:int, isLTR:Boolean):Vector.<int> {
     var gap:BoundSize = adjacentSide < 2 ? _gapBefore : _gapAfter;
-
     var hasGap:Boolean = gap != null && gap.gapPush;
     if ((gap == null || gap.isUnset) && (adjGap == null || adjGap.isUnset) && comp != null) {
       gap = PlatformDefaults.getDefaultComponentGap(comp, adjacentComp, adjacentSide + 1, tag, isLTR);

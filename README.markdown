@@ -15,7 +15,7 @@ Original license (java): BSD. ActionScript port (this project): Apache License v
  * Reduce your swf size (if you don't use "API Creation of Constraints").
 * Deprecated methods are not ported.
 * Class AC is removed, because it contains only vector of DimConstraint.
-* screenWidth, screenHeight, screenLocationX and screenLocationY moved from ComponentWrapper to ContainerWrapper (due to actually used only containers).
+* getPixelUnitFactor, screenWidth, screenHeight, screenLocationX and screenLocationY moved from ComponentWrapper to ContainerWrapper (due to actually used only containers).
 * parent removed from ComponentWrapper — is not needed at all (only one case, so, hasParent added to ContainerWrapper).
 * Grid allows nullable rowConstraints, columnConstraints and lc.
 * Grid.layout() method — remove alignX and alignY paramaters, because LC has full information about it.

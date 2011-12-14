@@ -84,10 +84,6 @@ internal class FlashComponentWrapper implements ComponentWrapper {
     return false;
   }
 
-  public function getPixelUnitFactor(isHor:Boolean):Number {
-    return 1;
-  }
-
   public function get horizontalScreenDPI():Number {
     return PlatformDefaults.defaultDPI;
   }

@@ -14,6 +14,10 @@ public final class FlashContainerWrapper extends FlashComponentWrapper implement
   internal var w:int;
   internal var h:int;
 
+  public function getPixelUnitFactor(isHor:Boolean):Number {
+    return 1;
+  }
+
   override public function getPreferredWidth(hHint:int = -1):int {
     return w;
   }
