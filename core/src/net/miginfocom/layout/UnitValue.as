@@ -177,41 +177,40 @@ public final class UnitValue {
   internal static const BASELINE_IDENTITY:UnitValue = create2(0, IDENTITY, false, "baseline");
 
   private var value:Number;
-  private var _unit:int;
   private var oper:int = STATIC;
   private var unitStr:String;
   private var linkId:String;
-  private var isHor:Boolean = true;
+  private var isHor:Boolean;
   private var _subUnits:Vector.<UnitValue>;
 
-  // Pixel
-  internal static function createPixel(value:Number):UnitValue {
-    var unitValue:UnitValue = new UnitValue();
-    unitValue.value = value;
-    unitValue._unit = PIXEL;
-    return unitValue;
+  public function UnitValue(value:Number, unit:int, unitStr:String = null, isHor:Boolean = true) {
+    this.value = value;
+    this.isHor = isHor;
+    _unit = unitStr != null ? parseUnitString() : unit;
+    if (unitStr != null) {
+      this.unitStr = unitStr;
+    }
   }
 
-  internal static function create3(isHor:Boolean, oper:int, sub1:UnitValue, sub2:UnitValue, createString:String):UnitValue {
+  //noinspection JSUnusedLocalSymbols
+  internal static function create3(isHorizontal:Boolean, operator:int, sub1:UnitValue, sub2:UnitValue, createString:String):UnitValue {
     if (sub1 == null || sub2 == null) {
-      throw new ArgumentError("Sub units is null!");
+      throw new ArgumentError("Sub units cannot be null");
     }
 
-    if (oper < STATIC || oper > MID) {
-      throw new ArgumentError("Unknown Operation: " + oper);
+    if (operator < STATIC || operator > MID) {
+      throw new ArgumentError("Unknown Operation: " + operator);
     }
 
-    var unitValue:UnitValue = new UnitValue();
-    unitValue.value = 0;
-    unitValue.isHor = isHor;
-    unitValue.oper = oper;
-    unitValue.unitStr = "";
+    var unitValue:UnitValue = new UnitValue(0, isHorizontal ? PlatformDefaults.defaultHorizontalUnit : PlatformDefaults.defaultVerticalUnit, null, isHorizontal);
+    unitValue.oper = operator;
     unitValue._subUnits = new <UnitValue>[sub1, sub2];
 
-    //    LayoutUtil.putCCString(unitValue, value + "px");
+    // LayoutUtil.putCCString(unitValue, value + "px");
     return unitValue;
   }
 
+  //noinspection JSUnusedLocalSymbols
   internal static function create4(value:Number, unitStr:String, isHor:Boolean, oper:int, createString:String):UnitValue {
     if (oper < STATIC || oper > MID) {
       throw new ArgumentError("Unknown Operation: " + oper);
@@ -221,53 +220,24 @@ public final class UnitValue {
       throw new ArgumentError(oper + " Operation may not have null sub-UnitValues.");
     }
 
-    var unitValue:UnitValue = new UnitValue();
-    unitValue.value = value;
-    unitValue.isHor = isHor;
+    var unitValue:UnitValue = new UnitValue(value, -1, unitStr, isHor);
     unitValue.oper = oper;
-    unitValue.unitStr = unitStr;
-
-    //    LayoutUtil.putCCString(unitValue, value + "px");
+    // LayoutUtil.putCCString(unitValue, value + "px");
     return unitValue;
   }
 
   internal static function create(value:Number, unit:int):UnitValue { // If hor/ver does not matter.
-    var unitValue:UnitValue = new UnitValue();
-    unitValue.value = value;
-    unitValue._unit = unit;
-//    LayoutUtil.putCCString(unitValue, value + "px");
+    var unitValue:UnitValue = new UnitValue(value, unit);
+    // LayoutUtil.putCCString(unitValue, value + "px");
     return unitValue;
   }
 
   //noinspection JSUnusedLocalSymbols
   private static function create2(value:Number, unit:int, isHor:Boolean, createString:String):UnitValue { // If hor/ver does not matter.
-    var unitValue:UnitValue = new UnitValue();
-    unitValue.value = value;
-    unitValue._unit = unit;
-    unitValue.isHor = isHor;
-//    LayoutUtil.putCCString(unitValue, value + "px");
+    var unitValue:UnitValue = new UnitValue(value, unit, null, isHor);
+    // LayoutUtil.putCCString(unitValue, value + "px");
     return unitValue;
   }
-
-//	function UnitValue(value:Number, unitStr:String = null, unit:int = PIXEL, isHor:Boolean = true, oper:int = STATIC, sub1:UnitValue = null, sub2:UnitValue = null, createString:String = null)
-//	{
-//		if (oper < STATIC || oper > MID) {
-//      throw new ArgumentError("Unknown Operation: " + oper);
-//    }
-//
-//		if (oper >= ADD && oper <= MID && (sub1 == null || sub2 == null)) {
-//      throw new ArgumentError(oper + " Operation may not have null sub-UnitValues.");
-//    }
-//
-//		this.value = value;
-//		this.oper = oper;
-//		this.isHor = isHor;
-//		this.unitStr = unitStr;
-//		this.unit = unitStr != null ? parseUnitString() : unit;
-//		this.subUnits = sub1 != null && sub2 != null ? new UnitValue[] {sub1, sub2} : null;
-//
-//		LayoutUtil.putCCString(this, createString == null ? (value + "px") : createString); // "this" escapes!! Safe though.
-//	}
 
   /**
    * Returns the size in pixels rounded.
@@ -504,12 +474,9 @@ public final class UnitValue {
     return _subUnits;
   }
 
+  private var _unit:int;
   public final function get unit():int {
     return _unit;
-  }
-
-  public final function get unitString():String {
-    return unitStr;
   }
 
   public final function getOperation():int {

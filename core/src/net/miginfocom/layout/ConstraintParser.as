@@ -1099,15 +1099,7 @@ public final class ConstraintParser {
       if (uvs.length != 2) {
         throw new ArgumentError("Malformed UnitValue: '" + s + "'");
       }
-
-			var sub1:UnitValue = parseUnitValue(uvs[0], null, isHor);
-			var sub2:UnitValue = parseUnitValue(uvs[1], null, isHor);
-
-      if (sub1 == null || sub2 == null) {
-        throw new ArgumentError("Malformed UnitValue. Must be two sub-values: '" + s + "'");
-      }
-
-      return UnitValue.create3(isHor, oper, sub1, sub2, cs);
+      return UnitValue.create3(isHor, oper, parseUnitValue(uvs[0], null, isHor), parseUnitValue(uvs[1], null, isHor), cs);
     }
     else {
       try {
