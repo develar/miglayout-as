@@ -411,7 +411,7 @@ public final class PlatformDefaults {
   /** Understands ("r", "rel", "related") OR ("u", "unrel", "unrelated") OR ("i", "ind", "indent") OR ("p", "para", "paragraph").
    */
   internal static function convertToPixels(value:Number, unit:String, isHor:Boolean, ref:Number, parent:ContainerWrapper, comp:ComponentWrapper):int {
-    var uv:UnitValue = (isHor ? HOR_DEFS : VER_DEFS).get(unit);
+    var uv:UnitValue = (isHor ? HOR_DEFS : VER_DEFS)[unit];
     return uv != null ? Math.round(value * uv.getPixels(ref, parent, comp)) : UnitConverter.UNABLE;
   }
 
