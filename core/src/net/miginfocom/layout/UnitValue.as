@@ -186,10 +186,8 @@ public final class UnitValue {
   public function UnitValue(value:Number, unit:int = PIXEL, unitStr:String = null, isHor:Boolean = true) {
     this.value = value;
     this.isHor = isHor;
+    this.unitStr = unitStr;
     _unit = unitStr != null ? parseUnitString() : unit;
-    if (unitStr != null) {
-      this.unitStr = unitStr;
-    }
   }
 
   //noinspection JSUnusedLocalSymbols
