@@ -11,7 +11,7 @@ import net.miginfocom.layout.ContainerWrapper;
 import net.miginfocom.layout.ContainerWrappers;
 import net.miginfocom.layout.PlatformDefaults;
 
-public final class FlashContainerWrapper extends FlashComponentWrapper implements ContainerWrapper {
+public class FlashContainerWrapper extends FlashComponentWrapper implements ContainerWrapper {
   internal var w:int;
   internal var h:int;
 

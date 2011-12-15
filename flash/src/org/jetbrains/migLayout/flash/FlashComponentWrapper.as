@@ -7,7 +7,7 @@ import net.miginfocom.layout.ComponentType;
 import net.miginfocom.layout.ComponentWrapper;
 import net.miginfocom.layout.LayoutUtil;
 
-internal class FlashComponentWrapper implements ComponentWrapper {
+public class FlashComponentWrapper implements ComponentWrapper {
   protected var c:DisplayObject;
 
   function FlashComponentWrapper(c:DisplayObject, constraints:CC) {
@@ -41,19 +41,19 @@ internal class FlashComponentWrapper implements ComponentWrapper {
   }
 
   public function getMinimumWidth(hHint:int = -1):int {
-    return 0;
+    return getPreferredWidth();
   }
 
   public function getMinimumHeight(wHint:int = -1):int {
-    return 0;
+    return getPreferredHeight();
   }
 
   public function getPreferredWidth(hHint:int = -1):int {
-    return c.width;
+    return c.width / c.scaleX;
   }
 
   public function getPreferredHeight(wHint:int = -1):int {
-    return c.height;
+    return c.height / c.scaleY;
   }
 
   public function getMaximumWidth(hHint:int = -1):int {
