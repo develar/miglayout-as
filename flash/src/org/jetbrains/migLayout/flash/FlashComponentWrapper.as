@@ -6,7 +6,6 @@ import net.miginfocom.layout.CC;
 import net.miginfocom.layout.ComponentType;
 import net.miginfocom.layout.ComponentWrapper;
 import net.miginfocom.layout.LayoutUtil;
-import net.miginfocom.layout.PlatformDefaults;
 
 internal class FlashComponentWrapper implements ComponentWrapper {
   protected var c:DisplayObject;
@@ -82,14 +81,6 @@ internal class FlashComponentWrapper implements ComponentWrapper {
 
   public function get hasBaseline():Boolean {
     return false;
-  }
-
-  public function get horizontalScreenDPI():Number {
-    return PlatformDefaults.defaultDPI;
-  }
-
-  public function get verticalScreenDPI():Number {
-    return PlatformDefaults.defaultDPI;
   }
 
   public function get linkId():String {

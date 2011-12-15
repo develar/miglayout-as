@@ -2,6 +2,22 @@ package net.miginfocom.layout {
 /** A class that wraps a container that contains components.
  */
 public interface ContainerWrapper extends ComponentWrapper {
+  /** Returns the DPI (Dots Per Inch) of the screen the component is currently in or for the default
+   * screen if the component is not visible.
+   * <p>
+   * If headless mode {@link net.miginfocom.layout.PlatformDefaults#defaultDPI} will be returned.
+   * @return The DPI.
+   */
+  function get horizontalScreenDPI():Number;
+
+  /** Returns the DPI (Dots Per Inch) of the screen the component is currently in or for the default
+   * screen if the component is not visible.
+   * <p>
+   * If headless mode {@link net.miginfocom.layout.PlatformDefaults#defaultDPI} will be returned.
+   * @return The DPI.
+   */
+  function get verticalScreenDPI():Number;
+
   /** Returns the pixel unit factor for the horizontal or vertical dimension.
    * <p>
    * The factor is 1 for both dimensions on the normal font in a JPanel on Windows. The factor should increase with a bigger "X".

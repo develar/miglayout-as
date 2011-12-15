@@ -9,10 +9,19 @@ import net.miginfocom.layout.ComponentWrapper;
 import net.miginfocom.layout.ConstraintParser;
 import net.miginfocom.layout.ContainerWrapper;
 import net.miginfocom.layout.ContainerWrappers;
+import net.miginfocom.layout.PlatformDefaults;
 
 public final class FlashContainerWrapper extends FlashComponentWrapper implements ContainerWrapper {
   internal var w:int;
   internal var h:int;
+
+  public function get horizontalScreenDPI():Number {
+    return PlatformDefaults.defaultDPI;
+  }
+
+  public function get verticalScreenDPI():Number {
+    return PlatformDefaults.defaultDPI;
+  }
 
   public function getPixelUnitFactor(isHor:Boolean):Number {
     return 1;

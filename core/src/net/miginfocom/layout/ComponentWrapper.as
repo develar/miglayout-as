@@ -137,22 +137,6 @@ public interface ComponentWrapper {
    */
   function get hasBaseline():Boolean;
 
-  /** Returns the DPI (Dots Per Inch) of the screen the component is currently in or for the default
-   * screen if the component is not visible.
-   * <p>
-   * If headless mode {@link net.miginfocom.layout.PlatformDefaults#defaultDPI} will be returned.
-   * @return The DPI.
-   */
-  function get horizontalScreenDPI():Number;
-
-  /** Returns the DPI (Dots Per Inch) of the screen the component is currently in or for the default
-   * screen if the component is not visible.
-   * <p>
-   * If headless mode {@link net.miginfocom.layout.PlatformDefaults#defaultDPI} will be returned.
-   * @return The DPI.
-   */
-  function get verticalScreenDPI():Number;
-
   /** Returns a String id that can be used to reference the component in link constraints. This value should
    * return the default id for the component. The id can be set for a component in the constraints and if
    * so the value returned by this method will never be used. If there are no sensible id for the component
