@@ -84,7 +84,7 @@ internal class FlashComponentWrapper implements ComponentWrapper {
   }
 
   public function get linkId():String {
-    return c.name;
+    return null;
   }
 
   public function get layoutHashCode():int {
