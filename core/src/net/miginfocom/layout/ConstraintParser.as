@@ -8,7 +8,7 @@ public final class ConstraintParser {
   /** Parses the layout constraints and stores the parsed values in the transient (cache) member varables.
    * @param s The String to parse. Should not be <code>null</code> and <b>must be lower case and trimmed</b>.
    * @throws ArgumentError if the constaint was not valid.
-   * @return The parsed constraint. Never <code>null</code>.
+   * @return The parsed constraint.
    */
   public static function parseLayoutConstraint(s:String):LC {
 		if ((s = prepare(s)) == null) {

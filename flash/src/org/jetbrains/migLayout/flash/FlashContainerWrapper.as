@@ -71,11 +71,11 @@ public final class FlashContainerWrapper extends FlashComponentWrapper implement
   }
 
   public function get screenLocationX():Number {
-    return c.localToGlobal(new Point(c.x, c.y)).x;
+    return c.localToGlobal(new Point()).x;
   }
 
   public function get screenLocationY():Number {
-    return c.localToGlobal(new Point(c.x, c.y)).y;
+    return c.localToGlobal(new Point()).y;
   }
 
   public function get screenWidth():Number {
