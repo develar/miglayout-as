@@ -416,7 +416,7 @@ public final class ConstraintParser {
 	 */
   public static function parseComponentConstraint(s:String):CC {
     var cc:CC = new CC();
-    if (s.length == 0) {
+    if ((s = prepare(s)) == null) {
       return cc;
     }
 
