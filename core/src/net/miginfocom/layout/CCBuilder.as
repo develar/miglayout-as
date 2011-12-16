@@ -821,14 +821,12 @@ public class CCBuilder {
   }
 
   private function corrPos(uv:String, ix:int):CCBuilder {
-    var b:Vector.<UnitValue> = cc.pos;
-    if (b == null) {
-      b = new Vector.<UnitValue>(4, true);
+    var pos:Vector.<UnitValue> = cc.pos;
+    if (pos == null) {
+      pos = new Vector.<UnitValue>(4, true);
+      cc.pos = pos;
     }
-
-    b[ix] = ConstraintParser.parseUnitValue(uv, null, (ix % 2 == 0));
-    cc.pos = b;
-
+    pos[ix] = ConstraintParser.parseUnitValue(uv, null, (ix % 2 == 0));
     cc.boundsInGrid = true;
     return this;
   }
@@ -844,20 +842,20 @@ public class CCBuilder {
    * @see #pos(UnitValue[])
    */
   public function pos(x:String, y:String, x2:String = null, y2:String = null):CCBuilder {
-    var b:Vector.<UnitValue> = cc.pos;
-    if (b == null) {
-      b = new Vector.<UnitValue>(4, true);
+    var pos:Vector.<UnitValue> = cc.pos;
+    if (pos == null) {
+      pos = new Vector.<UnitValue>(4, true);
+      cc.pos = pos;
     }
 
-    b[0] = ConstraintParser.parseUnitValue(x, null, true);
-    b[1] = ConstraintParser.parseUnitValue(y, null, false);
+    pos[0] = ConstraintParser.parseUnitValue(x, null, true);
+    pos[1] = ConstraintParser.parseUnitValue(y, null, false);
 
     if (x2 != null && y2 != null) {
-      b[2] = ConstraintParser.parseUnitValue(x2, null, true);
-      b[3] = ConstraintParser.parseUnitValue(y2, null, false);
+      pos[2] = ConstraintParser.parseUnitValue(x2, null, true);
+      pos[3] = ConstraintParser.parseUnitValue(y2, null, false);
     }
-    
-    cc.pos = b;
+
     cc.boundsInGrid = false;
     return this;
   }

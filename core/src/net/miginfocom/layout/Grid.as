@@ -635,13 +635,13 @@ public final class Grid {
     if (callbackList != null) {
       for (i = 0; i < callbackList.length && cbPos == null; i++) {
         cbPos = callbackList[i].getPosition(cw);
-      }   // NOT a copy!
+      } // NOT a copy!
     }
 
     // If one is null, return the other (which many also be null)
-    var ccPos:Vector.<UnitValue> = cc.pos;    // A copy!!
+    var ccPos:Vector.<UnitValue> = cc.pos;
     if (cbPos == null || ccPos == null) {
-      return cbPos != null ? cbPos : ccPos;
+      return cbPos != null ? cbPos : ccPos == null ? null : ccPos.slice(); // A copy must be
     }
 
     var cbUv:UnitValue;

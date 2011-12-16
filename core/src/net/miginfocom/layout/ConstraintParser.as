@@ -635,16 +635,16 @@ public final class ConstraintParser {
       if ((c == 120 || c == 121) && part.length > 2) {
         var c2:int = part.charCodeAt(1);
         if (c2 == 32 || (c2 == 50 && part.charCodeAt(2) == 32)) {
-          if (cc.pos == null) {
-            cc.pos = new Vector.<UnitValue>(4, true);
+          var pos:Vector.<UnitValue> = cc.pos;
+          if (pos == null) {
+            pos = new Vector.<UnitValue>(4, true);
+            cc.pos = pos;
           }
           else if (!cc.boundsInGrid) {
             throw new ArgumentError("Cannot combine 'position' with 'x/y/x2/y2' keywords.");
           }
 
-          var pos:Vector.<UnitValue> = cc.pos;
           pos[(c == 120 ? 0 : 1) + (c2 == 50 ? 2 : 0)] = parseUnitValue(Strings.trim2(part, ix, part.length), null, c == 120);
-          cc.pos = pos;
           cc.boundsInGrid = true;
           continue;
         }
@@ -672,7 +672,7 @@ public final class ConstraintParser {
       if (c == 112) {
         ix = startsWithLenient2(part, "pos", 3, true);
         if (ix > -1) {
-          if (cc.pos != null && cc.boundsInGrid) {
+          if (cc.boundsInGrid && cc.pos != null) {
             throw new ArgumentError("Can not combine 'pos' with 'x/y/x2/y2' keywords.");
           }
 

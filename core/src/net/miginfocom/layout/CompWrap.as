@@ -96,6 +96,10 @@ internal final class CompWrap {
     }    // Forced
 
     var dc:DimConstraint = cc.getDimConstraint(isHor);
+    if (dc == null) {
+      return false;
+    }
+
     var s:BoundSize = isBefore ? dc.gapBefore : dc.gapAfter;
     return s != null && s.gapPush;
   }

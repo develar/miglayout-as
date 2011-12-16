@@ -143,7 +143,7 @@ public final class CC {
 	 * @return The current value as a new array, free to modify.
 	 */
   public function get pos():Vector.<UnitValue> {
-    return _pos != null ? _pos.slice() : null;
+    return _pos;
   }
 
 	/** Sets absolute positioning of one or more of the edges. This will be applied last in the layout cycle and will not
@@ -158,7 +158,7 @@ public final class CC {
 	 * @param value <code>UnitValue[] {x, y, x2, y2}</code>. Must be <code>null</code> or of length 4. Elements can be <code>null</code>.
 	 */
 	public function set pos(value:Vector.<UnitValue>):void {
-		_pos = value != null ? value.slice() : null;
+		_pos = value;
 		linkTargets = null;
 	}
 
