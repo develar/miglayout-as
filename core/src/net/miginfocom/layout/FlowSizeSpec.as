@@ -9,9 +9,9 @@ final internal class FlowSizeSpec {
   }
 
   /**
-   * @param specs The specs for the columns or rows. Last index will be used of <code>fromIx + len</code> is greater than this array's length.
+   * @param constraints The constraints for the columns or rows. Last index will be used of <code>fromIx + len</code> is greater than this array's length.
    * @param targetSize The size to try to meet.
-   * @param defGrow The default grow weight if the specs does not have anyone that will grow. Comes from "push" in the CC.
+   * @param defGrow The default grow weight if the constraints does not have anyone that will grow. Comes from "push" in the CC.
    * @param fromIx
    * @param len
    * @param sizeType
@@ -24,7 +24,7 @@ final internal class FlowSizeSpec {
    * </ul>
    * @return The new size.
    */
-  internal function expandSizes(specs:Vector.<DimConstraint>, defGrow:Vector.<Number>, targetSize:int, fromIx:int, len:int, sizeType:int, eagerness:int):int {
+  internal function expandSizes(constraints:Vector.<CellConstraint>, defGrow:Vector.<Number>, targetSize:int, fromIx:int, len:int, sizeType:int, eagerness:int):int {
     var resConstr:Vector.<ResizeConstraint> = new Vector.<ResizeConstraint>(len, true);
     var sizesToExpand:Vector.<Vector.<int>> = new Vector.<Vector.<int>>(len, true);
     var i:int;
@@ -34,7 +34,7 @@ final internal class FlowSizeSpec {
 
       if (eagerness <= 1 && i % 2 == 0) { // (i % 2 == 0) means only odd indexes, which is only rows/col indexes and not gaps.
         var cIx:int = (i + fromIx - 1) >> 1;
-        var sz:BoundSize = specs == null || specs.length == 0 ? BoundSize.NULL_SIZE : LayoutUtil.getIndexSafe(specs, cIx).size;
+        var sz:BoundSize = constraints == null || constraints.length == 0 ? BoundSize.NULL_SIZE : LayoutUtil.getIndexSafe(constraints, cIx).size;
         if ((sizeType == LayoutUtil.MIN && sz.min != null && sz.min.unit != UnitValue.MIN_SIZE) ||
             (sizeType == LayoutUtil.PREF && sz.preferred != null && sz.preferred.unit != UnitValue.PREF_SIZE)) {
           continue;
@@ -43,7 +43,7 @@ final internal class FlowSizeSpec {
       resConstr[i] = LayoutUtil.getIndexSafe2(resConstsInclGaps, i + fromIx);
     }
 
-    var growW:Vector.<Number> = (eagerness == 1 || eagerness == 3) ? Grid.extractSubArray(specs, defGrow, fromIx, len) : null;
+    var growW:Vector.<Number> = (eagerness == 1 || eagerness == 3) ? Grid.extractSubArray(constraints, defGrow, fromIx, len) : null;
     var newSizes:Vector.<int> = LayoutUtil.calculateSerial(sizesToExpand, resConstr, growW, LayoutUtil.PREF, targetSize);
     var newSize:int = 0;
 

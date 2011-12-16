@@ -1,9 +1,9 @@
 package net.miginfocom.layout {
 public class ACBuilder {
-  private var constraints:Vector.<DimConstraint> = new Vector.<DimConstraint>();
+  private var constraints:Vector.<CellConstraint> = new Vector.<CellConstraint>();
   private var curIx:int;
 
-  public function to():Vector.<DimConstraint> {
+  public function to():Vector.<CellConstraint> {
     return constraints;
   }
 
@@ -389,7 +389,7 @@ public class ACBuilder {
     if (constraints.length <= sz) {
       constraints.length = sz;
       for (var i:int = constraints.length; i <= sz; i++) {
-        constraints[i] = new DimConstraint();
+        constraints[i] = new CellConstraint();
       }
     }
   }

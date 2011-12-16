@@ -30,7 +30,7 @@ internal final class LinkedDimGroup {
     sizes = null;
   }
 
-  internal function layout(dc:DimConstraint, start:int, size:int, spanCount:int, parent:ContainerWrapper):void {
+  internal function layout(dc:CellConstraint, start:int, size:int, spanCount:int, parent:ContainerWrapper):void {
     lStart = start;
     lSize = size;
 

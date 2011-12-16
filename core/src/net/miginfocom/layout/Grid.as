@@ -38,7 +38,7 @@ import flash.utils.Dictionary;
 public final class Grid {
 	private static const GROW_100:Vector.<Number> = new <Number>[ResizeConstraint.WEIGHT_100];
 
-	private static const DOCK_DIM_CONSTRAINT:DimConstraint = new DimConstraint();
+	private static const DOCK_DIM_CONSTRAINT:CellConstraint = new CellConstraint();
   DOCK_DIM_CONSTRAINT.growPriority = 0;
 
 	/** This is the maximum grid position for "normal" components. Docking components use the space out to
@@ -59,7 +59,7 @@ public final class Grid {
 	 */
 	private static const DEF_CC:CC = new CC();
   private static var DEF_LC:LC;
-	private static const DEF_DIM_C:DimConstraint = new DimConstraint();
+	private static const DEF_DIM_C:CellConstraint = new CellConstraint();
 
 	/** The constraints. Never <code>null</code>.
 	 */
@@ -85,7 +85,7 @@ public final class Grid {
 
 	/** The row and column specifications.
 	 */
-	private var rowConstr:Vector.<DimConstraint>, colConstr:Vector.<DimConstraint>;
+	private var rowConstr:Vector.<CellConstraint>, colConstr:Vector.<CellConstraint>;
 
 	/** The in the constructor calculated min/pref/max sizes of the rows and columns.
 	 */
@@ -124,7 +124,7 @@ public final class Grid {
 	 * @param columnConstraints The columns specifications. If more cell rows are required, the last element will be used for when there is no corresponding element in this array.
 	 * @param callbackList A list of callbacks or <code>null</code> if none. Will not be altered.
 	 */
-  public function Grid(container:ContainerWrapper, lc:LC, rowConstraints:Vector.<DimConstraint> = null, columnConstraints:Vector.<DimConstraint> = null, callbackList:Vector.<LayoutCallback> = null) {
+  public function Grid(container:ContainerWrapper, lc:LC, rowConstraints:Vector.<CellConstraint> = null, columnConstraints:Vector.<CellConstraint> = null, callbackList:Vector.<LayoutCallback> = null) {
     if (lc == null) {
       if (DEF_LC == null) {
         DEF_LC = new LC();
@@ -152,7 +152,7 @@ public final class Grid {
     var cellXY:Vector.<int> = new Vector.<int>(2, true);
 		var spannedRects:Vector.<Vector.<int>> = new Vector.<Vector.<int>>();
 
-		var specs:Vector.<DimConstraint> = lc.flowX ? rowConstr : colConstr;
+		var specs:Vector.<CellConstraint> = lc.flowX ? rowConstr : colConstr;
 
 		var sizeGroupsX:int = 0, sizeGroupsY:int = 0;
 		var dockInsets:Vector.<int> = null;    // top, left, bottom, right insets for docks.
@@ -1092,7 +1092,7 @@ public final class Grid {
 
   private function layoutInOneDim(refSize:int, align:UnitValue, isRows:Boolean, defaultPushWeights:Vector.<Number>):void {
     var fromEnd:Boolean = !(isRows ? lc.topToBottom : LayoutUtil.isLeftToRight(lc, container));
-    var primDCs:Vector.<DimConstraint> = isRows ? rowConstr : colConstr;
+    var primDCs:Vector.<CellConstraint> = isRows ? rowConstr : colConstr;
     var fss:FlowSizeSpec = isRows ? rowFlowSpecs : colFlowSpecs;
     var rowCols:Vector.<Vector.<LinkedDimGroup>> = isRows ? rowGroupLists : colGroupLists;
 
@@ -1123,7 +1123,7 @@ public final class Grid {
 
       curPos += (fromEnd ? -rowColSizes[bIx] : rowColSizes[bIx]);
 
-      var primDC:DimConstraint = scIx >= 0 ? primDCs == null || primDCs.length == 0 ? DEF_DIM_C : primDCs[scIx >= primDCs.length ? primDCs.length - 1 : scIx] : DOCK_DIM_CONSTRAINT;
+      var primDC:CellConstraint = scIx >= 0 ? primDCs == null || primDCs.length == 0 ? DEF_DIM_C : primDCs[scIx >= primDCs.length ? primDCs.length - 1 : scIx] : DOCK_DIM_CONSTRAINT;
       var rowSize:int = rowColSizes[bIx2];
       for each (var group:LinkedDimGroup in linkedGroups) {
         var groupSize:int = rowSize;
@@ -1180,13 +1180,13 @@ public final class Grid {
       refSize = cSz.constrain(refSize, getParentSize(container, isHor), container);
     }
 
-		var primDCs:Vector.<DimConstraint> = isHor ? colConstr : rowConstr;
+		var primDCs:Vector.<CellConstraint> = isHor ? colConstr : rowConstr;
 		var primIndexes:Array = isHor ? colIndexes : rowIndexes;
 		var rowColBoundSizes:Vector.<Vector.<int>> = new Vector.<Vector.<int>>(primIndexes.length, true);
 		//HashMap<String, int[]> sizeGroupMap = new HashMap<String, int[]>(2);
 		var sizeGroupMap:Dictionary = new Dictionary();
     var sizeGroupMapSize:int = 0;
-		var allDCs:Vector.<DimConstraint> = new Vector.<DimConstraint>(primIndexes.length, true);
+		var allDCs:Vector.<CellConstraint> = new Vector.<CellConstraint>(primIndexes.length, true);
     var r:int = 0;
 		for (var adobeBurnInHell:Object in primIndexes) {
       var cellIx:int = int(adobeBurnInHell);
@@ -1310,10 +1310,10 @@ public final class Grid {
 		return retSizes;
 	}
 
-  private static function getRowResizeConstraints(specs:Vector.<DimConstraint>):Vector.<ResizeConstraint> {
-    var resConsts:Vector.<ResizeConstraint> = new Vector.<ResizeConstraint>(specs.length, true);
+  private static function getRowResizeConstraints(constraints:Vector.<CellConstraint>):Vector.<ResizeConstraint> {
+    var resConsts:Vector.<ResizeConstraint> = new Vector.<ResizeConstraint>(constraints.length, true);
     for (var i:int = 0; i < resConsts.length; i++) {
-      resConsts[i] = specs[i].resize;
+      resConsts[i] = constraints[i].resize;
     }
     return resConsts;
   }
@@ -1355,7 +1355,7 @@ public final class Grid {
 	 * @param fillInPushGaps If the gaps are pushing. <b>NOTE!</b> this argument will be filled in and thus changed!
 	 * @return The row gaps in pixel sizes. One more than there are <code>specs</code> sent in.
 	 */
-  private function getRowGaps(specs:Vector.<DimConstraint>, refSize:int, isHor:Boolean, fillInPushGaps:Vector.<Boolean>):Vector.<Vector.<int>> {
+  private function getRowGaps(specs:Vector.<CellConstraint>, refSize:int, isHor:Boolean, fillInPushGaps:Vector.<Boolean>):Vector.<Vector.<int>> {
     var defGap:BoundSize = isHor ? lc.gridGapX : lc.gridGapY;
     if (defGap == null) {
       defGap = isHor ? PlatformDefaults.gridGapX : PlatformDefaults.gridGapY;
@@ -1370,8 +1370,8 @@ public final class Grid {
     var retValues:Vector.<Vector.<int>> = new Vector.<Vector.<int>>(specs.length + 1, true);
 
     for (var i:int = 0, wgIx:int = 0; i < retValues.length; i++) {
-      var specBefore:DimConstraint = i > 0 ? specs[i - 1] : null;
-      var specAfter:DimConstraint = i < specs.length ? specs[i] : null;
+      var specBefore:CellConstraint = i > 0 ? specs[i - 1] : null;
+      var specAfter:CellConstraint = i < specs.length ? specs[i] : null;
 
       // No gap if between docking components.
       var edgeBefore:Boolean = (specBefore == DOCK_DIM_CONSTRAINT || specBefore == null);
@@ -1440,7 +1440,7 @@ public final class Grid {
 	 * @param fss
 	 * @param groupsLists
 	 */
-  private static function adjustMinPrefForSpanningComps(specs:Vector.<DimConstraint>, defPush:Vector.<Number>, fss:FlowSizeSpec, groupsLists:Vector.<Vector.<LinkedDimGroup>>):void {
+  private static function adjustMinPrefForSpanningComps(specs:Vector.<CellConstraint>, defPush:Vector.<Number>, fss:FlowSizeSpec, groupsLists:Vector.<Vector.<LinkedDimGroup>>):void {
     // Since 3.7.3 Iterate from end to start. Will solve some multiple spanning components hard to solve problems.
     for (var r:int = groupsLists.length - 1; r >= 0; r--) {
       for  each (var group:LinkedDimGroup in groupsLists[r]) {
@@ -1484,13 +1484,13 @@ public final class Grid {
     var fromEnd:Boolean = !(isRows ? lc.topToBottom : LayoutUtil.isLeftToRight(lc, container));
     var primIndexes:Array = isRows ? rowIndexes : colIndexes;
     var secIndexes:Array = isRows ? colIndexes : rowIndexes;
-    var primDCs:Vector.<DimConstraint> = isRows ? rowConstr : colConstr;
+    var primDCs:Vector.<CellConstraint> = isRows ? rowConstr : colConstr;
     var groupLists:Vector.<Vector.<LinkedDimGroup>> = new Vector.<Vector.<LinkedDimGroup>>(primIndexes.length, true);
     var gIx:int = 0;
     var adobeBurnInHell:Object;
     for (adobeBurnInHell in primIndexes) {
       var i:int = int(adobeBurnInHell);
-      var dc:DimConstraint;
+      var dc:CellConstraint;
       if (i >= -MAX_GRID && i <= MAX_GRID) {  // If not dock cell
         dc = primDCs == null || primDCs.length == 0 ? DEF_DIM_C : primDCs[i >= primDCs.length ? primDCs.length - 1 : i];
       }
@@ -1644,7 +1644,7 @@ public final class Grid {
 	//* Helper Methods
 	//***************************************************************************************
 
-	internal static function layoutBaseline(parent:ContainerWrapper, compWraps:Vector.<CompWrap>, dc:DimConstraint, start:int, size:int, sizeType:int, spanCount:int):void {
+	internal static function layoutBaseline(parent:ContainerWrapper, compWraps:Vector.<CompWrap>, dc:CellConstraint, start:int, size:int, sizeType:int, spanCount:int):void {
 		var aboveBelow:Vector.<int> = getBaselineAboveBelow(compWraps, sizeType, true);
 		var blRowSize:int= aboveBelow[0] + aboveBelow[1];
 
@@ -1668,7 +1668,7 @@ public final class Grid {
     }
 	}
 
-  internal static function layoutSerial(parent:ContainerWrapper, compWraps:Vector.<CompWrap>, dc:DimConstraint, start:int, size:int, isHor:Boolean, fromEnd:Boolean):void {
+  internal static function layoutSerial(parent:ContainerWrapper, compWraps:Vector.<CompWrap>, dc:CellConstraint, start:int, size:int, isHor:Boolean, fromEnd:Boolean):void {
     var fss:FlowSizeSpec = mergeSizesGapsAndResConstrs(
       getComponentResizeConstraints(compWraps, isHor),
       getComponentGapPush(compWraps, isHor),
@@ -1707,7 +1707,7 @@ public final class Grid {
     }
   }
 
-  internal static function layoutParallel(parent:ContainerWrapper, compWraps:Vector.<CompWrap>, dc:DimConstraint, start:int, size:int, isHor:Boolean, fromEnd:Boolean):void {
+  internal static function layoutParallel(parent:ContainerWrapper, compWraps:Vector.<CompWrap>, dc:CellConstraint, start:int, size:int, isHor:Boolean, fromEnd:Boolean):void {
     var sizes:Vector.<Vector.<int>> = new Vector.<Vector.<int>>(compWraps.length);    // [compIx][gapBef,compSize,gapAft]
     for (var i:int = 0; i < sizes.length; i++) {
       var cw:CompWrap = compWraps[i];
@@ -1935,7 +1935,7 @@ public final class Grid {
     }
   }
 
-  internal static function extractSubArray(specs:Vector.<DimConstraint>, arr:Vector.<Number>, ix:int, len:int):Vector.<Number> {
+  internal static function extractSubArray(specs:Vector.<CellConstraint>, arr:Vector.<Number>, ix:int, len:int):Vector.<Number> {
     var i:int;
     if (arr == null || arr.length < ix + len) {
       var growLastArr:Vector.<Number> = new Vector.<Number>(len, true);

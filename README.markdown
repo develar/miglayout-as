@@ -19,6 +19,9 @@ Original license (java): BSD. ActionScript port (this project): Apache License v
 * parent removed from ComponentWrapper — is not needed at all (only one case, so, hasParent added to ContainerWrapper).
 * Grid allows nullable rowConstraints, columnConstraints and lc.
 * Grid.layout() method — remove alignX and alignY paramaters, because LC has full information about it.
+* DimConstraint refactored — CellConstraint and ComponentConstraint were extracted and DimConstraint became internal abstract class due to:
+ * reduce memory usage (overhead is very small, but nevertheless);
+ * remove comments like "Only applicable on components!" :)
 
 API Creation of Constraints is ported too, but is not tested and is not recommended to use. String creation of the constraints is short to type and easy to read.
 

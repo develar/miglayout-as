@@ -1,32 +1,35 @@
 package net.miginfocom.layout {
 /** A simple value holder for a constraint for one dimension.
  */
-public final class DimConstraint {
+[Abstract]
+internal class DimConstraint {
   /** How this entity can be resized in the dimension that this constraint represents.
    */
   internal const resize:ResizeConstraint = new ResizeConstraint();
 
-  // Look at the properties' getter/setter methods for explanation
+  /** Size group that this entity should be in for the dimension that this object is describing.
+   * If this constraint is in a size group that is specified here. <code>null</code> means no size group
+   * and all other values are legal. Components/columns/rows in the same size group
+   * will have the same min/preferred/max size; that of the largest in the group for the first two and the
+   * smallest for max.
+   */
+  public var sizeGroup:String;
 
-  private var _sizeGroup:String;            // A "context" compared with equals.
+  /** Alignment used either as a default value for sub-entities or for this entity.
+   */
+  public var align:UnitValue;
 
   private var _size:BoundSize = BoundSize.NULL_SIZE;     // Min, pref, max. Never null, but sizes can be null.
 
-  private var _gapBefore:BoundSize, _gapAfter:BoundSize;
+  /** Gap before this entity. The gap is an empty space and can have a min/preferred/maximum size so that it can shrink and
+   * grow depending on available space. Gaps are against other entities' edges and not against other entities' gaps.
+   */
+  public var gapBefore:BoundSize;
 
-  private var _align:UnitValue;
-
-
-  // **************  Only applicable on components! *******************
-
-  private var _endGroup:String;            // A "context" compared with equals.
-
-
-  // **************  Only applicable on rows/columns! *******************
-
-  private var _fill:Boolean;
-
-  private var _noGrid:Boolean;
+  /** Gap after this entity. The gap is an empty space and can have a min/preferred/maximum size so that it can shrink and
+   * grow depending on available space. Gaps are against other entities' edges and not against other entities' gaps.
+   */
+  public var gapAfter:BoundSize;
 
   /** Returns the grow priority. Relative priority is used for determining which entities gets the extra space first.
    * <p>
@@ -120,92 +123,12 @@ public final class DimConstraint {
     resize.shrink = value;
   }
 
-  public function getAlignOrDefault(isCols:Boolean):UnitValue {
-    if (_align != null) {
-      return _align;
-    }
-
-    if (isCols) {
-      return UnitValue.LEADING;
-    }
-
-    return _fill || !PlatformDefaults.defaultRowAlignmentBaseline ? UnitValue.CENTER : UnitValue.BASELINE_IDENTITY;
-  }
-
-  /** Returns the alignment used either as a default value for sub-entities or for this entity.
-   * <p>
-   * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
-   * @return The alignment.
-   */
-  public function get align():UnitValue {
-    return _align;
-  }
-
-  /** Sets the alignment used wither as a default value for sub-entities or for this entity.
-   * <p>
-   * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
-   * @param value The new shrink priority. E.g. {@link UnitValue#CENTER} or {@link net.miginfocom.layout.UnitValue#LEADING}.
-   */
-  public function set align(value:UnitValue):void {
-    _align = value;
-  }
-
-  /** Returns the gap after this entity. The gap is an empty space and can have a min/preferred/maximum size so that it can shrink and
-   * grow depending on available space. Gaps are against other entities' edges and not against other entities' gaps.
-   * <p>
-   * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
-   * @return The gap after this entity
-   */
-  public function get gapAfter():BoundSize {
-    return _gapAfter;
-  }
-
-  /** Sets the gap after this entity. The gap is an empty space and can have a min/preferred/maximum size so that it can shrink and
-   * grow depending on available space. Gaps are against other entities' edges and not against other entities' gaps.
-   * <p>
-   * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
-   * @param value The new gap.
-   * @see net.miginfocom.layout.ConstraintParser#parseBoundSize(String, boolean, boolean).
-   */
-  public function set gapAfter(value:BoundSize):void {
-    _gapAfter = value;
-  }
-
-  internal function get hasGapAfter():Boolean {
-    return _gapAfter != null && !_gapAfter.isUnset;
-  }
-
   internal function get gapAfterPush():Boolean {
-    return _gapAfter != null && _gapAfter.gapPush;
-  }
-
-  /** Returns the gap before this entity. The gap is an empty space and can have a min/preferred/maximum size so that it can shrink and
-   * grow depending on available space. Gaps are against other entities' edges and not against other entities' gaps.
-   * <p>
-   * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
-   * @return The gap before this entity
-   */
-  public function get gapBefore():BoundSize {
-    return _gapBefore;
-  }
-
-  /** Sets the gap before this entity. The gap is an empty space and can have a min/preferred/maximum size so that it can shrink and
-   * grow depending on available space. Gaps are against other entities' edges and not against other entities' gaps.
-   * <p>
-   * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
-   * @param value The new gap.
-   * @see net.miginfocom.layout.ConstraintParser#parseBoundSize(String, boolean, boolean).
-   */
-  public function set gapBefore(value:BoundSize):void {
-    _gapBefore = value;
-  }
-
-  internal function get hasGapBefore():Boolean {
-    return _gapBefore != null && !_gapBefore.isUnset;
+    return gapAfter != null && gapAfter.gapPush;
   }
 
   internal function get gapBeforePush():Boolean {
-    return _gapBefore != null && _gapBefore.gapPush;
+    return gapBefore != null && gapBefore.gapPush;
   }
 
   /** Returns the min/preferred/max size for the entity in the dimension that this object describes.
@@ -233,126 +156,6 @@ public final class DimConstraint {
     }
   }
 
-  /** Returns the size group that this entity should be in for the dimension that this object is describing.
-   * If this constraint is in a size group that is specified here. <code>null</code> means no size group
-   * and all other values are legal. Comparison with .equals(). Components/columnss/rows in the same size group
-   * will have the same min/preferred/max size; that of the largest in the group for the first two and the
-   * smallest for max.
-   * <p>
-   * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
-   * @return The current size group. May be <code>null</code>.
-   */
-  public function get sizeGroup():String {
-    return _sizeGroup;
-  }
-
-  /** Sets the size group that this entity should be in for the dimension that this object is describing.
-   * If this constraint is in a size group that is specified here. <code>null</code> means no size group
-   * and all other values are legal. Comparison with .equals(). Components/columnss/rows in the same size group
-   * will have the same min/preferred/max size; that of the largest in the group for the first two and the
-   * smallest for max.
-   * <p>
-   * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
-   * @param value The new size group. <code>null</code> disables size grouping.
-   */
-  public function set sizeGroup(value:String):void {
-    _sizeGroup = value;
-  }
-
-  // **************  Only applicable on components ! *******************
-
-  /** Returns the end group that this entity should be in for the demension that this object is describing.
-   * If this constraint is in an end group that is specified here. <code>null</code> means no end group
-   * and all other values are legal. Comparison with .equals(). Components in the same end group
-   * will have the same end coordinate.
-   * <p>
-   * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
-   * @return The current end group. <code>null</code> may be returned.
-   */
-  public function get endGroup():String {
-    return _endGroup;
-  }
-
-  /** Sets the end group that this entity should be in for the demension that this object is describing.
-   * If this constraint is in an end group that is specified here. <code>null</code> means no end group
-   * and all other values are legal. Comparison with .equals(). Components in the same end group
-   * will have the same end coordinate.
-   * <p>
-   * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
-   * @param value The new end group. <code>null</code> disables end grouping.
-   */
-  public function set endGroup(value:String):void {
-    _endGroup = value;
-  }
-
-  // **************  Not applicable on components below ! *******************
-
-  /** Returns if the component in the row/column that this constraint should default be grown in the same dimension that
-   * this constraint represents (width for column and height for a row).
-   * <p>
-   * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
-   * @return code>true</code> means that components should grow.
-   */
-  public function get fill():Boolean {
-    return _fill;
-  }
-
-  /** Sets if the component in the row/column that this constraint should default be grown in the same dimension that
-   * this constraint represents (width for column and height for a row).
-   * <p>
-   * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
-   * @param value <code>true</code> means that components should grow.
-   */
-  public function set fill(value:Boolean):void {
-    _fill = value;
-  }
-
-  /** Returns if the row/column should default to flow and not to grid behaviour. This means that the whole row/column
-   * will be one cell and all components will end up in that cell.
-   * <p>
-   * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
-   * @return <code>true</code> means that the whole row/column should be one cell.
-   */
-  public function get noGrid():Boolean {
-    return _noGrid;
-  }
-
-  /** Sets if the row/column should default to flow and not to grid behaviour. This means that the whole row/column
-   * will be one cell and all components will end up in that cell.
-   * <p>
-   * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
-   * @param value <code>true</code> means that the whole row/column should be one cell.
-   */
-  public function set noGrid(value:Boolean):void {
-    _noGrid = value;
-  }
-
-  /** Returns the gaps as pixel values.
-   * @param parent The parent. Used to get the pixel values.
-   * @param defGap The default gap to use if there is no gap set on this object (i.e. it is null).
-   * @param refSize The reference size used to get the pixel sizes.
-   * @param before IF it is the gap before rather than the gap after to return.
-   * @return The [min,preferred,max] sizes for the specified gap. Uses {@link net.miginfocom.layout.LayoutUtil#NOT_SET}
-   * for gap sizes that are <code>null</code>. Returns <code>null</code> if there was no gap specified. A new and free to use array.
-   */
-  internal function getRowGaps(parent:ContainerWrapper, defGap:BoundSize, refSize:int, before:Boolean):Vector.<int> {
-    var gap:BoundSize = before ? _gapBefore : _gapAfter;
-    if (gap == null || gap.isUnset) {
-      gap = defGap;
-    }
-
-    if (gap == null || gap.isUnset) {
-      return null;
-    }
-
-    var ret:Vector.<int> = new Vector.<int>(3, true);
-    var uv:UnitValue;
-    for (var i:int = LayoutUtil.MIN; i <= LayoutUtil.MAX; i++) {
-      ret[i] = (uv = gap.getSize(i)) != null ? uv.getPixels(refSize, parent, null) : LayoutUtil.NOT_SET;
-    }
-    return ret;
-  }
-
   /** Returns the gaps as pixel values.
    * @param parent The parent. Used to get the pixel values.
    * @param comp The component that the gap is for. If not for a component it is <code>null</code>.
@@ -365,9 +168,8 @@ public final class DimConstraint {
    * @return The [min,preferred,max] sizes for the specified gap. Uses {@link net.miginfocom.layout.LayoutUtil#NOT_SET}
    * for gap sizes that are <code>null</code>. Returns <code>null</code> if there was no gap specified. A new and free to use array.
    */
-  internal function getComponentGaps(parent:ContainerWrapper, comp:ComponentWrapper, adjGap:BoundSize, adjacentComp:ComponentWrapper,
-                                     tag:String, refSize:int, adjacentSide:int, isLTR:Boolean):Vector.<int> {
-    var gap:BoundSize = adjacentSide < 2 ? _gapBefore : _gapAfter;
+  internal function getComponentGaps(parent:ContainerWrapper, comp:ComponentWrapper, adjGap:BoundSize, adjacentComp:ComponentWrapper, tag:String, refSize:int, adjacentSide:int, isLTR:Boolean):Vector.<int> {
+    var gap:BoundSize = adjacentSide < 2 ? gapBefore : gapAfter;
     var hasGap:Boolean = gap != null && gap.gapPush;
     if ((gap == null || gap.isUnset) && (adjGap == null || adjGap.isUnset) && comp != null) {
       gap = PlatformDefaults.getDefaultComponentGap(comp, adjacentComp, adjacentSide + 1, tag, isLTR);
@@ -384,23 +186,5 @@ public final class DimConstraint {
     }
     return ret;
   }
-
-  // ************************************************
-  // Persistence Delegate and Serializable combined.
-  // ************************************************
-
-  //private function readResolve():Object {
-  //	return LayoutUtil.getSerializedObject(this);
-  //}
-  //
-  //public function readExternal(in:ObjectInput):void , ClassNotFoundException
-  //{
-  //	LayoutUtil.setSerializedObject(this, LayoutUtil.readAsXML(in));
-  //}
-  //
-  //public function writeExternal(out:ObjectOutput):void {
-  //	if (getClass() == DimConstraint.class)
-  //		LayoutUtil.writeAsXML(out, this);
-  //}
 }
 }

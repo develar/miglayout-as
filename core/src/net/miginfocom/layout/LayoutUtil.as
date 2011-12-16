@@ -281,7 +281,7 @@ public final class LayoutUtil {
     return a - b;
   }
 
-  internal static function getIndexSafe(arr:Vector.<DimConstraint>, ix:int):DimConstraint {
+  internal static function getIndexSafe(arr:Vector.<CellConstraint>, ix:int):CellConstraint {
     return arr[ix < arr.length ? ix : arr.length - 1];
   }
 

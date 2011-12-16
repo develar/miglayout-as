@@ -255,7 +255,7 @@ public final class ConstraintParser {
    * @param s The string to parse. Not <code>null</code>.
    * @return An array of {@link DimConstraint}s that is as manu are there exist "[...]" sections in the string that is parsed.
    */
-  public static function parseRowConstraints(s:String):Vector.<DimConstraint> {
+  public static function parseRowConstraints(s:String):Vector.<CellConstraint> {
     return parseAxisConstraint(s, false);
   }
 
@@ -263,7 +263,7 @@ public final class ConstraintParser {
    * @param s The string to parse. Not <code>null</code>.
    * @return An array of {@link DimConstraint}s that is as manu are there exist "[...]" sections in the string that is parsed.
    */
-  public static function parseColumnConstraints(s:String):Vector.<DimConstraint> {
+  public static function parseColumnConstraints(s:String):Vector.<CellConstraint> {
     return parseAxisConstraint(s, true);
   }
 
@@ -272,7 +272,7 @@ public final class ConstraintParser {
    * @param isCols If this for columns rather than rows.
    * @return An array of {@link DimConstraint}s that is as many are there exist "[...]" sections in the string that is parsed.
    */
-  private static function parseAxisConstraint(s:String, isCols:Boolean):Vector.<DimConstraint> {
+  private static function parseAxisConstraint(s:String, isCols:Boolean):Vector.<CellConstraint> {
     if ((s = prepare(s)) == null) {
       return null;
     }
@@ -285,13 +285,13 @@ public final class ConstraintParser {
       gaps[gIx] = parseBoundSize(parts[i], true, isCols);
     }
 
-		var constraints:Vector.<DimConstraint> = new Vector.<DimConstraint>(parts.length >> 1, true);
+		var constraints:Vector.<CellConstraint> = new Vector.<CellConstraint>(parts.length >> 1, true);
     for (i = 0, gIx = 0; i < constraints.length; i++, gIx++) {
       if (gIx >= gaps.length - 1) {
         gIx = gaps.length - 2;
       }
 
-      constraints[i] = parseDimConstraint(parts[(i << 1) + 1], gaps[gIx], gaps[gIx + 1], isCols);
+      constraints[i] = parseCellConstraint(parts[(i << 1) + 1], gaps[gIx], gaps[gIx + 1], isCols);
     }
 
     return constraints;
@@ -306,12 +306,12 @@ public final class ConstraintParser {
 	 * @return A single constraint. Never <code>null</code>.
 	 * @throws ArgumentError if the constaint was not valid.
 	 */
-  private static function parseDimConstraint(s:String, gapBefore:BoundSize, gapAfter:BoundSize, isCols:Boolean):DimConstraint {
-    var dimConstraint:DimConstraint = new DimConstraint();
+  private static function parseCellConstraint(s:String, gapBefore:BoundSize, gapAfter:BoundSize, isCols:Boolean):CellConstraint {
+    var constraint:CellConstraint = new CellConstraint();
 
     // Default values.
-    dimConstraint.gapBefore = gapBefore;
-    dimConstraint.gapAfter = gapAfter;
+    constraint.gapBefore = gapBefore;
+    constraint.gapAfter = gapAfter;
 
     var parts:Vector.<String> = toTrimmedTokens(s, 44);
     for (var i:int = 0; i < parts.length; i++) {
@@ -322,13 +322,13 @@ public final class ConstraintParser {
         }
 
         if (part == "fill") {
-          dimConstraint.fill = true;
-          // dimConstraint.setAlign(null);   // Can not have both fill and alignment (changed for 3.5 since it can have "growy 0")
+          constraint.fill = true;
+          // constraint.setAlign(null);   // Can not have both fill and alignment (changed for 3.5 since it can have "growy 0")
           continue;
         }
 
 				if (part == "nogrid") {
-					dimConstraint.noGrid = true;
+					constraint.noGrid = true;
 					continue;
 				}
 
@@ -338,19 +338,19 @@ public final class ConstraintParser {
 				if (c == 115) {
 					ix = startsWithLenient(part, new <String>["sizegroup", "sg"], new <int>[5, 2], true);
 					if (ix > -1) {
-						dimConstraint.sizeGroup = Strings.trim2(part, ix, part.length);
+						constraint.sizeGroup = Strings.trim2(part, ix, part.length);
 						continue;
 					}
 
 					ix = startsWithLenient(part, new <String>["shrinkprio", "shp"], new <int>[10, 3], true);
 					if (ix > -1) {
-						dimConstraint.shrinkPriority = int(Strings.trim2(part, ix, part.length));
+						constraint.shrinkPriority = int(Strings.trim2(part, ix, part.length));
 						continue;
 					}
 
 					ix = startsWithLenient2(part, "shrink", 6, true);
 					if (ix > -1) {
-						dimConstraint.shrink = parseFloat2(Strings.trim2(part, ix, part.length), ResizeConstraint.WEIGHT_100);
+						constraint.shrink = parseFloat2(Strings.trim2(part, ix, part.length), ResizeConstraint.WEIGHT_100);
 						continue;
 					}
 				}
@@ -358,13 +358,13 @@ public final class ConstraintParser {
 				if (c == 103) {
 					ix = startsWithLenient(part, new <String>["growpriority", "gp"], new <int>[5, 2], true);
 					if (ix > -1) {
-						dimConstraint.growPriority = int(Strings.trim2(part, ix, part.length));
+						constraint.growPriority = int(Strings.trim2(part, ix, part.length));
             continue;
           }
 
           ix = startsWithLenient2(part, "grow", 4, true);
           if (ix > -1) {
-            dimConstraint.grow = parseFloat2(Strings.trim2(part, ix, part.length), ResizeConstraint.WEIGHT_100);
+            constraint.grow = parseFloat2(Strings.trim2(part, ix, part.length), ResizeConstraint.WEIGHT_100);
             continue;
           }
         }
@@ -372,27 +372,27 @@ public final class ConstraintParser {
         if (c == 97) {
           ix = startsWithLenient2(part, "align", 2, true);
           if (ix > -1) {
-//						if (dimConstraint.isFill() == false)    // Swallow, but ignore if fill is set. (changed for 3.5 since it can have "growy 0")
-            dimConstraint.align = parseUnitValueOrAlign(Strings.trim2(part, ix, part.length), isCols, null);
+//						if (constraint.isFill() == false)    // Swallow, but ignore if fill is set. (changed for 3.5 since it can have "growy 0")
+            constraint.align = parseUnitValueOrAlign(Strings.trim2(part, ix, part.length), isCols, null);
             continue;
           }
         }
 
         var align:UnitValue = parseAlignKeywords(part, isCols);
         if (align != null) {
-//					if (dimConstraint.isFill() == false)    // Swallow, but ignore if fill is set. (changed for 3.5 since it can have "growy 0")
-          dimConstraint.align = align;
+//					if (constraint.isFill() == false)    // Swallow, but ignore if fill is set. (changed for 3.5 since it can have "growy 0")
+          constraint.align = align;
           continue;
         }
 
 				 // Only min:pref:max still left that is ok
-				dimConstraint.size = parseBoundSize(part, false, isCols);
+				constraint.size = parseBoundSize(part, false, isCols);
 
 			} catch (e:Error) {
 				throw new ArgumentError("Illegal contraint: '" + part + "'\n" + e.message);
 			}
 		}
-		return dimConstraint;
+		return constraint;
 	}
 
   // todo Why are we need this method?

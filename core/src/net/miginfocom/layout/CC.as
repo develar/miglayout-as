@@ -35,8 +35,8 @@ public final class CC {
 
   private var _hideMode:int = -1;
 
-  private var hor:DimConstraint = new DimConstraint();
-  private var ver:DimConstraint = new DimConstraint();
+  private var hor:ComponentConstraint = new ComponentConstraint();
+  private var ver:ComponentConstraint = new ComponentConstraint();
 
   private var _newline:BoundSize;
 
@@ -89,7 +89,7 @@ public final class CC {
 	 * constraint for later use.
 	 * @return The current dimension constraint. Never <code>null</code>.
 	 */
-	public function get horizontal():DimConstraint {
+	public function get horizontal():ComponentConstraint {
 		return hor;
 	}
 
@@ -97,8 +97,8 @@ public final class CC {
 	 * and grow/shrink priorities and weights.
 	 * @param value The new dimension constraint. If <code>null</code> it will be reset to <code>new DimConstraint();</code>
 	 */
-	public function set horizontal(value:DimConstraint):void {
-		hor = value != null ? value : new DimConstraint();
+	public function set horizontal(value:ComponentConstraint):void {
+		hor = value != null ? value : new ComponentConstraint();
 	}
 
 	/** Returns the vertical dimension constraint for this component constraint. It has constraints for the vertical size
@@ -108,7 +108,7 @@ public final class CC {
 	 * constraint for later use.
 	 * @return The current dimension constraint. Never <code>null</code>.
 	 */
-	public function get vertical():DimConstraint {
+	public function get vertical():ComponentConstraint {
 		return ver;
 	}
 
@@ -116,8 +116,8 @@ public final class CC {
 	 * and grow/shrink priorities and weights.
 	 * @param value The new dimension constraint. If <code>null</code> it will be reset to <code>new DimConstraint();</code>
 	 */
-	public function set vertical(value:DimConstraint):void {
-		ver = value != null ? value : new DimConstraint();
+	public function set vertical(value:ComponentConstraint):void {
+		ver = value != null ? value : new ComponentConstraint();
 	}
 
 	/** Returns the vertical or horizontal dim constraint.
@@ -155,7 +155,7 @@ public final class CC {
 	 * Note that {@link #boundsInGrid(Boolean)} changes the interpretation of thisproperty slightly.
 	 * <p>
 	 * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
-	 * @param values <code>UnitValue[] {x, y, x2, y2}</code>. Must be <code>null</code> or of length 4. Elements can be <code>null</code>.
+	 * @param value <code>UnitValue[] {x, y, x2, y2}</code>. Must be <code>null</code> or of length 4. Elements can be <code>null</code>.
 	 */
 	public function set pos(value:Vector.<UnitValue>):void {
 		_pos = value != null ? value.slice() : null;

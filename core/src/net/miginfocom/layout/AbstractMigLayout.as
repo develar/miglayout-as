@@ -4,7 +4,7 @@ public class AbstractMigLayout {
   protected static const INVALID:uint = 1 << 0;
 
   protected var lc:LC;
-  protected var colSpecs:Vector.<DimConstraint>, rowSpecs:Vector.<DimConstraint>;
+  protected var colSpecs:Vector.<CellConstraint>, rowSpecs:Vector.<CellConstraint>;
   protected var grid:Grid;
   protected var lastModCount:int = PlatformDefaults.modCount;
 
@@ -21,12 +21,12 @@ public class AbstractMigLayout {
     flags |= INVALID;
   }
 
-  public function setColumnConstraints(value:Vector.<DimConstraint>):void {
+  public function setColumnConstraints(value:Vector.<CellConstraint>):void {
     colSpecs = value;
     flags |= INVALID;
   }
 
-  public function setRowConstraints(value:Vector.<DimConstraint>):void {
+  public function setRowConstraints(value:Vector.<CellConstraint>):void {
     rowSpecs = value;
     flags |= INVALID;
   }
