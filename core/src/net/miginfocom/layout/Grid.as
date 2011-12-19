@@ -77,7 +77,7 @@ public final class Grid {
 	private const grid:Array = [];   // [(y << 16) + x] -> Cell. null key for absolute positioned compwraps CHANGED: in ActionScript all not-integer keys casted to String, so, we use "apc" (see ABSOLUTE_POSITIONED_CELL_KEY) as key instead of null
 
 	//private HashMap<Integer, BoundSize> wrapGapMap = null;   // Row or Column index depending in the dimension that "wraps". Normally row indexes but may be column indexes if "flowy". 0 means before first row/col.
-	private var wrapGapMap:Array;   // Row or Column index depending in the dimension that "wraps". Normally row indexes but may be column indexes if "flowy". 0 means before first row/col.
+	private var wrapGapMap:Dictionary;   // Row or Column index depending in the dimension that "wraps". Normally row indexes but may be column indexes if "flowy". 0 means before first row/col.
 
 	/** The size of the grid. Row count and column count.
 	 */
@@ -739,7 +739,7 @@ public final class Grid {
 
     if (gapSize != null) {
       if (wrapGapMap == null) {
-        wrapGapMap = [];
+        wrapGapMap = new Dictionary();
       }
 
       wrapGapMap[cellXY[flowx ? 1 : 0]] = gapSize;
