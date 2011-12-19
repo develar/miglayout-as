@@ -163,18 +163,18 @@ public final class UnitValue {
   private static const IDENTITY:int = -1;
 
   public static const ZERO:UnitValue = create2(0, PIXEL, true, "0px");
-  internal static const TOP:UnitValue = create2(0, PERCENT, false, "top");
-  internal static const LEADING:UnitValue = create2(0, PERCENT, true, "leading");
-  internal static const LEFT:UnitValue = create2(0, PERCENT, true, "left");
-  internal static const CENTER:UnitValue = create2(50, PERCENT, true, "center");
-  internal static const TRAILING:UnitValue = create2(100, PERCENT, true, "trailing");
-  internal static const RIGHT:UnitValue = create2(100, PERCENT, true, "right");
-  internal static const BOTTOM:UnitValue = create2(100, PERCENT, false, "bottom");
-  internal static const LABEL:UnitValue = create2(0, LABEL_ALIGN, false, "label");
+  public static const TOP:UnitValue = create2(0, PERCENT, false, "top");
+  public static const LEADING:UnitValue = create2(0, PERCENT, true, "leading");
+  public static const LEFT:UnitValue = create2(0, PERCENT, true, "left");
+  public static const CENTER:UnitValue = create2(50, PERCENT, true, "center");
+  public static const TRAILING:UnitValue = create2(100, PERCENT, true, "trailing");
+  public static const RIGHT:UnitValue = create2(100, PERCENT, true, "right");
+  public static const BOTTOM:UnitValue = create2(100, PERCENT, false, "bottom");
+  public static const LABEL:UnitValue = create2(0, LABEL_ALIGN, false, "label");
 
   internal static const INF:UnitValue = create2(LayoutUtil.INF, PIXEL, true, "inf");
 
-  internal static const BASELINE_IDENTITY:UnitValue = create2(0, IDENTITY, false, "baseline");
+  public static const BASELINE_IDENTITY:UnitValue = create2(0, IDENTITY, false, "baseline");
 
   private var value:Number;
   private var oper:int = STATIC;
