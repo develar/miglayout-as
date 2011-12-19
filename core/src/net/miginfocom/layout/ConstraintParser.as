@@ -46,191 +46,185 @@ public final class ConstraintParser {
         continue;
       }
 
-				var ix:int = -1;
-				var c:int = part.charCodeAt(0);
+      var ix:int = -1;
+      var c:int = part.charCodeAt(0);
 
-				if (c == 119 || c == 104) {
+      if (c == 119 || c == 104) {
 
-					ix = startsWithLenient2(part, "wrap", -1, true);
-					if (ix > -1) {
-						var num:String = Strings.trim2(part, ix, part.length);
-						lc.wrapAfter = num.length != 0 ? int(num) : 0;
-						continue;
-					}
+        ix = startsWithLenient2(part, "wrap", -1, true);
+        if (ix > -1) {
+          var num:String = Strings.trim2(part, ix, part.length);
+          lc.wrapAfter = num.length != 0 ? int(num) : 0;
+          continue;
+        }
 
-					var isHor:Boolean = c == 119;
-					if (isHor && (part.charCodeAt(0) == 119 || Strings.startsWith(part, "width "))) {
-						sz = Strings.trim2(part, part.charCodeAt(1) == 32 ? 2 : 6, part.length);
-						lc.width = parseBoundSize(sz, false, true);
-						continue;
-					}
+        var isHor:Boolean = c == 119;
+        if (isHor && (part.charCodeAt(0) == 119 || Strings.startsWith(part, "width "))) {
+          sz = Strings.trim2(part, part.charCodeAt(1) == 32 ? 2 : 6, part.length);
+          lc.width = parseBoundSize(sz, false, true);
+          continue;
+        }
 
-					if (!isHor && (Strings.startsWith(part, "h ") || Strings.startsWith(part, "height "))) {
-						var uvStr:String = Strings.trim2(part, part.charCodeAt(1) == 32 ? 2 : 7, s.length);
-						lc.height = (parseBoundSize(uvStr, false, false));
-						continue;
-					}
+        if (!isHor && (Strings.startsWith(part, "h ") || Strings.startsWith(part, "height "))) {
+          var uvStr:String = Strings.trim2(part, part.charCodeAt(1) == 32 ? 2 : 7, s.length);
+          lc.height = (parseBoundSize(uvStr, false, false));
+          continue;
+        }
 
-					if (part.length > 5) {
-						sz = Strings.trim2(part, 5, part.length);
-            if (Strings.startsWith(part, "wmin ")) {
-              minWidth(sz, lc);
-              continue;
-            }
-            else if (Strings.startsWith(part, "wmax ")) {
-              maxWidth(sz, lc);
-              continue;
-            }
-            else if (Strings.startsWith(part, "hmin ")) {
-              minHeight(sz, lc);
-              continue;
-            }
-            else if (Strings.startsWith(part, "hmax ")) {
-              maxHeight(sz, lc);
-              continue;
-            }
-					}
-
-					if (Strings.startsWith(part, "hidemode ")) {
-						lc.hideMode = int(part.substring(9));
-						continue;
-					}
-				}
-
-				if (c == 103) {
-					if (Strings.startsWith(part, "gapx ")) {
-						lc.gridGapX = parseBoundSize(Strings.trim2(part, 5, part.length), true, true);
-						continue;
-					}
-
-					if (Strings.startsWith(part, "gapy ")) {
-						lc.gridGapY = parseBoundSize(Strings.trim2(part, 5, part.length), true, false);
-						continue;
-					}
-
-					if (Strings.startsWith(part, "gap ")) {
-						gaps = toTrimmedTokens(Strings.trim2(part, 4, part.length), 32);
-						lc.gridGapX = (parseBoundSize(gaps[0], true, true));
-						lc.gridGapY = gaps.length > 1 ? parseBoundSize(gaps[1], true, false) : lc.gridGapX;
-						continue;
-					}
-				}
-
-				if (c == 100) {
-					ix = startsWithLenient2(part, "debug", 5, true);
-					if (ix > -1) {
-						var millis:String = Strings.trim2(part, ix, part.length);
-						lc.debugMillis = millis.length > 0 ? int(millis) : 1000;
-						continue;
-					}
-				}
-
-				if (c == 110) {
-					if (part == "nogrid") {
-						lc.noGrid = true;
-						continue;
-					}
-          else if (part == "nocache") {
-						lc.noCache = true;
-						continue;
-					}
-          else if (part == "novisualpadding") {
-						lc.visualPadding = false;
-						continue;
-					}
-				}
-        else if (c == 102) {
-					if (part == "fill" || part == "fillx" || part == "filly") {
-						lc.fillX = part.length == 4 || part.charCodeAt(4) == 120;
-						lc.fillY = part.length == 4 || part.charCodeAt(4) == 121;
-						continue;
-					}
-
-					if (part == "flowy") {
-						lc.flowX = false;
-						continue;
-					}
-          else if (part == "flowx") {
-						lc.flowX = true; // This is the default but added for consistency
-						continue;
-					}
-				}
-
-        if (c == 105) {
-          ix = startsWithLenient2(part, "insets", 3, true);
-          if (ix > -1) {
-            var insStr:String = Strings.trim2(part, ix, part.length);
-            var ins:Vector.<UnitValue> = parseInsets(insStr, true);
-            LayoutUtil.putCCString(ins, insStr);
-            lc.insets = ins;
+        if (part.length > 5) {
+          sz = Strings.trim2(part, 5, part.length);
+          if (Strings.startsWith(part, "wmin ")) {
+            minWidth(sz, lc);
+            continue;
+          }
+          else if (Strings.startsWith(part, "wmax ")) {
+            maxWidth(sz, lc);
+            continue;
+          }
+          else if (Strings.startsWith(part, "hmin ")) {
+            minHeight(sz, lc);
+            continue;
+          }
+          else if (Strings.startsWith(part, "hmax ")) {
+            maxHeight(sz, lc);
             continue;
           }
         }
 
-				if (c == 97) {
-          ix = startsWithLenient(part, new <String>["aligny", "ay"], new <int>[6, 2], true);
-          if (ix > -1) {
-            var align:UnitValue = parseUnitValueOrAlign(Strings.trim2(part, ix, part.length), false, null);
-            if (align == UnitValue.BASELINE_IDENTITY) {
-              throw new ArgumentError("'baseline' can not be used to align the whole component group.");
-            }
-            lc.alignY = align;
-            continue;
-          }
+        if (Strings.startsWith(part, "hidemode ")) {
+          lc.hideMode = int(part.substring(9));
+          continue;
+        }
+      }
 
-          ix = startsWithLenient(part, new <String>["alignx", "ax"], new <int>[6, 2], true);
-					if (ix > -1) {
-						lc.alignX = parseUnitValueOrAlign(Strings.trim2(part, ix, part.length), true, null);
-						continue;
-					}
-
-					ix = startsWithLenient2(part, "align", 2, true);
-					if (ix > -1) {
-            gaps = toTrimmedTokens(Strings.trim2(part, ix, part.length), 32);
-						lc.alignX = parseUnitValueOrAlign(gaps[0], true, null);
-						lc.alignY = gaps.length > 1 ? parseUnitValueOrAlign(gaps[1], false, null) : lc.alignX;
-						continue;
-					}
+      if (c == 103) {
+        if (Strings.startsWith(part, "gapx ")) {
+          lc.gridGapX = parseBoundSize(Strings.trim2(part, 5, part.length), true, true);
+          continue;
         }
 
-        var packs:Vector.<String>;
-        if (c == 112) {
-          if (Strings.startsWith(part, "packalign ")) {
-            packs = toTrimmedTokens(Strings.trim2(part, 10, part.length), 32);
-            lc.packWidthAlign = packs[0].length > 0 ? Number(packs[0]) : 0.5;
-            if (packs.length > 1) {
-              lc.packHeightAlign = Number(packs[1]);
-            }
-            continue;
+        if (Strings.startsWith(part, "gapy ")) {
+          lc.gridGapY = parseBoundSize(Strings.trim2(part, 5, part.length), true, false);
+          continue;
+        }
+
+        if (Strings.startsWith(part, "gap ")) {
+          gaps = toTrimmedTokens(Strings.trim2(part, 4, part.length), 32);
+          lc.gridGapX = (parseBoundSize(gaps[0], true, true));
+          lc.gridGapY = gaps.length > 1 ? parseBoundSize(gaps[1], true, false) : lc.gridGapX;
+          continue;
+        }
+      }
+
+      if (c == 100) {
+        ix = startsWithLenient2(part, "debug", 5, true);
+        if (ix > -1) {
+          var millis:String = Strings.trim2(part, ix, part.length);
+          lc.debugMillis = millis.length > 0 ? int(millis) : 1000;
+          continue;
+        }
+      }
+
+      if (c == 110) {
+        if (part == "nogrid") {
+          lc.noGrid = true;
+          continue;
+        }
+        else if (part == "nocache") {
+          lc.noCache = true;
+          continue;
+        }
+        else if (part == "novisualpadding") {
+          lc.visualPadding = false;
+          continue;
+        }
+      }
+      else if (c == 102) {
+        if (part == "fill" || part == "fillx" || part == "filly") {
+          lc.fillX = part.length == 4 || part.charCodeAt(4) == 120;
+          lc.fillY = part.length == 4 || part.charCodeAt(4) == 121;
+          continue;
+        }
+
+        if (part == "flowy") {
+          lc.flowX = false;
+          continue;
+        }
+        else if (part == "flowx") {
+          lc.flowX = true; // This is the default but added for consistency
+          continue;
+        }
+      }
+
+      if (c == 105) {
+        ix = startsWithLenient2(part, "insets", 3, true);
+        if (ix > -1) {
+          var insStr:String = Strings.trim2(part, ix, part.length);
+          var ins:Vector.<UnitValue> = parseInsets(insStr, true);
+          LayoutUtil.putCCString(ins, insStr);
+          lc.insets = ins;
+          continue;
+        }
+      }
+
+      if (c == 97) {
+        ix = startsWithLenient(part, new <String>["aligny", "ay"], new <int>[6, 2], true);
+        if (ix > -1) {
+          var align:UnitValue = parseUnitValueOrAlign(Strings.trim2(part, ix, part.length), false, null);
+          if (align == UnitValue.BASELINE_IDENTITY) {
+            throw new ArgumentError("'baseline' can not be used to align the whole component group.");
           }
-          else if (Strings.startsWith(part, "pack ") || part == "pack") {
-            var ps:String = Strings.trim2(part, 4, part.length);
-            packs = toTrimmedTokens(ps.length > 0 ? ps : "pref pref", 32);
-            lc.packWidth = parseBoundSize(packs[0], false, true);
-            if (packs.length > 1) {
-              lc.packHeight = parseBoundSize(packs[1], false, false);
-            }
+          lc.alignY = align;
+          continue;
+        }
 
-            continue;
+        ix = startsWithLenient(part, new <String>["alignx", "ax"], new <int>[6, 2], true);
+        if (ix > -1) {
+          lc.alignX = parseUnitValueOrAlign(Strings.trim2(part, ix, part.length), true, null);
+          continue;
+        }
+
+        ix = startsWithLenient2(part, "align", 2, true);
+        if (ix > -1) {
+          gaps = toTrimmedTokens(Strings.trim2(part, ix, part.length), 32);
+          lc.alignX = parseUnitValueOrAlign(gaps[0], true, null);
+          lc.alignY = gaps.length > 1 ? parseUnitValueOrAlign(gaps[1], false, null) : lc.alignX;
+          continue;
+        }
+      }
+
+      var packs:Vector.<String>;
+      if (c == 112) {
+        if (Strings.startsWith(part, "packalign ")) {
+          packs = toTrimmedTokens(Strings.trim2(part, 10, part.length), 32);
+          lc.packWidthAlign = packs[0].length > 0 ? Number(packs[0]) : 0.5;
+          if (packs.length > 1) {
+            lc.packHeightAlign = Number(packs[1]);
           }
-				}
-
-        if (lc.alignX == null) {
-          var alignX:UnitValue = parseAlignKeywords(part, true);
-          if (alignX != null) {
-            lc.alignX = alignX;
-            continue;
+          continue;
+        }
+        else if (Strings.startsWith(part, "pack ") || part == "pack") {
+          var ps:String = Strings.trim2(part, 4, part.length);
+          packs = toTrimmedTokens(ps.length > 0 ? ps : "pref pref", 32);
+          lc.packWidth = parseBoundSize(packs[0], false, true);
+          if (packs.length > 1) {
+            lc.packHeight = parseBoundSize(packs[1], false, false);
           }
-				}
 
-				var alignY:UnitValue = parseAlignKeywords(part, false);
-				if (alignY != null) {
-					lc.alignY = alignY;
-					continue;
-				}
+          continue;
+        }
+      }
 
-				throw new ArgumentError("Unknown Constraint: '" + part + "'\n");
-		}
+      if (lc.alignX == null && (lc.alignX = parseAlignKeywords(part, true)) != null) {
+        continue;
+      }
+
+      if ((lc.alignY = parseAlignKeywords(part, false)) != null) {
+        continue;
+      }
+
+      throw new ArgumentError("Unknown Constraint: '" + part + "'\n");
+    }
 
 		return lc;
 	}
