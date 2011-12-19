@@ -17,6 +17,7 @@ Original license (java): BSD. ActionScript port (this project): Apache License v
 * Class AC is removed, because it contains only vector of DimConstraint.
 * horizontalScreenDPI, verticalScreenDPI, getPixelUnitFactor, screenWidth, screenHeight, screenLocationX and screenLocationY moved from ComponentWrapper to ContainerWrapper (due to actually used only containers).
 * parent removed from ComponentWrapper — is not needed at all (only one case, so, hasParent added to ContainerWrapper).
+* component removed from ComponentWrapper — actually, if you need it, you know real implementation of component wrapper and can call any suitable for you method (and can implement any required for you stuff in you component wrapper implementation).
 * Grid allows nullable rowConstraints, columnConstraints and lc.
 * Grid.layout() method — remove alignX and alignY paramaters, because LC has full information about it.
 * DimConstraint refactored — CellConstraint and ComponentConstraint were extracted and DimConstraint became internal abstract class due to:

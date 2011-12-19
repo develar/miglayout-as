@@ -18,15 +18,6 @@ package net.miginfocom.layout {
  * </pre>
  */
 public interface ComponentWrapper {
-
-  /** Returns the actual object that this wrapper is aggregating. This might be needed for getting
-   * information about the object that the wrapper interface does not provide.
-   * <p>
-   * If this is a container the container should be returned instead.
-   * @return The actual object that this wrapper is aggregating. Not <code>null</code>.
-   */
-  function get component():Object;
-
   /** Returns the current x coordinate for this component.
    * @return The current x coordinate for this component.
    */

@@ -82,7 +82,7 @@ public final class Grid {
 	/** The size of the grid. Row count and column count.
 	 */
 	//private TreeSet<Integer> rowIndexes = new TreeSet<Integer>(), colIndexes = new TreeSet<Integer>();
-	private var rowIndexes:Array = [], colIndexes:Array = [];
+	private const rowIndexes:Array = [], colIndexes:Array = [];
 
 	/** The row and column specifications.
 	 */
@@ -1107,7 +1107,7 @@ public final class Grid {
         ixArr[ix++] = int(adobeBurnInHell);
       }
 
-      putSizesAndIndexes(container.component, rowColSizes, ixArr, isRows);
+      //putSizesAndIndexes(container.component, rowColSizes, ixArr, isRows);
     }
 
     var curPos:int = align != null ? align.getPixels(refSize - LayoutUtil.sum(rowColSizes, 0, rowColSizes.length), container, null) : 0;
@@ -1996,12 +1996,12 @@ public final class Grid {
         var y:int = xyInt >> 16;
 
         for each (var cw:CompWrap in cell.compWraps) {
-          weakCells[weakCellsLength++] = new WeakCell(cw.comp.component, x, y, cell.spanx, cell.spany);
+          //weakCells[weakCellsLength++] = new WeakCell(cw.comp.component, x, y, cell.spanx, cell.spany);
         }
       }
 		}
 
-		PARENT_GRIDPOS_MAP[parComp.component] = weakCells;
+		//PARENT_GRIDPOS_MAP[parComp.component] = weakCells;
 	}
 
   internal static function getGridPositions(parComp:Object):Dictionary {

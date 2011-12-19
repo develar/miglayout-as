@@ -20,7 +20,7 @@ public class MigLayout extends AbstractMigLayout {
 
     var w:Number;
     var h:Number;
-    var o:DisplayObjectContainer = DisplayObjectContainer(container.component);
+    var o:DisplayObjectContainer = DisplayObjectContainer(container.c);
     if (o.parent == o.stage) {
       w = o.stage.stageWidth;
       h = o.stage.stageHeight;

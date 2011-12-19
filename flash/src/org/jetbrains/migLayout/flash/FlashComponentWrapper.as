@@ -8,7 +8,7 @@ import net.miginfocom.layout.ComponentWrapper;
 import net.miginfocom.layout.LayoutUtil;
 
 public class FlashComponentWrapper implements ComponentWrapper {
-  protected var c:DisplayObject;
+  internal var c:DisplayObject;
 
   function FlashComponentWrapper(c:DisplayObject, constraints:CC) {
     this.c = c;
@@ -18,10 +18,6 @@ public class FlashComponentWrapper implements ComponentWrapper {
   private var _constraints:CC;
   public function get constraints():CC {
     return _constraints;
-  }
-  
-  public function get component():Object {
-    return c;
   }
 
   public function get x():Number {

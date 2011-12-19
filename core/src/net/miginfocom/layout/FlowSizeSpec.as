@@ -46,7 +46,6 @@ final internal class FlowSizeSpec {
     var growW:Vector.<Number> = (eagerness == 1 || eagerness == 3) ? Grid.extractSubArray(constraints, defGrow, fromIx, len) : null;
     var newSizes:Vector.<int> = LayoutUtil.calculateSerial(sizesToExpand, resConstr, growW, LayoutUtil.PREF, targetSize);
     var newSize:int = 0;
-
     for (i = 0; i < len; i++) {
       var s:int = newSizes[i];
       sizes[i + fromIx][sizeType] = s;

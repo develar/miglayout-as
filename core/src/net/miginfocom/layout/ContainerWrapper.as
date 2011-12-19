@@ -44,8 +44,6 @@ public interface ContainerWrapper extends ComponentWrapper {
   function get componentCount():int;
 
   /** Returns the <code>LayoutHandler</code> (in Swing terms) that is handling the layout of this container.
-   * If there exist no such class the method should return the same as {@link #component}, which is the
-   * container itself.
    * @return The layout handler instance. Never <code>null</code>.
    */
   function getLayout():Object;
