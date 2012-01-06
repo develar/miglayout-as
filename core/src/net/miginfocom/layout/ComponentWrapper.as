@@ -100,11 +100,11 @@ public interface ComponentWrapper {
   function set visible(value:Boolean):void;
 
   /** Returns the baseline for the component given the suggested height.
-   * @param width The width to calculate for if other than the current. If <code>-1</code> the current size should be used.
-   * @param height The height to calculate for if other than the current. If <code>-1</code> the current size should be used.
+   * @param w The width to calculate for if other than the current. If <code>-1</code> the current size should be used.
+   * @param h The height to calculate for if other than the current. If <code>-1</code> the current size should be used.
    * @return The baseline from the top or -1 if not applicable.
    */
-  function getBaseline(width:int, height:int):int;
+  function getBaseline(w:int, h:int):int;
 
   /** Returns if the component has a baseline and if it can be retrieved.
    * @return If the component has a baseline and if it can be retrieved.
