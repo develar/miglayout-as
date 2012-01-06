@@ -1,21 +1,5 @@
 package net.miginfocom.layout {
 /** A class that wraps the important parts of a Component.
- * <p>
- * <b>NOTE!</b>.equals() and .hashcode() should be shunted to the wrapped component. E.g.
- * <pre>
- *   public int hashCode()
- {
- return getComponent().hashCode();
- }
-
- public final boolean equals(Object o)
- {
- if (o instanceof ComponentWrapper == false)
- return false;
-
- return getComponent().equals(((ComponentWrapper) o).getComponent());
- }
- * </pre>
  */
 public interface ComponentWrapper {
   /** Returns the current x coordinate for this component.
@@ -26,7 +10,7 @@ public interface ComponentWrapper {
   /** Returns the current y coordinate for this component.
    * @return The current y coordinate for this component.
    */
-  function get y():Number ;
+  function get y():Number;
 
   /** Returns the current width for this component.
    * @return The current width for this component.
@@ -46,7 +30,7 @@ public interface ComponentWrapper {
    * @since 3.5. Added the hint as a parameter knowing that a correction and recompilation is necessary for
    * any implementing classes. This change was worth it though.
    */
-  function getMinimumWidth(hHint:int = -1):int ;
+  function getMinimumWidth(hHint:int = -1):int;
 
   /** Returns the minimum height of the component.
    * @param wHint The Size hint for the other dimension. An implementation can use this value or the
@@ -56,7 +40,7 @@ public interface ComponentWrapper {
    * @since 3.5. Added the hint as a parameter knowing that a correction and recompilation is necessary for
    * any implementing classes. This change was worth it though.
    */
-  function getMinimumHeight(wHint:int = -1):int ;
+  function getMinimumHeight(wHint:int = -1):int;
 
   /** Returns the preferred width of the component.
    * @param hHint The Size hint for the other dimension. An implementation can use this value or the
@@ -66,7 +50,7 @@ public interface ComponentWrapper {
    * @since 3.5. Added the hint as a parameter knowing that a correction and recompilation is necessary for
    * any implementing classes. This change was worth it though.
    */
-  function getPreferredWidth(hHint:int = -1):int ;
+  function getPreferredWidth(hHint:int = -1):int;
 
   /** Returns the preferred height of the component.
    * @param wHint The Size hint for the other dimension. An implementation can use this value or the
@@ -76,7 +60,7 @@ public interface ComponentWrapper {
    * @since 3.5. Added the hint as a parameter knowing that a correction and recompilation is necessary for
    * any implementing classes. This change was worth it though.
    */
-  function getPreferredHeight(wHint:int = -1):int ;
+  function getPreferredHeight(wHint:int = -1):int;
 
   /** Returns the maximum width of the component.
    * @param hHint The Size hint for the other dimension. An implementation can use this value or the
@@ -86,7 +70,7 @@ public interface ComponentWrapper {
    * @since 3.5. Added the hint as a parameter knowing that a correction and recompilation is necessary for
    * any implementing classes. This change was worth it though.
    */
-  function getMaximumWidth(hHint:int = -1):int ;
+  function getMaximumWidth(hHint:int = -1):int;
 
   /** Returns the maximum height of the component.
    * @param wHint The Size hint for the other dimension. An implementation can use this value or the
@@ -96,7 +80,7 @@ public interface ComponentWrapper {
    * @since 3.5. Added the hint as a parameter knowing that a correction and recompilation is necessary for
    * any implementing classes. This change was worth it though.
    */
-  function getMaximumHeight(wHint:int = -1):int ;
+  function getMaximumHeight(wHint:int = -1):int;
 
   /** Sets the component's bounds.
    * @param x The x coordinate.
@@ -112,7 +96,7 @@ public interface ComponentWrapper {
    */
   function get visible():Boolean;
 
-  // Burn in Hell, Adobe. We need to fix compiler.
+  // Ignore it. Any impl (empty) allowable. Burn in Hell, Adobe. We need to fix compiler.
   function set visible(value:Boolean):void;
 
   /** Returns the baseline for the component given the suggested height.
@@ -122,8 +106,7 @@ public interface ComponentWrapper {
    */
   function getBaseline(width:int, height:int):int;
 
-  /** Returns if the component has a baseline and if it can be retrieved. Should for instance return
-   * <code>false</code> for Swing before mustang.
+  /** Returns if the component has a baseline and if it can be retrieved.
    * @return If the component has a baseline and if it can be retrieved.
    */
   function get hasBaseline():Boolean;
@@ -154,7 +137,7 @@ public interface ComponentWrapper {
    * @return <code>null</code> if no padding. <b>NOTE!</B> To reduce generated garbage the returned padding should never be changed so that
    * the same insets can be returned many times. [top, left, bottom, right]
    */
-  function get visualPadding():Vector.<Number>;
+  function get visualPadding():Vector.<int>;
 
   /** Paints component outline to indicate where it is.
    */

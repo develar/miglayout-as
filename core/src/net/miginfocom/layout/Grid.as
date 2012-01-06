@@ -1031,7 +1031,7 @@ public final class Grid {
       }
     }
 
-    var plafPad:Vector.<Number> = lc.visualPadding ? cw.comp.visualPadding : null;
+    var plafPad:Vector.<int> = lc.visualPadding ? cw.comp.visualPadding : null;
     var pad:Vector.<UnitValue> = cw.cc.padding;
 
     // If no changes do not create a lot of objects
@@ -1107,7 +1107,8 @@ public final class Grid {
         ixArr[ix++] = int(adobeBurnInHell);
       }
 
-      //putSizesAndIndexes(container.component, rowColSizes, ixArr, isRows);
+      // todo original was container.component, investigate it
+      putSizesAndIndexes(container, rowColSizes, ixArr, isRows);
     }
 
     var curPos:int = align != null ? align.getPixels(refSize - LayoutUtil.sum(rowColSizes, 0, rowColSizes.length), container, null) : 0;
@@ -1560,6 +1561,7 @@ public final class Grid {
   private static function convertSpanToSparseGrid(curIx:int, span:int, indexes:Array):int {
     var lastIx:int = curIx + span;
     var retSpan:int = 1;
+    //noinspection JSValidateTypes
     for (var ix:Object in indexes) {
       if (ix <= curIx) {
         continue;

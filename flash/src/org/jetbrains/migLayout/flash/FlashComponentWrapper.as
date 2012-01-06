@@ -87,7 +87,7 @@ public class FlashComponentWrapper implements ComponentWrapper {
     return LayoutUtil.calculateHash(this);
   }
 
-  public function get visualPadding():Vector.<Number> {
+  public function get visualPadding():Vector.<int> {
     return null;
   }
 
