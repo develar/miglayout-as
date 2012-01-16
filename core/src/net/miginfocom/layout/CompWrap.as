@@ -13,7 +13,7 @@ internal final class CompWrap {
 
   internal var x:int = LayoutUtil.NOT_SET, y:int = LayoutUtil.NOT_SET, w:int = LayoutUtil.NOT_SET, h:int = LayoutUtil.NOT_SET;
 
-	internal var forcedPushGaps:int = 0;   // 1 == before, 2 = after. Bitwise.
+	internal var forcedPushGaps:int = 0; // 1 == before, 2 = after. Bitwise.
 
   function CompWrap(c:ComponentWrapper, cc:CC, eHideMode:int, pos:Vector.<UnitValue>, callbackSz:Vector.<BoundSize>, container:ContainerWrapper) {
     this.comp = c;

@@ -1863,7 +1863,7 @@ public final class Grid {
 	 * @return A holder for the merged values.
 	 */
 	private static function mergeSizesGapsAndResConstrs(resConstr:Vector.<ResizeConstraint>, gapPush:Vector.<Boolean>, minPrefMaxSizes:Vector.<Vector.<int>>, gapSizes:Vector.<Vector.<int>>):FlowSizeSpec {
-    var sizes:Vector.<Vector.<int>> = new Vector.<Vector.<int>>((minPrefMaxSizes.length << 1) + 1);  // Make room for gaps around.
+    var sizes:Vector.<Vector.<int>> = new Vector.<Vector.<int>>((minPrefMaxSizes.length << 1) + 1, true); // Make room for gaps around.
 		var resConstsInclGaps:Vector.<ResizeConstraint> = new Vector.<ResizeConstraint>(sizes.length, true);
 		sizes[0] = gapSizes[0];
     var i:int, crIx:int;
