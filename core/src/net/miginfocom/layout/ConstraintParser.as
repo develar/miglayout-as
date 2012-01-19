@@ -442,7 +442,7 @@ public final class ConstraintParser {
       }
 
       if (c == 102 && (part == "flowy" || part == "flowx")) {
-        cc.flowX = part.charCodeAt(4) == 120 ? 1 : -1;
+        cc.flowX = part.charCodeAt(4) == 120 ? 1 : 0;
         continue;
       }
 

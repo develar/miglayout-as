@@ -294,7 +294,7 @@ public final class CC {
       flags &= ~HAS_FLOW_X;
     }
     else {
-      value ? flags |= FLOW_X : flags &= ~FLOW_X;
+      value == 1 ? flags |= FLOW_X : flags &= ~FLOW_X;
       flags |= HAS_FLOW_X;
     }
 	}
