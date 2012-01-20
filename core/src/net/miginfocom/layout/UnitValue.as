@@ -162,19 +162,19 @@ public final class UnitValue {
 
   private static const IDENTITY:int = -1;
 
-  public static const ZERO:UnitValue = create2(0, PIXEL, true, "0px");
-  public static const TOP:UnitValue = create2(0, PERCENT, false, "top");
-  public static const LEADING:UnitValue = create2(0, PERCENT, true, "leading");
-  public static const LEFT:UnitValue = create2(0, PERCENT, true, "left");
-  public static const CENTER:UnitValue = create2(50, PERCENT, true, "center");
-  public static const TRAILING:UnitValue = create2(100, PERCENT, true, "trailing");
-  public static const RIGHT:UnitValue = create2(100, PERCENT, true, "right");
-  public static const BOTTOM:UnitValue = create2(100, PERCENT, false, "bottom");
-  public static const LABEL:UnitValue = create2(0, LABEL_ALIGN, false, "label");
+  public static const ZERO:UnitValue = new UnitValue(0, PIXEL, "0px");
+  public static const TOP:UnitValue = new UnitValue(0, PERCENT, "top", false);
+  public static const LEADING:UnitValue = new UnitValue(0, PERCENT, "leading");
+  public static const LEFT:UnitValue = new UnitValue(0, PERCENT, "left");
+  public static const CENTER:UnitValue = new UnitValue(50, PERCENT, "center");
+  public static const TRAILING:UnitValue = new UnitValue(100, PERCENT, "trailing");
+  public static const RIGHT:UnitValue = new UnitValue(100, PERCENT, "right");
+  public static const BOTTOM:UnitValue = new UnitValue(100, PERCENT, "bottom", false);
+  public static const LABEL:UnitValue = new UnitValue(0, LABEL_ALIGN, "label", false);
 
-  internal static const INF:UnitValue = create2(LayoutUtil.INF, PIXEL, true, "inf");
+  internal static const INF:UnitValue = new UnitValue(LayoutUtil.INF, PIXEL, "inf");
 
-  public static const BASELINE_IDENTITY:UnitValue = create2(0, IDENTITY, false, "baseline");
+  public static const BASELINE_IDENTITY:UnitValue = new UnitValue(0, IDENTITY, "baseline", false);
 
   private var value:Number;
   private var oper:int = STATIC;
@@ -183,11 +183,23 @@ public final class UnitValue {
   private var isHor:Boolean;
   private var _subUnits:Vector.<UnitValue>;
 
-  public function UnitValue(value:Number, unit:int = PIXEL, unitStr:String = null, isHor:Boolean = true) {
+  public function UnitValue(value:Number, unit:int = -1000, unitStr:String = null, isHor:Boolean = true) {
     this.value = value;
     this.isHor = isHor;
     this.unitStr = unitStr;
-    _unit = unitStr != null ? parseUnitString() : unit;
+
+    if (unit != -1000) {
+      _unit = unit;
+    }
+    else if (unitStr != null) {
+      _unit = parseUnitString();
+    }
+    else if (unit == -1000) {
+      _unit = PIXEL;
+    }
+    else {
+      throw new ArgumentError("unit or unitStr must be specified");
+    }
   }
 
   //noinspection JSUnusedLocalSymbols
@@ -220,19 +232,6 @@ public final class UnitValue {
 
     var unitValue:UnitValue = new UnitValue(value, -1, unitStr, isHor);
     unitValue.oper = oper;
-    // LayoutUtil.putCCString(unitValue, value + "px");
-    return unitValue;
-  }
-
-  internal static function create(value:Number, unit:int):UnitValue { // If hor/ver does not matter.
-    var unitValue:UnitValue = new UnitValue(value, unit);
-    // LayoutUtil.putCCString(unitValue, value + "px");
-    return unitValue;
-  }
-
-  //noinspection JSUnusedLocalSymbols
-  private static function create2(value:Number, unit:int, isHor:Boolean, createString:String):UnitValue { // If hor/ver does not matter.
-    var unitValue:UnitValue = new UnitValue(value, unit, null, isHor);
     // LayoutUtil.putCCString(unitValue, value + "px");
     return unitValue;
   }

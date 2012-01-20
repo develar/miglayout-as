@@ -23,9 +23,9 @@ internal final class ResizeConstraint {
 
   internal var shrinkPrio:int;
 
-  public function ResizeConstraint(shrinkPrio:int = 100, shrinkWeight:Number = WEIGHT_100, growPrio:int = 100, growWeight:Number = NaN) {
+  public function ResizeConstraint(shrinkPrio:int = 100, shrink:Number = WEIGHT_100, growPrio:int = 100, growWeight:Number = NaN) {
     this.shrinkPrio = shrinkPrio;
-    this.shrink = shrinkWeight;
+    this.shrink = shrink;
     this.growPrio = growPrio;
     this.grow = growWeight;
   }

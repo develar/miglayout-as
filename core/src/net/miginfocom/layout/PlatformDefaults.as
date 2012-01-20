@@ -13,31 +13,31 @@ public final class PlatformDefaults {
 
   private static var MOD_COUNT:int = 0;
 
-  private static const LPX4:UnitValue = UnitValue.create(4, UnitValue.LPX);
-  private static const LPX6:UnitValue = UnitValue.create(6, UnitValue.LPX);
-  private static const LPX7:UnitValue = UnitValue.create(7, UnitValue.LPX);
+  private static const LPX4:UnitValue = new UnitValue(4, UnitValue.LPX);
+  private static const LPX6:UnitValue = new UnitValue(6, UnitValue.LPX);
+  private static const LPX7:UnitValue = new UnitValue(7, UnitValue.LPX);
   //	private static final UnitValue LPX8 = UnitValue.create(8, UnitValue.LPX);
-  private static const LPX9:UnitValue = UnitValue.create(9, UnitValue.LPX);
-  private static const LPX10:UnitValue = UnitValue.create(10, UnitValue.LPX);
-  private static const LPX11:UnitValue = UnitValue.create(11, UnitValue.LPX);
-  private static const LPX12:UnitValue = UnitValue.create(12, UnitValue.LPX);
-  private static const LPX14:UnitValue = UnitValue.create(14, UnitValue.LPX);
-  private static const LPX16:UnitValue = UnitValue.create(16, UnitValue.LPX);
-  private static const LPX18:UnitValue = UnitValue.create(18, UnitValue.LPX);
-  private static const LPX20:UnitValue = UnitValue.create(20, UnitValue.LPX);
+  private static const LPX9:UnitValue = new UnitValue(9, UnitValue.LPX);
+  private static const LPX10:UnitValue = new UnitValue(10, UnitValue.LPX);
+  private static const LPX11:UnitValue = new UnitValue(11, UnitValue.LPX);
+  private static const LPX12:UnitValue = new UnitValue(12, UnitValue.LPX);
+  private static const LPX14:UnitValue = new UnitValue(14, UnitValue.LPX);
+  private static const LPX16:UnitValue = new UnitValue(16, UnitValue.LPX);
+  private static const LPX18:UnitValue = new UnitValue(18, UnitValue.LPX);
+  private static const LPX20:UnitValue = new UnitValue(20, UnitValue.LPX);
 
-  private static const LPY4:UnitValue = UnitValue.create(4, UnitValue.LPY);
-  private static const LPY6:UnitValue = UnitValue.create(6, UnitValue.LPY);
-  private static const LPY7:UnitValue = UnitValue.create(7, UnitValue.LPY);
+  private static const LPY4:UnitValue = new UnitValue(4, UnitValue.LPY);
+  private static const LPY6:UnitValue = new UnitValue(6, UnitValue.LPY);
+  private static const LPY7:UnitValue = new UnitValue(7, UnitValue.LPY);
   //	private static final UnitValue LPY8 = UnitValue.create(8, UnitValue.LPY);
-  private static const LPY9:UnitValue = UnitValue.create(9, UnitValue.LPY);
-  private static const LPY10:UnitValue = UnitValue.create(10, UnitValue.LPY);
-  private static const LPY11:UnitValue = UnitValue.create(11, UnitValue.LPY);
-  private static const LPY12:UnitValue = UnitValue.create(12, UnitValue.LPY);
-  private static const LPY14:UnitValue = UnitValue.create(14, UnitValue.LPY);
-  private static const LPY16:UnitValue = UnitValue.create(16, UnitValue.LPY);
-  private static const LPY18:UnitValue = UnitValue.create(18, UnitValue.LPY);
-  private static const LPY20:UnitValue = UnitValue.create(20, UnitValue.LPY);
+  private static const LPY9:UnitValue = new UnitValue(9, UnitValue.LPY);
+  private static const LPY10:UnitValue = new UnitValue(10, UnitValue.LPY);
+  private static const LPY11:UnitValue = new UnitValue(11, UnitValue.LPY);
+  private static const LPY12:UnitValue = new UnitValue(12, UnitValue.LPY);
+  private static const LPY14:UnitValue = new UnitValue(14, UnitValue.LPY);
+  private static const LPY16:UnitValue = new UnitValue(16, UnitValue.LPY);
+  private static const LPY18:UnitValue = new UnitValue(18, UnitValue.LPY);
+  private static const LPY20:UnitValue = new UnitValue(20, UnitValue.LPY);
 
   public static const WINDOWS_XP:int = 0;
   public static const MAC_OSX:int = 1;
@@ -137,7 +137,7 @@ public final class PlatformDefaults {
         setIndentGap(LPX9, LPY9);
         setGridCellGap(LPX4, LPY4);
 
-        minimumButtonWidth = UnitValue.create(75, UnitValue.LPX);
+        minimumButtonWidth = new UnitValue(75, UnitValue.LPX);
         buttonOrder = "L_E+U+YNBXOCAH_R";
         setDialogInsets(LPY11, LPX11, LPY11, LPX11);
         setPanelInsets(LPY7, LPX7, LPY7, LPX7);
@@ -150,7 +150,7 @@ public final class PlatformDefaults {
         setIndentGap(LPX10, LPY10);
         setGridCellGap(LPX4, LPY4);
 
-        minimumButtonWidth = UnitValue.create(68, UnitValue.LPX);
+        minimumButtonWidth = new UnitValue(68, UnitValue.LPX);
         buttonOrder = "L_HE+U+NYBXCOA_R";
         setDialogInsets(LPY14, LPX20, LPY20, LPX20);
         setPanelInsets(LPY16, LPX16, LPY16, LPX16);
@@ -164,7 +164,7 @@ public final class PlatformDefaults {
         setGridCellGap(LPX6, LPY6);                   // GNOME HIG 8.2.3
 
         // GtkButtonBox, child-min-width property default value
-        minimumButtonWidth = UnitValue.create(85, UnitValue.LPX);
+        minimumButtonWidth = new UnitValue(85, UnitValue.LPX);
         buttonOrder = "L_HE+UNYACBXIO_R";           // GNOME HIG 3.4.2, 3.7.1
         setDialogInsets(LPY12, LPX12, LPY12, LPX12);  // GNOME HIG 3.4.3
         setPanelInsets(LPY6, LPX6, LPY6, LPX6);       // ???
