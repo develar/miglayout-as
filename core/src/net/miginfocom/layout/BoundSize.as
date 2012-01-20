@@ -117,7 +117,9 @@ public final class BoundSize {
    */
   public function get isUnset():Boolean {
     // Most common case by far is this == ZERO_PIXEL...
-    return this == ZERO_PIXEL || (_pref == null && _min == null && _max == null && !_gapPush);
+    // develar WTF!!!??? ZERO_PIXEL is 0px otherwise you must use NULL_SIZE
+    //return this == ZERO_PIXEL || (_pref == null && _min == null && _max == null && !_gapPush);
+    return (_pref == null && _min == null && _max == null && !_gapPush);
   }
 
   /**
