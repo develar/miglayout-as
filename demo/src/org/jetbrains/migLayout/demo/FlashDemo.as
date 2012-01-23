@@ -1,4 +1,4 @@
-package org.jetbrains.migLayout {
+package org.jetbrains.migLayout.demo {
 import flash.display.Sprite;
 import flash.display.StageAlign;
 import flash.display.StageScaleMode;
@@ -7,11 +7,11 @@ import flash.events.Event;
 import org.jetbrains.migLayout.flash.FlashContainerWrapper;
 import org.jetbrains.migLayout.flash.MigLayout;
 
-public class FlashMain extends Sprite {
+public class FlashDemo extends Sprite {
   private var containerWrapper:FlashContainerWrapper;
   private var invalid:Boolean;
 
-  public function FlashMain() {
+  public function FlashDemo() {
     construct();
   }
 

@@ -96,7 +96,9 @@ public interface ComponentWrapper {
    */
   function get visible():Boolean;
 
-  // Ignore it. Any impl (empty) allowable. Burn in Hell, Adobe. We need to fix compiler.
+  /** Ignore it. Any impl (empty) allowable. Burn in Hell, Adobe. We need to fix compiler.
+   * You can use next method body: throw new Error("Burn in Hell, Adobe.");
+   */
   function set visible(value:Boolean):void;
 
   /** Returns the baseline for the component given the suggested height.

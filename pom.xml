@@ -15,6 +15,7 @@
   <modules>
     <module>core</module>
     <module>flash</module>
+    <module>flex</module>
     <module>demo</module>
   </modules>
 

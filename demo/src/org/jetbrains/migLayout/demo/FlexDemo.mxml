@@ -1,0 +1,18 @@
+<Application xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns="library://ns.adobe.com/flex/spark" >
+  <!--<states>-->
+    <!--<State name="rr"/>-->
+  <!--</states>-->
+
+  <layout>
+    <VerticalLayout />
+  </layout>
+
+  <Label text="First Name"/>
+  <TextInput/>
+
+  <Label text="Surname"/>
+  <TextInput/>
+
+  <Label text="Address"/>
+  <TextInput/>
+</Application>
