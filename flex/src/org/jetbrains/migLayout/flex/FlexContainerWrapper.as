@@ -14,10 +14,10 @@ import spark.components.Application;
 
 internal final class FlexContainerWrapper extends FlexComponentWrapper implements ContainerWrapper {
   private var componentWrappers:Vector.<ComponentWrapper>;
-  private var componentWrappersDirty:Boolean;
+  private var componentWrappersDirty:Boolean = true;
 
-  public function FlexContainerWrapper(c:IVisualElementContainer) {
-    super(IVisualElement(c));
+  public function FlexContainerWrapper(container:IVisualElementContainer) {
+    c = IVisualElement(container);
   }
 
   public function get horizontalScreenDPI():Number {
@@ -54,13 +54,11 @@ internal final class FlexContainerWrapper extends FlexComponentWrapper implement
 
   private function createWrapper(i:int, container:IVisualElementContainer):void {
     // reduce object allocation
-    var oldWrapper:FlexComponentWrapper = FlexComponentWrapper(componentWrappers[i]);
-    if (oldWrapper == null) {
-      componentWrappers[i] = new FlexComponentWrapper(container.getElementAt(i));
+    var wrapper:FlexComponentWrapper = FlexComponentWrapper(componentWrappers[i]);
+    if (wrapper == null) {
+      componentWrappers[i] = wrapper = new FlexComponentWrapper();
     }
-    else {
-      oldWrapper.c = container.getElementAt(i);
-    }
+    wrapper.element = container.getElementAt(i);
   }
 
   public function get components():Vector.<ComponentWrapper> {

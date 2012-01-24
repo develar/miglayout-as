@@ -5,6 +5,7 @@ import mx.core.IVisualElementContainer;
 
 import net.miginfocom.layout.CellConstraint;
 import net.miginfocom.layout.ComponentWrapper;
+import net.miginfocom.layout.ConstraintParser;
 import net.miginfocom.layout.Grid;
 import net.miginfocom.layout.LC;
 import net.miginfocom.layout.LayoutUtil;
@@ -14,6 +15,7 @@ import spark.layouts.supportClasses.LayoutBase;
 [Exclude(kind="property", name="clipAndEnableScrolling")]
 [Exclude(kind="property", name="typicalLayoutElement")]
 [Exclude(kind="property", name="dropIndicator")]
+[Exclude(kind="property", name="useVirtualLayout")]
 public final class MigLayout extends LayoutBase {
   protected var grid:Grid;
   private var dirty:Boolean = true;
@@ -23,10 +25,6 @@ public final class MigLayout extends LayoutBase {
   protected var colSpecs:Vector.<CellConstraint>, rowSpecs:Vector.<CellConstraint>;
 
   private var containerWrapper:FlexContainerWrapper;
-
-  public function MigLayout() {
-    target
-  }
 
   override public function set useVirtualLayout(value:Boolean):void {
     if (value) {
@@ -43,6 +41,40 @@ public final class MigLayout extends LayoutBase {
   override public function elementRemoved(index:int):void {
     if (containerWrapper != null) {
       containerWrapper.elementRemoved(index);
+    }
+  }
+
+  /**
+   * @see http://www.migcalendar.com/miglayout/mavensite/docs/cheatsheet.pdf
+   * @param value The layout constraints
+   */
+  public function set layoutConstraints(value:String):void {
+    lc = ConstraintParser.parseLayoutConstraint(value);
+    invalidate();
+  }
+
+  /**
+   * @see http://www.migcalendar.com/miglayout/mavensite/docs/cheatsheet.pdf
+   * @param value The column layout constraints
+   */
+  public function set columnConstraints(value:String):void {
+    colSpecs = ConstraintParser.parseColumnConstraints(value);
+    invalidate();
+  }
+
+  /**
+   * @see http://www.migcalendar.com/miglayout/mavensite/docs/cheatsheet.pdf
+   * @param value The row layout constraints
+   */
+  public function set rowConstraints(value:String):void {
+    rowSpecs = ConstraintParser.parseRowConstraints(value);
+    invalidate();
+  }
+
+  private function invalidate():void {
+    dirty = true;
+    if (target != null) {
+      target.invalidateSize();
     }
   }
 

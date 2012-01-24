@@ -1,16 +1,32 @@
 package org.jetbrains.migLayout.flex {
+import flash.utils.getQualifiedClassName;
+
 import mx.core.IVisualElement;
 import mx.styles.IAdvancedStyleClient;
 
 import net.miginfocom.layout.CC;
 import net.miginfocom.layout.ComponentWrapper;
+import net.miginfocom.layout.ConstraintParser;
 import net.miginfocom.layout.LayoutUtil;
 
-public class FlexComponentWrapper implements ComponentWrapper {
+internal class FlexComponentWrapper implements ComponentWrapper {
+  // https://plus.google.com/u/0/106049295903830073464/posts/HgNfitcmzSP
+  private static const MIN_EQUALS_PREF:uint = 1 << 0;
+  
   internal var c:IVisualElement;
+  
+  private var flags:uint;
+  
+  internal function set element(element:IVisualElement):void {
+    c = element;
 
-  public function FlexComponentWrapper(c:IVisualElement) {
-    this.c = c;
+    var fqn:String = getQualifiedClassName(element);
+    if (fqn == "spark.components::Label") {
+      flags = MIN_EQUALS_PREF;
+    }
+    else {
+      flags = 0;
+    }
   }
 
   public function get x():Number {
@@ -30,11 +46,11 @@ public class FlexComponentWrapper implements ComponentWrapper {
   }
 
   public function getMinimumWidth(hHint:int = -1):int {
-    return c.getMinBoundsWidth();
+    return (flags & MIN_EQUALS_PREF) == 0 ? c.getMinBoundsWidth() : c.getPreferredBoundsWidth();
   }
 
   public function getMinimumHeight(wHint:int = -1):int {
-    return c.getMinBoundsHeight();
+    return (flags & MIN_EQUALS_PREF) == 0 ? c.getMinBoundsHeight() : c.getPreferredBoundsHeight();
   }
 
   public function getPreferredWidth(hHint:int = -1):int {
@@ -93,8 +109,23 @@ public class FlexComponentWrapper implements ComponentWrapper {
     return 0;
   }
 
+  //noinspection JSFieldCanBeLocal
+  private var _constraints:CC;
+  private var constraintsSource:Object;
+
   public function get constraints():CC {
-    return null;
+    var source:Object = c.left;
+    if (source != constraintsSource) {
+      constraintsSource = source;
+      if (source is CC) {
+        _constraints = CC(source);
+      }
+      else {
+        _constraints = ConstraintParser.parseComponentConstraint(source as String);
+      }
+    }
+
+    return _constraints;
   }
 }
 }
