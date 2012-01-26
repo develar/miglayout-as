@@ -24,7 +24,7 @@ public final class LayoutUtil {
   public static const MAX:int = 2;
 
   private static var CR_MAP:Dictionary/*<Object, String>*/ = null;
-//	private static WeakHashMap<Object, Boolean> DT_MAP = null;      // The Containers that have design time. Value not used.
+  private static var DESIGN_TIME_MAP:Dictionary;      // The Containers that have design time. Value not used.
   private static var eSz:int = 0;
   private static var _globalDebugMillis:int = 0;
 
@@ -68,32 +68,28 @@ public final class LayoutUtil {
   // * this method you indicate that you will take responsibility for the design time value.
   // * @param b <code>true</code> means design time on.
   // */
-//	public static void setDesignTime(ContainerWrapper cw, boolean b)
-//	{
-//		if (DT_MAP == null)
-//			DT_MAP = new WeakHashMap<Object, Boolean>();
-//
-//		DT_MAP.put((cw != null ? cw.getComponent() : null), new Boolean(b));
-//	}
+	public static function setDesignTime(container:ContainerWrapper, value:Boolean):void {
+    if (DESIGN_TIME_MAP == null) {
+      DESIGN_TIME_MAP = new Dictionary(true);
+    }
 
-  //noinspection JSUnusedLocalSymbols
+    if (value) {
+      DESIGN_TIME_MAP[container] = true;
+    }
+    else {
+      delete DESIGN_TIME_MAP[container];
+    }
+  }
+
   /**
    * Returns if design time is turned on for a Container in {@link ContainerWrapper}.
-   * @param cw The container to set design time for. <code>null</code> is legal will return <code>true</code>
+   * @param container The container to set design time for. <code>null</code> is legal will return <code>true</code>
    * if there is at least one <code>ContainerWrapper</code> (or <code>null</code>) that have design time
    * turned on.
    * @return If design time is set for <code>cw</code>.
    */
-  public static function isDesignTime(cw:ContainerWrapper):Boolean {
-    return false;
-//		if (DT_MAP == null)
-//			return Beans.isDesignTime();
-//
-//		if (cw != null && DT_MAP.containsKey(cw.getComponent()) == false)
-//			cw = null;
-//
-//		Boolean b = DT_MAP.get(cw != null ? cw.getComponent() : null);
-//		return b != null && b.booleanValue();
+  public static function isDesignTime(container:ContainerWrapper):Boolean {
+    return DESIGN_TIME_MAP != null && container in DESIGN_TIME_MAP;
   }
 
   /**

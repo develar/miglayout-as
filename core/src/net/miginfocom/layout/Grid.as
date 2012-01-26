@@ -81,8 +81,11 @@ public final class Grid {
 
 	/** The size of the grid. Row count and column count.
 	 */
-	//private TreeSet<Integer> rowIndexes = new TreeSet<Integer>(), colIndexes = new TreeSet<Integer>();
-	private const rowIndexes:Array = [], colIndexes:Array = [];
+	//private TreeSet<Integer> rowIndices = new TreeSet<Integer>(), colIndexes = new TreeSet<Integer>();
+	private const rowIndices:Array = [], colIndices:Array = [];
+
+  // only design time
+  private var rowSizes:Vector.<int>, colSizes:Vector.<int>;
 
 	/** The row and column specifications.
 	 */
@@ -445,16 +448,16 @@ public final class Grid {
 			}
 		}
 
-		dockOffX = getDockInsets(colIndexes);
-		dockOffY = getDockInsets(rowIndexes);
+		dockOffX = getDockInsets(colIndices);
+		dockOffY = getDockInsets(rowIndices);
 
     var iSz:int;
     // Add synthetic indexes for empty rows and columns so they can get a size
     for (i = 0, iSz = rowConstr == null ? 1 : rowConstr.length; i < iSz; i++) {
-      rowIndexes[i] = true;
+      rowIndices[i] = true;
     }
     for (i = 0, iSz = colConstr == null ? 1 : colConstr.length; i < iSz; i++) {
-      colIndexes[i] = true;
+      colIndices[i] = true;
     }
 
 		colGroupLists = divideIntoLinkedGroups(false);
@@ -747,10 +750,10 @@ public final class Grid {
 
     // add the row/column so that the gap in the last row/col will not be removed.
     if (flowx) {
-      rowIndexes[cellXY[1]] = true;
+      rowIndices[cellXY[1]] = true;
     }
     else {
-      colIndexes[cellXY[0]] = true;
+      colIndices[cellXY[0]] = true;
     }
   }
 
@@ -1100,15 +1103,12 @@ public final class Grid {
     var rowColSizes:Vector.<int> = LayoutUtil.calculateSerial(fss.sizes, fss.resConstsInclGaps, defaultPushWeights, LayoutUtil.PREF, refSize);
     var i:int;
     if (LayoutUtil.isDesignTime(container)) {
-      var indexes:Array = isRows ? rowIndexes : colIndexes;
-      var ixArr:Vector.<int> = new Vector.<int>(indexes.length, true);
-      var ix:int = 0;
-      for (var adobeBurnInHell:Object in indexes) {
-        ixArr[ix++] = int(adobeBurnInHell);
+      if (isRows) {
+        rowSizes = rowColSizes;
       }
-
-      // todo original was container.component, investigate it
-      putSizesAndIndexes(container, rowColSizes, ixArr, isRows);
+      else {
+        colSizes = rowColSizes;
+      }
     }
 
     var curPos:int = align != null ? align.getPixels(refSize - LayoutUtil.sum(rowColSizes, 0, rowColSizes.length), container, null) : 0;
@@ -1183,7 +1183,7 @@ public final class Grid {
     }
 
 		var primDCs:Vector.<CellConstraint> = isHor ? colConstr : rowConstr;
-		var primIndexes:Array = isHor ? colIndexes : rowIndexes;
+		var primIndexes:Array = isHor ? colIndices : rowIndices;
 		var rowColBoundSizes:Vector.<Vector.<int>> = new Vector.<Vector.<int>>(primIndexes.length, true);
 		//HashMap<String, int[]> sizeGroupMap = new HashMap<String, int[]>(2);
 		var sizeGroupMap:Dictionary = new Dictionary();
@@ -1433,7 +1433,7 @@ public final class Grid {
   }
 
   private function hasDocks():Boolean {
-		return (dockOffX > 0|| dockOffY > 0|| rowIndexes[rowIndexes.length - 1] > MAX_GRID || colIndexes[colIndexes.length - 1] > MAX_GRID);
+		return (dockOffX > 0|| dockOffY > 0|| rowIndices[rowIndices.length - 1] > MAX_GRID || colIndices[colIndices.length - 1] > MAX_GRID);
 	}
 
 	/** Adjust min/pref size for columns(or rows) that has components that spans multiple columns (or rows).
@@ -1484,8 +1484,8 @@ public final class Grid {
 	 */
   private function divideIntoLinkedGroups(isRows:Boolean):Vector.<Vector.<LinkedDimGroup>> {
     var fromEnd:Boolean = !(isRows ? lc.topToBottom : LayoutUtil.isLeftToRight(lc, container));
-    var primIndexes:Array = isRows ? rowIndexes : colIndexes;
-    var secIndexes:Array = isRows ? colIndexes : rowIndexes;
+    var primIndexes:Array = isRows ? rowIndices : colIndices;
+    var secIndexes:Array = isRows ? colIndices : rowIndices;
     var primDCs:Vector.<CellConstraint> = isRows ? rowConstr : colConstr;
     var groupLists:Vector.<Vector.<LinkedDimGroup>> = new Vector.<Vector.<LinkedDimGroup>>(primIndexes.length, true);
     var gIx:int = 0;
@@ -1603,8 +1603,8 @@ public final class Grid {
       throw new ArgumentError("Cell position out of bounds. Out of cells. row: " + r + ", col: " + c);
     }
 
-    rowIndexes[r] = true;
-    colIndexes[c] = true;
+    rowIndices[r] = true;
+    colIndices[c] = true;
 
     grid[(r << 16) + c] = cell;
   }
@@ -1622,7 +1622,7 @@ public final class Grid {
 				r = side == 0? dockInsets[0]++ : dockInsets[2]--;
 				c = dockInsets[1];
 				spanx = dockInsets[3] - dockInsets[1] + 1;  // The +1 is for cell 0.
-				colIndexes[dockInsets[3]] = true; // Make sure there is a receiving cell
+				colIndices[dockInsets[3]] = true; // Make sure there is a receiving cell
 				break;
 
 			case 1:
@@ -1630,15 +1630,15 @@ public final class Grid {
 				c = side == 1? dockInsets[1]++ : dockInsets[3]--;
 				r = dockInsets[0];
 				spany = dockInsets[2] - dockInsets[0] + 1;  // The +1 is for cell 0.
-				rowIndexes[dockInsets[2]] = true; // Make sure there is a receiving cell
+				rowIndices[dockInsets[2]] = true; // Make sure there is a receiving cell
 				break;
 
 			default:
 				throw new ArgumentError("Internal error 123.");
 		}
 
-		rowIndexes[r] = true;
-		colIndexes[c] = true;
+		rowIndices[r] = true;
+		colIndices[c] = true;
 
 		grid[(r << 16) + c] = new Cell(cw, spanx, spany, spanx > 1);
 	}
@@ -1960,24 +1960,15 @@ public final class Grid {
     return newArr;
   }
 
-	//private static WeakHashMap<Object, int[][]>[] PARENT_ROWCOL_SIZES_MAP = null;
-	private static var PARENT_ROWCOL_SIZES_MAP:Vector.<Dictionary>;
-
-  private static function putSizesAndIndexes(parComp:Object, sizes:Vector.<int>, ixArr:Vector.<int>, isRows:Boolean):void {
-    // Lazy since only if designing in IDEs
-    if (PARENT_ROWCOL_SIZES_MAP == null) {
-      PARENT_ROWCOL_SIZES_MAP = new <Dictionary>[new Dictionary(), new Dictionary()];
+  internal function getIndicesAndSizes(isRows:Boolean):Vector.<Vector.<int>> {
+    var indices:Array = isRows ? rowIndices : colIndices;
+    var indicesList:Vector.<int> = new Vector.<int>(indices.length, true);
+    var ix:int = 0;
+    for (var adobeBurnInHell:Object in indices) {
+      indicesList[ix++] = int(adobeBurnInHell);
     }
 
-    PARENT_ROWCOL_SIZES_MAP[isRows ? 0 : 1][parComp] = new <Vector.<int>>[ixArr, sizes];
-  }
-
-  internal static function getSizesAndIndexes(parComp:Object, isRows:Boolean):Vector.<Vector.<int>> {
-    if (PARENT_ROWCOL_SIZES_MAP == null) {
-      return null;
-    }
-
-    return PARENT_ROWCOL_SIZES_MAP[isRows ? 0 : 1][parComp];
+    return new <Vector.<int>>[indicesList, isRows ? rowSizes : colSizes];
   }
 
 	//private static WeakHashMap<Object, ArrayList<WeakCell>> PARENT_GRIDPOS_MAP = null;

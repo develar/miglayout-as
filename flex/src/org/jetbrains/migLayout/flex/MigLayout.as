@@ -16,6 +16,7 @@ import spark.layouts.supportClasses.LayoutBase;
 [Exclude(kind="property", name="typicalLayoutElement")]
 [Exclude(kind="property", name="dropIndicator")]
 [Exclude(kind="property", name="useVirtualLayout")]
+[Exclude(kind="property", name="_ideUtil_grid")]
 public final class MigLayout extends LayoutBase {
   protected var grid:Grid;
   private var dirty:Boolean = true;
@@ -25,6 +26,11 @@ public final class MigLayout extends LayoutBase {
   protected var colSpecs:Vector.<CellConstraint>, rowSpecs:Vector.<CellConstraint>;
 
   private var containerWrapper:FlexContainerWrapper;
+
+  // only for IDE Util
+  public function get _ideUtil_grid():Grid {
+    return grid;
+  }
 
   override public function set useVirtualLayout(value:Boolean):void {
     if (value) {
