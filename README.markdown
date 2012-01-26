@@ -23,6 +23,7 @@ Original license (java): BSD. ActionScript port (this project): Apache License v
 * DimConstraint refactored — CellConstraint and ComponentConstraint were extracted and DimConstraint became internal abstract class due to:
  * reduce memory usage (overhead is very small, but nevertheless);
  * remove comments like "Only applicable on components!" :)
+* Grid.MAX_GRID visibility changed to public, required for IDE UI Designers.
 
 API Creation of Constraints is ported too, but is not tested and is not recommended to use. String creation of the constraints is short to type and easy to read.
 

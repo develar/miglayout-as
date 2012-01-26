@@ -44,6 +44,15 @@
             </manifest>
           </manifests>
         </configuration>
+        <!--<executions>-->
+          <!--<execution>-->
+            <!--<id>uber</id>-->
+            <!--<bui-->
+            <!--<configuration>-->
+              <!--<-->
+            <!--</configuration>-->
+          <!--</execution>-->
+        <!--</executions>-->
       </plugin>
     </plugins>
   </build>

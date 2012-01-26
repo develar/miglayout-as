@@ -44,7 +44,7 @@ public final class Grid {
 	/** This is the maximum grid position for "normal" components. Docking components use the space out to
 	 * <code>MAX_DOCK_GRID</code> and below 0.
 	 */
-	private static const MAX_GRID:int = 30000;
+	public static const MAX_GRID:int = 30000;
 
 	/** Docking components will use the grid coordinates <code>-MAX_DOCK_GRID -> 0</code> and <code>MAX_GRID -> MAX_DOCK_GRID</code>.
 	 */
