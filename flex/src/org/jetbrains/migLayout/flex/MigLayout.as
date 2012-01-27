@@ -1,7 +1,10 @@
 package org.jetbrains.migLayout.flex {
 import flash.errors.IllegalOperationError;
 
+import mx.core.FlexGlobals;
+
 import mx.core.IVisualElementContainer;
+import mx.core.UIComponentGlobals;
 
 import net.miginfocom.layout.CellConstraint;
 import net.miginfocom.layout.ComponentWrapper;
@@ -114,7 +117,7 @@ public final class MigLayout extends LayoutBase {
     }
 
     if (grid == null) {
-      grid = new Grid(containerWrapper, lc, rowSpecs, colSpecs);
+      grid = new Grid(containerWrapper, lc, rowSpecs, colSpecs, null, UIComponentGlobals.designMode);
     }
 
     dirty = false;
@@ -137,7 +140,7 @@ public final class MigLayout extends LayoutBase {
     checkCache();
 
     if (grid.layout(0, 0, w, h, lc != null && lc.debugMillis > 0, true)) {
-      grid = new Grid(containerWrapper, lc, rowSpecs, colSpecs, null);
+      grid = new Grid(containerWrapper, lc, rowSpecs, colSpecs, null, UIComponentGlobals.designMode);
       grid.layout(0, 0, w, h, lc != null && lc.debugMillis > 0, false);
     }
   }

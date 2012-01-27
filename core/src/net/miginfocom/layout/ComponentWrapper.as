@@ -157,6 +157,7 @@ public interface ComponentWrapper {
    */
   function getComponentType(disregardScrollPane:Boolean):int;
 
+  [Nullable]
   function get constraints():CC;
 }
 }

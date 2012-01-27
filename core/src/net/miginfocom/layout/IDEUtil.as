@@ -11,12 +11,7 @@ public final class IDEUtil {
    * <code>[top inset][column size 1][gap 1][column size 2][gap 2][column size n][bottom inset]</code>.
    * <p>
    * The returned sizes will be the ones calculated in the last layout cycle.
-   * @param parentContainer The container to retuern the column sizes and gaps for. In Swing it will be a {@link java.awt.Container} and
-   * in SWT it will be a {@link org.eclipse.swt.widgets.Composite}.
-   * @return The sizes and indexes or <code>null</code> if {@link LayoutUtil#isDesignTime(ContainerWrapper)} is <code>false</code> or
-   * <code>parentContainer</code> does not have a MigLayout layout manager.
    * The returned sizes will be the ones calculated in the last layout cycle.
-   * @see LayoutUtil#isDesignTime(ContainerWrapper)
    */
   public static function getColumnSizes(grid:Grid):Vector.<Vector.<int>> {
     return grid.getIndicesAndSizes(false);
@@ -33,12 +28,7 @@ public final class IDEUtil {
    * <code>[left inset][row size 1][gap 1][row size 2][gap 2][row size n][right inset]</code>.
    * <p>
    * The returned sizes will be the ones calculated in the last layout cycle.
-   * @param parentContainer The container to retuern the row sizes and gaps for. In Swing it will be a {@link java.awt.Container} and
-   * in SWT it will be a {@link org.eclipse.swt.widgets.Composite}.
-   * @return The sizes or <code>null</code> if {@link LayoutUtil#isDesignTime(ContainerWrapper)} is <code>false</code> or
-   * <code>parentContainer</code> does not have a MigLayout layout manager.
    * The returned sizes will be the ones calculated in the last layout cycle.
-   * @see LayoutUtil#isDesignTime(ContainerWrapper)
    */
   public static function getRowSizes(grid:Grid):Vector.<Vector.<int>> {
     return grid.getIndicesAndSizes(true);

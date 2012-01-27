@@ -406,14 +406,14 @@ public final class ConstraintParser {
 
 	/** Parses one component constraint and returns the parsed value.
 	 * @param s The string to parse. Should not be <code>null</code> and <b>must be lower case and trimmed</b>.
-	 * @return The parsed constraint. Never <code>null</code>.
+	 * @return The parsed constraint. May be null
 	 */
   public static function parseComponentConstraint(s:String):CC {
-    var cc:CC = new CC();
     if ((s = prepare(s)) == null) {
-      return cc;
+      return null;
     }
 
+    var cc:CC = new CC();
     var sg:String;
     var tokens:Vector.<String>;
     for each (var part:String in toTrimmedTokens(s, 44)) {

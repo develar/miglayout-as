@@ -1,35 +1,3 @@
-/*
- * License (BSD):
- * ==============
- *
- * Copyright (c) 2004, Mikael Grev, MiG InfoCom AB. (miglayout (at) miginfocom (dot) com)
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- * Redistributions of source code must retain the above copyright notice, this list
- * of conditions and the following disclaimer.
- * Redistributions in binary form must reproduce the above copyright notice, this
- * list of conditions and the following disclaimer in the documentation and/or other
- * materials provided with the distribution.
- * Neither the name of the MiG InfoCom AB nor the names of its contributors may be
- * used to endorse or promote products derived from this software without specific
- * prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
- * OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
- * OF SUCH DAMAGE.
- *
- * @version 1.0
- * @author Mikael Grev, MiG InfoCom AB
- */
 package net.miginfocom.layout {
 import flash.utils.Dictionary;
 
@@ -121,6 +89,8 @@ public final class Grid {
 	//private ArrayList<LayoutCallback> callbackList;
 	private var callbackList:Vector.<LayoutCallback>;
 
+  private var designMode:Boolean;
+
 	/** Constructor.
 	 * @param container The container that will be laid out.
 	 * @param lc The form flow constraints.
@@ -128,7 +98,7 @@ public final class Grid {
 	 * @param columnConstraints The columns specifications. If more cell rows are required, the last element will be used for when there is no corresponding element in this array.
 	 * @param callbackList A list of callbacks or <code>null</code> if none. Will not be altered.
 	 */
-  public function Grid(container:ContainerWrapper, lc:LC, rowConstraints:Vector.<CellConstraint> = null, columnConstraints:Vector.<CellConstraint> = null, callbackList:Vector.<LayoutCallback> = null) {
+  public function Grid(container:ContainerWrapper, lc:LC, rowConstraints:Vector.<CellConstraint> = null, columnConstraints:Vector.<CellConstraint> = null, callbackList:Vector.<LayoutCallback> = null, designMode:Boolean = false) {
     if (lc == null) {
       if (DEF_LC == null) {
         DEF_LC = new LC();
@@ -142,6 +112,8 @@ public final class Grid {
     this.colConstr = columnConstraints;
     this.container = container;
     this.callbackList = callbackList;
+    this.designMode = designMode;
+
     construct();
   }
 
@@ -466,7 +438,7 @@ public final class Grid {
 		pushXs = hasPushX || lc.fillX ? getDefaultPushWeights(false) : null;
 		pushYs = hasPushY || lc.fillY ? getDefaultPushWeights(true) : null;
 
-    if (LayoutUtil.isDesignTime(container)) {
+    if (designMode) {
       saveGrid(container, grid);
     }
 	}
@@ -1102,7 +1074,7 @@ public final class Grid {
 
     var rowColSizes:Vector.<int> = LayoutUtil.calculateSerial(fss.sizes, fss.resConstsInclGaps, defaultPushWeights, LayoutUtil.PREF, refSize);
     var i:int;
-    if (LayoutUtil.isDesignTime(container)) {
+    if (designMode) {
       if (isRows) {
         rowSizes = rowColSizes;
       }
@@ -1228,7 +1200,7 @@ public final class Grid {
           }
 				}
         else if (cellIx >= -MAX_GRID && cellIx <= MAX_GRID && rowColSize == 0) {
-					rowColSize = LayoutUtil.isDesignTime(container) ? LayoutUtil.designTimeEmptySize : 0;    // Empty rows with no size set gets XX pixels if design time
+					rowColSize = designMode ? LayoutUtil.designTimeEmptySize : 0;    // Empty rows with no size set gets XX pixels if design time
 				}
 
 				rowColSizes[sType] = rowColSize;
