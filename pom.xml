@@ -26,6 +26,10 @@
     </repository>
   </repositories>
 
+  <scm>
+    <connection>scm:git:file://localhost/${project.basedir}</connection>
+  </scm>
+
   <dependencies>
     <dependency>
       <groupId>com.adobe.flex.framework</groupId>

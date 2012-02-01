@@ -3,7 +3,7 @@
     <jb:MigLayout columnConstraints="[][grow][][grow]" rowConstraints="[][]"/>
   </layout>
 
-  <Label text="First Name" left="cell 0 0"/>
+  <Label text="First Name" left="cell 0 0,w 500!"/>
   <TextInput left="cell 1 0,growx"/>
 
   <Label text="Surname" left="cell 2 0"/>
