@@ -230,7 +230,7 @@ public final class UnitValue {
       throw new ArgumentError(oper + " Operation may not have null sub-UnitValues.");
     }
 
-    var unitValue:UnitValue = new UnitValue(value, -1, unitStr, isHor);
+    var unitValue:UnitValue = new UnitValue(value, -1000, unitStr, isHor);
     unitValue.oper = oper;
     // LayoutUtil.putCCString(unitValue, value + "px");
     return unitValue;
@@ -246,7 +246,7 @@ public final class UnitValue {
    * @return The size in pixels.
    */
   public final function getPixels(refValue:Number, parent:ContainerWrapper, comp:ComponentWrapper):int {
-    return Math.round(getPixelsExact(refValue, parent, comp));
+     return Math.round(getPixelsExact(refValue, parent, comp));
   }
 
   private static const SCALE:Vector.<Number> = new <Number>[25.4, 2.54, 1, 0, 72];
