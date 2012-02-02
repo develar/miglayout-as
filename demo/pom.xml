@@ -10,6 +10,11 @@
   <artifactId>miglayout-demo</artifactId>
   <packaging>swf</packaging>
 
+  <properties>
+      <fdk.version>4.6.0.23201</fdk.version>
+      <flex.sdk.version>4.6.0.23201</flex.sdk.version>
+    </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.jetbrains.miglayout</groupId>
@@ -38,18 +43,6 @@
     </dependency>
     <dependency>
       <groupId>com.adobe.flex.framework</groupId>
-      <artifactId>framework</artifactId>
-      <type>swc</type>
-      <version>4.6.0.23201</version>
-    </dependency>
-    <dependency>
-      <groupId>com.adobe.flex.framework</groupId>
-      <artifactId>spark</artifactId>
-      <type>swc</type>
-      <version>4.6.0.23201</version>
-    </dependency>
-    <dependency>
-      <groupId>com.adobe.flex.framework</groupId>
       <artifactId>textLayout</artifactId>
       <type>swc</type>
       <version>4.6.0.23201</version>
@@ -69,9 +62,11 @@
         <groupId>org.sonatype.flexmojos</groupId>
         <artifactId>flexmojos-maven-plugin</artifactId>
         <configuration>
+          <targetPlayer>11</targetPlayer>
+          <swfVersion>13</swfVersion>
+          <fixedLiteralVector>false</fixedLiteralVector>
           <debug>true</debug>
           <sourceFile>org/jetbrains/migLayout/demo/FlexDemo.mxml</sourceFile>
-          <iKnowWhatImDoingPleaseBreakMyBuildIwontBlameFlexmojosForStopWorking>true</iKnowWhatImDoingPleaseBreakMyBuildIwontBlameFlexmojosForStopWorking>
         </configuration>
       </plugin>
     </plugins>

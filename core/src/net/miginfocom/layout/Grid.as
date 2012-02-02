@@ -50,7 +50,7 @@ public final class Grid {
 	/** The size of the grid. Row count and column count.
 	 */
 	//private TreeSet<Integer> rowIndices = new TreeSet<Integer>(), colIndexes = new TreeSet<Integer>();
-	private const rowIndices:Array = [], colIndices:Array = [];
+	private const rowIndices:SortedSet = new SortedSet(), colIndices:SortedSet = new SortedSet();
 
   // only design time
   private var rowSizes:Vector.<int>, colSizes:Vector.<int>;
@@ -426,10 +426,10 @@ public final class Grid {
     var iSz:int;
     // Add synthetic indexes for empty rows and columns so they can get a size
     for (i = 0, iSz = rowConstr == null ? 1 : rowConstr.length; i < iSz; i++) {
-      rowIndices[i] = true;
+      rowIndices.add(i);
     }
     for (i = 0, iSz = colConstr == null ? 1 : colConstr.length; i < iSz; i++) {
-      colIndices[i] = true;
+      colIndices.add(i);
     }
 
 		colGroupLists = divideIntoLinkedGroups(false);
@@ -644,14 +644,14 @@ public final class Grid {
     return null;
   }
 
-  private static function getDockInsets(set2:Array/*TreeSet<Integer>*/):int {
+  private static function getDockInsets(set2:SortedSet/*TreeSet<Integer>*/):int {
     var c:int = 0;
-    for (var i:Object in set2) {
+    for each (var i:int in set2.iterator) {
       if (i < -MAX_GRID) {
         c++;
       }
       else {
-        break;  // Since they are sorted we can break
+        break; // Since they are sorted we can break
       }
     }
     return c;
@@ -722,10 +722,10 @@ public final class Grid {
 
     // add the row/column so that the gap in the last row/col will not be removed.
     if (flowx) {
-      rowIndices[cellXY[1]] = true;
+      rowIndices.add(cellXY[1]);
     }
     else {
-      colIndices[cellXY[0]] = true;
+      colIndices.add(cellXY[0]);
     }
   }
 
@@ -1155,15 +1155,14 @@ public final class Grid {
     }
 
 		var primDCs:Vector.<CellConstraint> = isHor ? colConstr : rowConstr;
-		var primIndexes:Array = isHor ? colIndices : rowIndices;
-		var rowColBoundSizes:Vector.<Vector.<int>> = new Vector.<Vector.<int>>(primIndexes.length, true);
+		var primIndices:SortedSet = isHor ? colIndices : rowIndices;
+		var rowColBoundSizes:Vector.<Vector.<int>> = new Vector.<Vector.<int>>(primIndices.length, true);
 		//HashMap<String, int[]> sizeGroupMap = new HashMap<String, int[]>(2);
 		var sizeGroupMap:Dictionary = new Dictionary();
     var sizeGroupMapSize:int = 0;
-		var allDCs:Vector.<CellConstraint> = new Vector.<CellConstraint>(primIndexes.length, true);
+		var allDCs:Vector.<CellConstraint> = new Vector.<CellConstraint>(primIndices.length, true);
     var r:int = 0;
-		for (var adobeBurnInHell:Object in primIndexes) {
-      var cellIx:int = int(adobeBurnInHell);
+		for each (var cellIx:int in primIndices.iterator) {
       var rowColSizes:Vector.<int> = new Vector.<int>(3, true);
       if (cellIx >= -MAX_GRID && cellIx <= MAX_GRID) {  // If not dock cell
         allDCs[r] = primDCs == null || primDCs.length == 0 ? DEF_DIM_C : primDCs[cellIx >= primDCs.length ? primDCs.length - 1 : cellIx];
@@ -1405,7 +1404,7 @@ public final class Grid {
   }
 
   private function hasDocks():Boolean {
-		return (dockOffX > 0|| dockOffY > 0|| rowIndices[rowIndices.length - 1] > MAX_GRID || colIndices[colIndices.length - 1] > MAX_GRID);
+    return dockOffX > 0 || dockOffY > 0 || rowIndices.last > MAX_GRID || colIndices.last > MAX_GRID;
 	}
 
 	/** Adjust min/pref size for columns(or rows) that has components that spans multiple columns (or rows).
@@ -1456,14 +1455,12 @@ public final class Grid {
 	 */
   private function divideIntoLinkedGroups(isRows:Boolean):Vector.<Vector.<LinkedDimGroup>> {
     var fromEnd:Boolean = !(isRows ? lc.topToBottom : LayoutUtil.isLeftToRight(lc, container));
-    var primIndexes:Array = isRows ? rowIndices : colIndices;
-    var secIndexes:Array = isRows ? colIndices : rowIndices;
+    var primIndices:SortedSet = isRows ? rowIndices : colIndices;
+    var secIndices:SortedSet = isRows ? colIndices : rowIndices;
     var primDCs:Vector.<CellConstraint> = isRows ? rowConstr : colConstr;
-    var groupLists:Vector.<Vector.<LinkedDimGroup>> = new Vector.<Vector.<LinkedDimGroup>>(primIndexes.length, true);
+    var groupLists:Vector.<Vector.<LinkedDimGroup>> = new Vector.<Vector.<LinkedDimGroup>>(primIndices.length, true);
     var gIx:int = 0;
-    var adobeBurnInHell:Object;
-    for (adobeBurnInHell in primIndexes) {
-      var i:int = int(adobeBurnInHell);
+    for each (var i:int in primIndices.iterator) {
       var dc:CellConstraint;
       if (i >= -MAX_GRID && i <= MAX_GRID) {  // If not dock cell
         dc = primDCs == null || primDCs.length == 0 ? DEF_DIM_C : primDCs[i >= primDCs.length ? primDCs.length - 1 : i];
@@ -1475,8 +1472,7 @@ public final class Grid {
       var groupList:Vector.<LinkedDimGroup> = new Vector.<LinkedDimGroup>();
       var groupListLength:int = 0;
       groupLists[gIx++] = groupList;
-      for (adobeBurnInHell in secIndexes) {
-        var ix:int = int(adobeBurnInHell);
+      for each (var ix:int in secIndices.iterator) {
         var cell:Cell = isRows ? getCell(i, ix) : getCell(ix, i);
         if (cell == null || cell.compWraps.length == 0) {
           continue;
@@ -1484,7 +1480,7 @@ public final class Grid {
 
         var span:int = (isRows ? cell.spany : cell.spanx);
         if (span > 1) {
-          span = convertSpanToSparseGrid(i, span, primIndexes);
+          span = convertSpanToSparseGrid(i, span, primIndices);
         }
 
         var isPar:Boolean = cell.flowx == isRows;
@@ -1524,20 +1520,19 @@ public final class Grid {
 
 	/** Spanning is specified in the uncompressed grid number. They can for instance be more than 60000 for the outer
 	 * edge dock grid cells. When the grid is compressed and indexed after only the cells that area occupied the span
-	 * is erratic. This method use the row/col indexes and corrects the span to be correct for the compressed grid.
+	 * is erratic. This method use the row/col indices and corrects the span to be correct for the compressed grid.
 	 * @param span The span un the uncompressed grid. <code>LayoutUtil.INF</code> will be interpreted to span the rest
 	 * of the column/row excluding the surrounding docking components.
-	 * @param indexes The indexes in the correct dimension.
+	 * @param indices The indices in the correct dimension.
 	 * @return The converted span.
 	 */
-  private static function convertSpanToSparseGrid(curIx:int, span:int, indexes:Array):int {
+  private static function convertSpanToSparseGrid(curIx:int, span:int, indices:SortedSet):int {
     var lastIx:int = curIx + span;
     var retSpan:int = 1;
-    //noinspection JSValidateTypes
-    for (var ix:Object in indexes) {
+    for each (var ix:int in indices.iterator) {
       if (ix <= curIx) {
         continue;
-      }   // We have not arrived to the correct index yet
+      } // We have not arrived to the correct index yet
 
       if (ix >= lastIx) {
         break;
@@ -1575,8 +1570,8 @@ public final class Grid {
       throw new ArgumentError("Cell position out of bounds. Out of cells. row: " + r + ", col: " + c);
     }
 
-    rowIndices[r] = true;
-    colIndices[c] = true;
+    rowIndices.add(r);
+    colIndices.add(c);
 
     grid[(r << 16) + c] = cell;
   }
@@ -1591,10 +1586,10 @@ public final class Grid {
 		switch (side) {
 			case 0:
 			case 2:
-				r = side == 0? dockInsets[0]++ : dockInsets[2]--;
+				r = side == 0 ? dockInsets[0]++ : dockInsets[2]--;
 				c = dockInsets[1];
 				spanx = dockInsets[3] - dockInsets[1] + 1;  // The +1 is for cell 0.
-				colIndices[dockInsets[3]] = true; // Make sure there is a receiving cell
+				colIndices.add(dockInsets[3]); // Make sure there is a receiving cell
 				break;
 
 			case 1:
@@ -1602,15 +1597,15 @@ public final class Grid {
 				c = side == 1? dockInsets[1]++ : dockInsets[3]--;
 				r = dockInsets[0];
 				spany = dockInsets[2] - dockInsets[0] + 1;  // The +1 is for cell 0.
-				rowIndices[dockInsets[2]] = true; // Make sure there is a receiving cell
+				rowIndices.add(dockInsets[2]); // Make sure there is a receiving cell
 				break;
 
 			default:
 				throw new ArgumentError("Internal error 123.");
 		}
 
-		rowIndices[r] = true;
-		colIndices[c] = true;
+		rowIndices.add(r);
+		colIndices.add(c);
 
 		grid[(r << 16) + c] = new Cell(cw, spanx, spany, spanx > 1);
 	}
@@ -1933,14 +1928,7 @@ public final class Grid {
   }
 
   internal function getIndicesAndSizes(isRows:Boolean):Vector.<Vector.<int>> {
-    var indices:Array = isRows ? rowIndices : colIndices;
-    var indicesList:Vector.<int> = new Vector.<int>(indices.length, true);
-    var ix:int = 0;
-    for (var adobeBurnInHell:Object in indices) {
-      indicesList[ix++] = int(adobeBurnInHell);
-    }
-
-    return new <Vector.<int>>[indicesList, isRows ? rowSizes : colSizes];
+    return new <Vector.<int>>[(isRows ? rowIndices : colIndices).iterator.slice(), isRows ? rowSizes : colSizes];
   }
 
 	//private static WeakHashMap<Object, ArrayList<WeakCell>> PARENT_GRIDPOS_MAP = null;
@@ -1990,6 +1978,8 @@ public final class Grid {
 
 import flash.utils.Dictionary;
 
+import net.miginfocom.layout.LayoutUtil;
+
 final class WeakCell {
   internal const componentRef:Dictionary = new Dictionary(true);
   internal var x:int, y:int, spanX:int, spanY:int;
@@ -2003,4 +1993,38 @@ final class WeakCell {
   }
 }
 
+final class SortedSet {
+  private const items:Dictionary = new Dictionary();
+  private var list:Vector.<int> = new Vector.<int>();
+  private var modified:Boolean;
 
+  private var _size:int;
+  public function get length():int {
+    return _size;
+  }
+
+  public function add(e:int):void {
+    if (!items[e]) {
+      list[_size++] = e;
+      items[e] = true;
+      modified = true;
+    }
+  }
+
+  public function get iterator():Vector.<int> {
+    ensureSorted();
+    return list;
+  }
+
+  public function get last():int {
+    ensureSorted();
+    return list[_size - 1];
+  }
+
+  private function ensureSorted():void {
+    if (modified) {
+      list = list.sort(LayoutUtil.intCompareFunction);
+      modified = false;
+    }
+  }
+}

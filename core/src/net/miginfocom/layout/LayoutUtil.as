@@ -240,7 +240,7 @@ public final class LayoutUtil {
     return roundSizes(lengths);
   }
 
-  private static function intCompareFunction(a:int, b:int):int {
+  public static function intCompareFunction(a:int, b:int):int {
     return a - b;
   }
 
