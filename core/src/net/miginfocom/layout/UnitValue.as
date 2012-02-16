@@ -176,16 +176,16 @@ public final class UnitValue {
 
   public static const BASELINE_IDENTITY:UnitValue = new UnitValue(0, IDENTITY, "baseline", false);
 
-  private var value:Number;
-  private var oper:int = STATIC;
+  private var _value:Number;
+  private var _operation:int = STATIC;
   private var unitStr:String;
   private var linkId:String;
-  private var isHor:Boolean;
+  private var _horizontal:Boolean;
   private var _subUnits:Vector.<UnitValue>;
 
-  public function UnitValue(value:Number, unit:int = -1000, unitStr:String = null, isHor:Boolean = true) {
-    this.value = value;
-    this.isHor = isHor;
+  public function UnitValue(value:Number, unit:int = -1000, unitStr:String = null, horizontal:Boolean = true) {
+    this._value = value;
+    this._horizontal = horizontal;
     this.unitStr = unitStr;
 
     if (unit != -1000) {
@@ -213,7 +213,7 @@ public final class UnitValue {
     }
 
     var unitValue:UnitValue = new UnitValue(0, isHorizontal ? PlatformDefaults.defaultHorizontalUnit : PlatformDefaults.defaultVerticalUnit, null, isHorizontal);
-    unitValue.oper = operator;
+    unitValue._operation = operator;
     unitValue._subUnits = new <UnitValue>[sub1, sub2];
 
     // LayoutUtil.putCCString(unitValue, value + "px");
@@ -231,7 +231,7 @@ public final class UnitValue {
     }
 
     var unitValue:UnitValue = new UnitValue(value, -1000, unitStr, isHor);
-    unitValue.oper = oper;
+    unitValue._operation = oper;
     // LayoutUtil.putCCString(unitValue, value + "px");
     return unitValue;
   }
@@ -265,56 +265,56 @@ public final class UnitValue {
       return 1;
     }
 
-    if (oper == STATIC) {
+    if (_operation == STATIC) {
       switch (_unit) {
         case PIXEL:
-          return value;
+          return _value;
 
 				case LPX:
 				case LPY:
-					return parent.getPixelUnitFactor(_unit == LPX) * value;
+					return parent.getPixelUnitFactor(_unit == LPX) * _value;
 
 				case MM:
 				case CM:
 				case INCH:
 				case PT:
 					var f:Number = SCALE[unit - MM];
-					var s:Number = isHor ? PlatformDefaults.horizontalScaleFactor : PlatformDefaults.verticalScaleFactor;
+					var s:Number = _horizontal ? PlatformDefaults.horizontalScaleFactor : PlatformDefaults.verticalScaleFactor;
           if (s == s) {
             f *= s;
           }
-					return (isHor ? parent.horizontalScreenDPI : parent.verticalScreenDPI) * value / f;
+					return (_horizontal ? parent.horizontalScreenDPI : parent.verticalScreenDPI) * _value / f;
 
         case PERCENT:
-          return value * refValue * 0.01;
+          return _value * refValue * 0.01;
 
         case SPX:
-          return parent.screenWidth * value * 0.01;
+          return parent.screenWidth * _value * 0.01;
         case SPY:
-          return parent.screenHeight * value * 0.01;
+          return parent.screenHeight * _value * 0.01;
 
         case ALIGN:
-          var st:Number = LinkHandler.getValue(parent.getLayout(), "visual", isHor ? LinkHandler.X : LinkHandler.Y);
-          var sz:Number = LinkHandler.getValue(parent.getLayout(), "visual", isHor ? LinkHandler.WIDTH : LinkHandler.HEIGHT);
-          return st != st || sz != sz ? 0 : value * (Math.max(0, sz) - refValue) + st;
+          var st:Number = LinkHandler.getValue(parent.getLayout(), "visual", _horizontal ? LinkHandler.X : LinkHandler.Y);
+          var sz:Number = LinkHandler.getValue(parent.getLayout(), "visual", _horizontal ? LinkHandler.WIDTH : LinkHandler.HEIGHT);
+          return st != st || sz != sz ? 0 : _value * (Math.max(0, sz) - refValue) + st;
 
         case MIN_SIZE:
           if (comp == null) {
             return 0;
           }
-          return isHor ? comp.getMinimumWidth(comp.actualHeight) : comp.getMinimumHeight(comp.actualWidth);
+          return _horizontal ? comp.getMinimumWidth(comp.actualHeight) : comp.getMinimumHeight(comp.actualWidth);
 
         case PREF_SIZE:
           if (comp == null) {
             return 0;
           }
-          return isHor ? comp.getPreferredWidth(comp.actualHeight) : comp.getPreferredHeight(comp.actualWidth);
+          return _horizontal ? comp.getPreferredWidth(comp.actualHeight) : comp.getPreferredHeight(comp.actualWidth);
 
         case MAX_SIZE:
           if (comp == null) {
             return 0;
           }
-          return isHor ? comp.getMaximumWidth(comp.actualHeight) : comp.getMaximumHeight(comp.actualWidth);
+          return _horizontal ? comp.getMaximumWidth(comp.actualHeight) : comp.getMaximumHeight(comp.actualWidth);
 
         case BUTTON:
           return PlatformDefaults.minimumButtonWidth.getPixels(refValue, parent, comp);
@@ -355,7 +355,7 @@ public final class UnitValue {
     if (_subUnits != null && _subUnits.length == 2) {
       var r1:Number = _subUnits[0].getPixelsExact(refValue, parent, comp);
       var r2:Number = _subUnits[1].getPixelsExact(refValue, parent, comp);
-      switch (oper) {
+      switch (_operation) {
         case ADD:
           return r1 + r2;
         case SUB:
@@ -373,24 +373,24 @@ public final class UnitValue {
       }
     }
 
-    throw new ArgumentError("Internal: Unknown Oper: " + oper);
+    throw new ArgumentError("Internal: Unknown Oper: " + _operation);
   }
 
   private function lookup(refValue:Number, parent:ContainerWrapper, comp:ComponentWrapper):Number {
     var res:Number = UnitConverter.UNABLE;
     for (var i:int = CONVERTERS.length - 1; i >= 0; i--) {
-      res = CONVERTERS[i].convertToPixels(value, unitStr, isHor, refValue, parent, comp);
+      res = CONVERTERS[i].convertToPixels(_value, unitStr, _horizontal, refValue, parent, comp);
       if (res != UnitConverter.UNABLE) {
         return res;
       }
     }
-    return PlatformDefaults.convertToPixels(value, unitStr, isHor, refValue, parent, comp);
+    return PlatformDefaults.convertToPixels(_value, unitStr, _horizontal, refValue, parent, comp);
   }
 
   private function parseUnitString():int {
     const len:int = unitStr.length;
     if (len == 0) {
-      return isHor ? PlatformDefaults.defaultHorizontalUnit : PlatformDefaults.defaultVerticalUnit;
+      return _horizontal ? PlatformDefaults.defaultHorizontalUnit : PlatformDefaults.defaultVerticalUnit;
     }
 
     var uu:* = UNIT_MAP[unitStr];
@@ -399,11 +399,11 @@ public final class UnitValue {
     }
 
     if (unitStr == "lp") {
-      return isHor ? LPX : LPY;
+      return _horizontal ? LPX : LPY;
     }
 
     if (unitStr == "sp") {
-      return isHor ? SPX : SPY;
+      return _horizontal ? SPX : SPY;
     }
 
     // To test so we can fail fast
@@ -476,20 +476,20 @@ public final class UnitValue {
     return _unit;
   }
 
-  public final function getOperation():int {
-    return oper;
+  public final function get operation():int {
+    return _operation;
   }
 
-  public final function getValue():Number {
-    return value;
+  public final function get value():Number {
+    return _value;
   }
 
-  public final function isHorizontal():Boolean {
-    return isHor;
+  public final function get horizontal():Boolean {
+    return _horizontal;
   }
 
   public final function toString():String {
-    return getQualifiedClassName(this) + ". Value=" + value + ", unit=" + _unit + ", unitString: " + unitStr + ", oper=" + oper + ", isHor: " + isHor;
+    return getQualifiedClassName(this) + ". Value=" + _value + ", unit=" + _unit + ", unitString: " + unitStr + ", oper=" + _operation + ", isHor: " + _horizontal;
   }
 
   /**
