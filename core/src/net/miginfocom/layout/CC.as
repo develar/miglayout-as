@@ -35,8 +35,8 @@ public final class CC {
 
   private var _hideMode:int = -1;
 
-  private var hor:ComponentConstraint = new ComponentConstraint();
-  private var ver:ComponentConstraint = new ComponentConstraint();
+  private var hor:ComponentDimensionConstraint = new ComponentDimensionConstraint();
+  private var ver:ComponentDimensionConstraint = new ComponentDimensionConstraint();
 
   private var _newline:BoundSize;
 
@@ -89,7 +89,7 @@ public final class CC {
 	 * constraint for later use.
 	 * @return The current dimension constraint. Never <code>null</code>.
 	 */
-	public function get horizontal():ComponentConstraint {
+	public function get horizontal():ComponentDimensionConstraint {
 		return hor;
 	}
 
@@ -97,8 +97,8 @@ public final class CC {
 	 * and grow/shrink priorities and weights.
 	 * @param value The new dimension constraint. If <code>null</code> it will be reset to <code>new DimConstraint();</code>
 	 */
-	public function set horizontal(value:ComponentConstraint):void {
-		hor = value != null ? value : new ComponentConstraint();
+	public function set horizontal(value:ComponentDimensionConstraint):void {
+		hor = value != null ? value : new ComponentDimensionConstraint();
 	}
 
 	/** Returns the vertical dimension constraint for this component constraint. It has constraints for the vertical size
@@ -108,7 +108,7 @@ public final class CC {
 	 * constraint for later use.
 	 * @return The current dimension constraint. Never <code>null</code>.
 	 */
-	public function get vertical():ComponentConstraint {
+	public function get vertical():ComponentDimensionConstraint {
 		return ver;
 	}
 
@@ -116,8 +116,8 @@ public final class CC {
 	 * and grow/shrink priorities and weights.
 	 * @param value The new dimension constraint. If <code>null</code> it will be reset to <code>new DimConstraint();</code>
 	 */
-	public function set vertical(value:ComponentConstraint):void {
-		ver = value != null ? value : new ComponentConstraint();
+	public function set vertical(value:ComponentDimensionConstraint):void {
+		ver = value != null ? value : new ComponentDimensionConstraint();
 	}
 
 	/** Returns the vertical or horizontal dim constraint.

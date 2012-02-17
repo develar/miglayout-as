@@ -169,7 +169,7 @@ public final class Grid {
 				cw = new CompWrap(comp, rootCc, hideMode, pos, cbSz, container);
 				cell = grid[ABSOLUTE_POSITIONED_CELL_KEY];
         if (cell == null) {
-          grid[ABSOLUTE_POSITIONED_CELL_KEY] = new Cell(cw);
+          grid[ABSOLUTE_POSITIONED_CELL_KEY] = new Cell(cw, null);
         }
         else {
           cell.compWraps[cell.compWraps.length] = cw;
@@ -187,7 +187,7 @@ public final class Grid {
           dockInsets = new <int>[-MAX_DOCK_GRID, -MAX_DOCK_GRID, MAX_DOCK_GRID, MAX_DOCK_GRID];
         }
 
-        addDockingCell(dockInsets, rootCc.dockSide, new CompWrap(comp, rootCc, hideMode, pos, cbSz, container));
+        addDockingCell(dockInsets, rootCc.dockSide, null, new CompWrap(comp, rootCc, hideMode, pos, cbSz, container));
 				i++;
 				continue;
 			}
@@ -241,7 +241,7 @@ public final class Grid {
       if (cell == null) {
         var spanx:int = Math.min(rowNoGrid && lc.flowX ? LayoutUtil.INF : rootCc.spanX, MAX_GRID - cellXY[0]);
         var spany:int = Math.min(rowNoGrid && !lc.flowX ? LayoutUtil.INF : rootCc.spanY, MAX_GRID - cellXY[1]);
-        cell = new Cell(null, spanx, spany, cellFlowX == 0 ? lc.flowX : cellFlowX == 1);
+        cell = new Cell(null, colConstr != null && colConstr.length > 0 ? LayoutUtil.getIndexSafe(colConstr, cellXY[0]).componentGap : null, spanx, spany, cellFlowX == 0 ? lc.flowX : cellFlowX == 1);
         setCell(cellXY[1], cellXY[0], cell);
 
         // Add a rectangle so we can know that spanned cells occupy more space.
@@ -408,6 +408,7 @@ public final class Grid {
     for each (cell in grid) {
       var cws:Vector.<CompWrap> = cell.compWraps;
       const lastI:int = cws.length - 1;
+
 			for (i = 0; i <= lastI; i++) {
 				cw = cws[i];
 				var cwBef:ComponentWrapper = i > 0 ? cws[i - 1].comp : null;
@@ -416,7 +417,7 @@ public final class Grid {
         var tag:String = (cw.comp.constraints || DEF_CC).tag;
 				var ccBef:CC = cwBef != null ? cwBef.constraints || DEF_CC : null;
         var ccAft:CC = cwAft != null ? cwAft.constraints || DEF_CC : null;
-        cw.calcGaps(cwBef, ccBef, cwAft, ccAft, tag, cell.flowx, ltr, container);
+        cw.calcGaps(cwBef, ccBef, cwAft, ccAft, tag, cell.flowx, ltr, container, cell.componentGap);
 			}
 		}
 
@@ -1581,36 +1582,36 @@ public final class Grid {
 	 * @param side top == 0, left == 1, bottom = 2, right = 3.
 	 * @param cw The compwrap to put in a cell and add.
 	 */
-	private function addDockingCell(dockInsets:Vector.<int>, side:int, cw:CompWrap):void {
-		var r:int, c:int, spanx:int = 1, spany:int = 1;
-		switch (side) {
-			case 0:
-			case 2:
-				r = side == 0 ? dockInsets[0]++ : dockInsets[2]--;
-				c = dockInsets[1];
-				spanx = dockInsets[3] - dockInsets[1] + 1;  // The +1 is for cell 0.
-				colIndices.add(dockInsets[3]); // Make sure there is a receiving cell
-				break;
+  private function addDockingCell(dockInsets:Vector.<int>, side:int, componentGap:BoundSize, cw:CompWrap):void {
+    var r:int, c:int, spanx:int = 1, spany:int = 1;
+    switch (side) {
+      case 0:
+      case 2:
+        r = side == 0 ? dockInsets[0]++ : dockInsets[2]--;
+        c = dockInsets[1];
+        spanx = dockInsets[3] - dockInsets[1] + 1;  // The +1 is for cell 0.
+        colIndices.add(dockInsets[3]); // Make sure there is a receiving cell
+        break;
 
-			case 1:
-			case 3:
-				c = side == 1? dockInsets[1]++ : dockInsets[3]--;
-				r = dockInsets[0];
-				spany = dockInsets[2] - dockInsets[0] + 1;  // The +1 is for cell 0.
-				rowIndices.add(dockInsets[2]); // Make sure there is a receiving cell
-				break;
+      case 1:
+      case 3:
+        c = side == 1 ? dockInsets[1]++ : dockInsets[3]--;
+        r = dockInsets[0];
+        spany = dockInsets[2] - dockInsets[0] + 1;  // The +1 is for cell 0.
+        rowIndices.add(dockInsets[2]); // Make sure there is a receiving cell
+        break;
 
-			default:
-				throw new ArgumentError("Internal error 123.");
-		}
+      default:
+        throw new ArgumentError("Internal error 123.");
+    }
 
-		rowIndices.add(r);
-		colIndices.add(c);
+    rowIndices.add(r);
+    colIndices.add(c);
 
-		grid[(r << 16) + c] = new Cell(cw, spanx, spany, spanx > 1);
-	}
+    grid[(r << 16) + c] = new Cell(cw, componentGap, spanx, spany, spanx > 1);
+  }
 
-	//***************************************************************************************
+  //***************************************************************************************
 	//* Helper Methods
 	//***************************************************************************************
 

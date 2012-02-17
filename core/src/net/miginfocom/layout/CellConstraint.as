@@ -10,6 +10,8 @@ public final class CellConstraint extends DimConstraint {
    */
   public var noGrid:Boolean;
 
+  public var componentGap:BoundSize;
+
   public function getAlignOrDefault(isHor:Boolean):UnitValue {
     if (align != null) {
       return align;

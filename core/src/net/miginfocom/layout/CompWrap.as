@@ -66,17 +66,18 @@ internal final class CompWrap {
     return uvs.getSize(sizeType).getPixels(isHor ? parent.actualWidth : parent.actualHeight, parent, comp);
   }
 
-	internal function calcGaps(before:ComponentWrapper, befCC:CC, after:ComponentWrapper, aftCC:CC, tag:String, flowX:Boolean, isLTR:Boolean, parent:ContainerWrapper):void {
+	internal function calcGaps(before:ComponentWrapper, befCC:CC, after:ComponentWrapper, aftCC:CC, tag:String, flowX:Boolean, isLTR:Boolean, parent:ContainerWrapper,
+                             componentGap:BoundSize):void {
     var parW:int = parent.actualWidth;
     var parH:int = parent.actualHeight;
 
 		var befGap:BoundSize = before != null ? (flowX ? befCC.horizontal : befCC.vertical).gapAfter : null;
     var aftGap:BoundSize = after != null ? (flowX ? aftCC.horizontal : aftCC.vertical).gapBefore : null;
 
-    mergeGapSizes(cc.vertical.getComponentGaps(parent, comp, befGap, (flowX ? null : before), tag, parH, 0, isLTR), false, true);
-		mergeGapSizes(cc.horizontal.getComponentGaps(parent, comp, befGap, (flowX ? before : null), tag, parW, 1, isLTR), true, true);
-		mergeGapSizes(cc.vertical.getComponentGaps(parent, comp, aftGap, (flowX ? null : after), tag, parH, 2, isLTR), false, false);
-		mergeGapSizes(cc.horizontal.getComponentGaps(parent, comp, aftGap, (flowX ? after : null), tag, parW, 3, isLTR), true, false);
+    mergeGapSizes(cc.vertical.getComponentGaps(parent, comp, befGap, (flowX ? null : before), tag, parH, 0, isLTR, componentGap), false, true);
+		mergeGapSizes(cc.horizontal.getComponentGaps(parent, comp, befGap, (flowX ? before : null), tag, parW, 1, isLTR, componentGap), true, true);
+		mergeGapSizes(cc.vertical.getComponentGaps(parent, comp, aftGap, (flowX ? null : after), tag, parH, 2, isLTR, componentGap), false, false);
+		mergeGapSizes(cc.horizontal.getComponentGaps(parent, comp, aftGap, (flowX ? after : null), tag, parW, 3, isLTR, componentGap), true, false);
 	}
 
   internal function setDimBounds(start:int, size:int, isHor:Boolean):void {

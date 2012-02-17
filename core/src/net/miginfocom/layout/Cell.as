@@ -7,9 +7,14 @@ internal final class Cell {
   //private ArrayList<CompWrap> compWraps = new ArrayList<CompWrap>(1);
   internal const compWraps:Vector.<CompWrap> = new Vector.<CompWrap>();
 
-  internal var hasTagged:Boolean = false; // If one or more components have styles and need to be checked by the component sorter
+  internal var hasTagged:Boolean = false;
 
-  function Cell(cw:CompWrap, spanx:int = 1, spany:int = 1, flowx:Boolean = true) {
+  internal var componentGap:BoundSize;
+  // If one or more components have styles and need to be checked by the component sorter
+
+  function Cell(cw:CompWrap, componentGap:BoundSize, spanx:int = 1, spany:int = 1, flowx:Boolean = true) {
+    this.componentGap = componentGap;
+
     if (cw != null) {
       compWraps[compWraps.length] = cw;
     }
