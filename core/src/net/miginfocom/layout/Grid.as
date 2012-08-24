@@ -500,7 +500,7 @@ public final class Grid {
 						for (i = 0, iSz = compWraps.length; i < iSz; i++) {
 							cw = compWraps[i];
 							if (j == 0) {
-								doAgain ||= doAbsoluteCorrections(cw, w, h);
+								doAgain = doAbsoluteCorrections(cw, w, h) || doAgain;
                 if (!doAgain) { // If we are going to do this again, do not bother this time around
                   if (cw.cc.horizontal.endGroup != null) {
                     endGrpXMap = addToEndGroup(endGrpXMap, cw.cc.horizontal.endGroup, cw.x + cw.w);
@@ -527,7 +527,7 @@ public final class Grid {
 
                 cw.x += x;
                 cw.y += y;
-                layoutAgain ||= cw.transferBounds(checkPrefChange && !layoutAgain);
+                layoutAgain = cw.transferBounds(checkPrefChange && !layoutAgain) || layoutAgain;
 
                 if (callbackList != null) {
                   for each (var callback:LayoutCallback in callbackList) {
@@ -689,7 +689,7 @@ public final class Grid {
       }
 
       linkTargetIDs[gid] = true;
-      changed ||= LinkHandler.setBounds2(lay, gid, x, y, w, h, !external, true);
+      changed = LinkHandler.setBounds2(lay, gid, x, y, w, h, !external, true) || changed;
     }
 
     return changed;
@@ -975,7 +975,7 @@ public final class Grid {
 
         // If there is a link id, store the new bounds.
         if (linkTargetIDs != null) {
-          doAgain ||= setLinkedBounds(cw.comp, cw.cc, stSz[0], stSz[0], stSz[1], stSz[1], false);
+          doAgain = setLinkedBounds(cw.comp, cw.cc, stSz[0], stSz[0], stSz[1], stSz[1], false) || doAgain;
         }
       }
       if (!doAgain) {
