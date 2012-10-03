@@ -28,6 +28,10 @@ internal class FlexComponentWrapper implements ComponentWrapper {
       flags = 0;
     }
   }
+  
+  public function get component():Object {
+    return c;
+  }
 
   public function get x():Number {
     return c.getLayoutBoundsX();

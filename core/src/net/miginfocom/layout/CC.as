@@ -441,7 +441,7 @@ public final class CC {
 	 * will take precedence. Push is normally used when the grid has not been defined in the layout.
 	 * <p>
 	 * If multiple components in a column has push weights set the largest one will be used for the column.
-	 * @return The current push value. Default is <code>null</code>.
+	 * @return The current push value. Default is <code>NaN</code>.
 	 */
 	public function get pushX():Number {
 		return _pushX;
@@ -452,7 +452,7 @@ public final class CC {
 	 * will take precedence. Push is normally used when the grid has not been defined in the layout.
 	 * <p>
 	 * If multiple components in a column has push weights set the largest one will be used for the column.
-	 * @param weight The new push value. Default is <code>null</code>.
+	 * @param weight The new push value. Default is <code>NaN</code>.
 	 */
 	public function set pushX(weight:Number):void {
 		_pushX = weight;
@@ -463,7 +463,7 @@ public final class CC {
 	 * will take precedence. Push is normally used when the grid has not been defined in the layout.
 	 * <p>
 	 * If multiple components in a row has push weights set the largest one will be used for the row.
-	 * @return The current push value. Default is <code>null</code>.
+	 * @return The current push value. Default is <code>NaN</code>.
 	 */
 	public function get pushY():Number {
 		return _pushY;
@@ -474,7 +474,7 @@ public final class CC {
 	 * will take precedence. Push is normally used when the grid has not been defined in the layout.
 	 * <p>
 	 * If multiple components in a row has push weights set the largest one will be used for the row.
-	 * @param value The new push value. Default is <code>null</code>.
+	 * @param value The new push value. Default is <code>NaN</code>.
 	 */
 	public function set pushY(value:Number):void {
 		_pushY = value;
