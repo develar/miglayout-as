@@ -3,6 +3,7 @@ import flash.display.DisplayObjectContainer;
 
 import net.miginfocom.layout.AbstractMigLayout;
 import net.miginfocom.layout.Grid;
+import net.miginfocom.layout.LayoutCallback;
 import net.miginfocom.layout.LayoutUtil;
 import net.miginfocom.layout.PlatformDefaults;
 
@@ -10,6 +11,7 @@ public class MigLayout extends AbstractMigLayout {
   private var lastHash:int = -1;
   private var lastInvalidW:Number;
   private var lastInvalidH:Number;
+  private var callbackList:Vector.<LayoutCallback>;
 
   public function MigLayout(layoutConstraints:String = null, colConstraints:String = null, rowConstraints:String = null) {
     super(layoutConstraints, colConstraints, rowConstraints);
@@ -38,6 +40,12 @@ public class MigLayout extends AbstractMigLayout {
       checkCache(container);
       grid.layout(0, 0, w, h, lc != null && lc.debugMillis > 0, false);
     }
+  }
+  
+  public function addLayoutCallback(cb:LayoutCallback):void {
+    if (!cb) return;
+	if (!callbackList) callbackList = new Vector.<LayoutCallback>();
+	callbackList.push(cb);
   }
 
   /** Check if something has changed and if so recreate it to the cached objects.
@@ -82,7 +90,7 @@ public class MigLayout extends AbstractMigLayout {
     //setDebug(par, getDebugMillis() > 0);
 
     if (grid == null) {
-      grid = new Grid(container, lc, rowSpecs, colSpecs, null);
+      grid = new Grid(container, lc, rowSpecs, colSpecs, callbackList);
     }
 
     flags &= ~INVALID;

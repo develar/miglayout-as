@@ -6,3 +6,8 @@ Thumbs.db
 
 target
 
+.settings
+.actionScriptProperties
+.flexLibProperties
+.project
+*.swc

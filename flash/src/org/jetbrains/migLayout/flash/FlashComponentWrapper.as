@@ -14,7 +14,11 @@ public class FlashComponentWrapper implements ComponentWrapper {
     this.c = c;
     _constraints = constraints;
   }
-
+  
+  public function get component():Object {
+    return c;
+  }
+  
   private var _constraints:CC;
   public function get constraints():CC {
     return _constraints;
