@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.jetbrains.miglayout</groupId>
     <artifactId>miglayout-as-parent</artifactId>
-    <version>4.3.1</version>
+    <version>4.3.2-SNAPSHOT</version>
   </parent>
 
   <artifactId>miglayout-flash</artifactId>
@@ -15,7 +15,7 @@
       <groupId>org.jetbrains.miglayout</groupId>
       <artifactId>miglayout-core</artifactId>
       <type>swc</type>
-      <version>4.3.1</version>
+      <version>4.3.2-SNAPSHOT</version>
     </dependency>
   </dependencies>
 </project>
